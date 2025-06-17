@@ -1,40 +1,171 @@
 ﻿<Window x:Class="wam.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Windows Activity Monitor" Height="600" Width="1000" WindowStartupLocation="CenterScreen">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Windows Activity Monitor" Height="768" Width="1366" 
+        WindowStartupLocation="CenterScreen"
+        Background="#F8F9FA">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
+        <SolidColorBrush x:Key="AccentColorLight" Color="#7BB4F6"/>
+        <SolidColorBrush x:Key="NavPanelColor" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="ContentBackgroundColor" Color="#F8F9FA"/>
+        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
+        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
+        <SolidColorBrush x:Key="NavButtonHoverBackground" Color="#F1F5F9"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#DEE2E6"/>
+
+        <Style x:Key="NavGroupHeader" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+            <Setter Property="Margin" Value="25,20,0,8"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="TextOptions.TextRenderingMode" Value="Grayscale"/>
+            <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+            <Setter Property="TextDecorations" Value="Underline"/>
+        </Style>
+
+        <Style x:Key="UniqueNavButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Margin" Value="15,2"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="grid" Background="{TemplateBinding Background}">
+                            <Border x:Name="indicator" Background="{StaticResource AccentColor}" Width="4" HorizontalAlignment="Left" CornerRadius="2" Opacity="0"/>
+                            <Border x:Name="border" Padding="15,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="icon" FontFamily="Segoe MDL2 Assets" Text="{Binding Path=Tag, RelativeSource={RelativeSource TemplatedParent}}" FontSize="18" Foreground="{StaticResource TextColorSecondary}" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="text" Text="{TemplateBinding Content}" Margin="20,0,0,0" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="grid" Property="Background" Value="{StaticResource NavButtonHoverBackground}"/>
+                                <Setter TargetName="indicator" Property="Opacity" Value="1"/>
+                                <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+                                <Setter TargetName="icon" Property="Foreground" Value="{StaticResource AccentColor}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="grid" Property="Background" Value="{StaticResource NavButtonHoverBackground}"/>
+                                <Setter TargetName="indicator" Property="Opacity" Value="1"/>
+                                <Setter TargetName="indicator" Property="Background" Value="{StaticResource AccentColorLight}"/>
+                                <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+                                <Setter TargetName="icon" Property="Foreground" Value="{StaticResource AccentColor}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RotatingIconProgressBar" TargetType="ProgressBar">
+            <Setter Property="IsIndeterminate" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid>
+                            <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="36"
+                                       Foreground="{StaticResource AccentColor}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.RenderTransform>
+                                    <RotateTransform x:Name="SpinnerRotate" Angle="0" />
+                                </TextBlock.RenderTransform>
+                                <TextBlock.Triggers>
+                                    <EventTrigger RoutedEvent="Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="SpinnerRotate"
+                                                                 Storyboard.TargetProperty="Angle"
+                                                                 From="0" To="360" 
+                                                                 Duration="0:0:1.2" 
+                                                                 RepeatBehavior="Forever" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </TextBlock.Triggers>
+                            </TextBlock>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
     <Grid>
-        <!-- Ana layout 2 sütun: sol menü (200px), sağ içerik -->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="280"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Sol Menü -->
-        <StackPanel Grid.Column="0" Background="#2D2D30" Orientation="Vertical">
-            <TextBlock Text="WAM" FontSize="24" Foreground="White" Margin="20" FontWeight="Bold"/>
-            <Button Content="Dashboard" Margin="10" Height="40" Click="Dashboard_Click"/>
-            <Button Content="Anomali Tespiti (ML)" Margin="10" Height="40" Click="AnomalyDetection_Click"/>
-            <Button Content="Sistem Bilgileri" Margin="10" Height="40" Click="SystemInfo_Click"/>
-            <Button Content="User Activity" Margin="10" Height="40" Click="UserActivity_Click"/>
-            <Button Content="Aktif Uygulama Takibi" Margin="10" Height="40" Click="ActiveAppMonitorMenu_Click"/>
-            <Button Content="Startup Programs" Margin="10" Height="40" Click="StartupPrograms_Click"/>
-            <Button Content="Yüklü Yazılımlar" Click="InstalledSoftware_Click" Margin="10" Height="40"/>
-            <Button Content="Process Monitor" Margin="10" Height="40" Click="ProcessMonitor_Click"/>
-            <Button Content="Network Monitor" Margin="10" Height="40" Click="NetworkMonitor_Click"/>
-            <Button Content="File System Monitor" Margin="10" Height="40" Click="FileSystemMonitor_Click"/>
-            <Button Content="USB Monitor" Margin="10" Height="40" Click="UsbMonitor_Click" />
-            <Button Content="Güvenlik Politikaları" Click="SecurityPolicy_Click" Margin="10" Height="40"/>
-            <Button Content="Kullanıcı Oturum Bilgileri" Margin="10" Height="40" Click="UserSessionInfo_Click"/>
-            <Button Content="Olay Günlüğü Analizi" Margin="10" Height="40" Click="EventLogAnalyzer_Click"/>
-        </StackPanel>
+        <Border Grid.Column="0" Background="{StaticResource NavPanelColor}">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="2" Direction="270" Color="Black" Opacity="0.05" BlurRadius="10" />
+            </Border.Effect>
+            <Grid>
+                <TextBlock Text="WAM" FontSize="36" FontWeight="Bold" Foreground="{StaticResource AccentColor}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,25,0,0" FontFamily="Segoe UI Black"/>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,90,0,0">
+                    <StackPanel>
+                        <TextBlock Text="GERÇEK ZAMANLI İZLEME" Style="{StaticResource NavGroupHeader}"/>
+                        <Button Style="{StaticResource UniqueNavButton}" Tag="&#xE80F;" Content="Dashboard" Click="Dashboard_Click"/>
+                        <Button Style="{StaticResource UniqueNavButton}" Tag="&#xE768;" Content="Aktif Uygulamalar" Click="ActiveAppMonitorMenu_Click"/>
+                        <Button Style="{StaticResource UniqueNavButton}" Tag="&#xE81C;" Content="Process Monitor" Click="ProcessMonitor_Click"/>
+                        <Button Style="{StaticResource UniqueNavButton}" Tag="&#xEEC4;" Content="Network Monitor" Click="NetworkMonitor_Click"/>
+                        <Button Style="{StaticResource UniqueNavButton}" Tag="&#xE8D5;" Content="Dosya Sistemi" Click="FileSystemMonitor_Click"/>
+                        <Button Style="{StaticResource UniqueNavButton}" Tag="&#xE88E;" Content="USB Cihazları" Click="UsbMonitor_Click" />
 
-        <!-- İçerik Paneli -->
-        <Grid Grid.Column="1" Background="#FFF8F8F8" Name="ContentPanel">
-            <TextBlock Text="İçerik burada görünecek..." 
-                       FontSize="20" 
-                       VerticalAlignment="Center" 
-                       HorizontalAlignment="Center" 
-                       Foreground="Gray"/>
+                        <TextBlock Text="SİSTEM ANALİZİ" Style="{StaticResource NavGroupHeader}"/>
+                        <Button Style="{StaticResource UniqueNavButton}" Tag="&#xE946;" Content="Sistem Bilgileri" Click="SystemInfo_Click"/>
+                        <Button Style="{StaticResource UniqueNavButton}" Tag="&#xE7E8;" Content="Başlangıç Programları" Click="StartupPrograms_Click"/>
+                        <Button Style="{StaticResource UniqueNavButton}" Tag="&#xE737;" Content="Yüklü Yazılımlar" Click="InstalledSoftware_Click"/>
+                        <Button Style="{StaticResource UniqueNavButton}" Tag="&#xE916;" Content="Olay Günlüğü Analizi" Click="EventLogAnalyzer_Click"/>
+
+                        <TextBlock Text="KULLANICI &amp; GÜVENLİK" Style="{StaticResource NavGroupHeader}"/>
+                        <Button Style="{StaticResource UniqueNavButton}" Tag="&#xE716;" Content="User Activity" Click="UserActivity_Click"/>
+                        <Button Style="{StaticResource UniqueNavButton}" Tag="&#xE8AF;" Content="Oturum Bilgileri" Click="UserSessionInfo_Click"/>
+                        <Button Style="{StaticResource UniqueNavButton}" Tag="&#xE72E;" Content="Güvenlik Politikaları" Click="SecurityPolicy_Click"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1" Background="#F8F9FA">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Background="{StaticResource NavPanelColor}" Padding="30,20" BorderThickness="0,0,0,1" BorderBrush="{StaticResource BorderColor}">
+                <TextBlock x:Name="ContentTitle" Text="Dashboard" FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+            </Border>
+
+            <Grid Grid.Row="1">
+                <ContentPresenter x:Name="PageHost" />
+
+                <Border x:Name="LoadingOverlay" Background="#A0FFFFFF" Visibility="Collapsed">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ProgressBar Style="{StaticResource RotatingIconProgressBar}" Width="40" Height="40"/>
+                        <TextBlock Text="Veriler Yükleniyor..." FontSize="16" FontWeight="SemiBold" Margin="0,15,0,0" Foreground="{StaticResource TextColorPrimary}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

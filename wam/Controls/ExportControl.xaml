@@ -1,0 +1,96 @@
+<UserControl x:Class="wam.Controls.ExportControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <Border Background="White" 
+            CornerRadius="8" 
+            Margin="10"
+            Padding="15"
+            BorderBrush="#E0E0E0"
+            BorderThickness="1">
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            
+            <TextBlock Text="Dışa Aktar:" 
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0"
+                       Foreground="#333333"
+                       FontWeight="Medium"/>
+            
+            <!-- JSON Export Button -->
+            <Button x:Name="JsonExportButton"
+                    Background="#2196F3"
+                    Foreground="White"
+                    BorderThickness="0"
+                    Margin="5,0"
+                    Padding="15,8"
+                    Click="JsonExportButton_Click"
+                    ToolTip="Verileri JSON formatında dışa aktar"
+                    Cursor="Hand">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="#2196F3"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1976D2"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="📄" FontSize="16" VerticalAlignment="Center"/>
+                    <TextBlock Text="JSON" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            
+            <!-- CSV Export Button -->
+            <Button x:Name="CsvExportButton"
+                    Background="#4CAF50"
+                    Foreground="White"
+                    BorderThickness="0"
+                    Margin="5,0"
+                    Padding="15,8"
+                    Click="CsvExportButton_Click"
+                    ToolTip="Verileri CSV formatında dışa aktar"
+                    Cursor="Hand">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="#4CAF50"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#388E3C"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="📊" FontSize="16" VerticalAlignment="Center"/>
+                    <TextBlock Text="CSV" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            
+        </StackPanel>
+    </Border>
+</UserControl> 

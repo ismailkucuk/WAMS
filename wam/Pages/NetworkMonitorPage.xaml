@@ -3,50 +3,219 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="White">
-        <StackPanel>
-            <TextBlock Text="🌐 Network - Port Monitor" FontSize="24"
-                       FontWeight="Bold" Foreground="#2D2D30"
-                       Margin="20,10,20,10"/>
+             xmlns:local="clr-namespace:wam.Pages"
+             xmlns:controls="clr-namespace:wam.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1200"
+             Background="#F8F9FA">
 
-            <!-- Filtreleme Butonları -->
-            <StackPanel Orientation="Horizontal" Margin="20,0,20,10">
-                <Button Content="🔌 Tüm Bağlantılar" Margin="0,0,10,0" Click="LoadAll"/>
-                <Button Content="🔒 Yalnızca Listening Portlar" Margin="0,0,10,0" Click="LoadListening"/>
-                <Button Content="⚠️ Kritik Portlar" Click="LoadCritical"/>
-            </StackPanel>
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
+        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
+        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#F0F0F0"/>
+        <SolidColorBrush x:Key="RowHoverColor" Color="#F8F9FA"/>
+        <SolidColorBrush x:Key="SuccessColor" Color="#28a745"/>
+        <SolidColorBrush x:Key="DangerColor" Color="#dc3545"/>
+        <SolidColorBrush x:Key="WarningColor" Color="#ffc107"/>
 
-            <ListView Name="ConnectionListView" Margin="20" Height="400">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="PID" Width="60" DisplayMemberBinding="{Binding ProcessId}" />
-                        <GridViewColumn Header="Uygulama" Width="150" DisplayMemberBinding="{Binding ProcessName}" />
-                        <GridViewColumn Header="Local IP" Width="140" DisplayMemberBinding="{Binding LocalAddress}" />
-                        <GridViewColumn Header="Local Port" Width="80" DisplayMemberBinding="{Binding LocalPort}" />
-                        <GridViewColumn Header="Remote IP" Width="140" DisplayMemberBinding="{Binding RemoteAddress}" />
-                        <GridViewColumn Header="Alan Adı (Domain)" Width="250" DisplayMemberBinding="{Binding RemoteDomain}"/>
-                        <GridViewColumn Header="Remote Port" Width="80" DisplayMemberBinding="{Binding RemotePort}" />
-                        <GridViewColumn Header="Durum" Width="100" DisplayMemberBinding="{Binding State}" />
-                        <GridViewColumn Header="Protokol" Width="70" DisplayMemberBinding="{Binding Protocol}" />
-                        <GridViewColumn Header="Güvenlik" Width="150" DisplayMemberBinding="{Binding RiskLabel}" />
-                        <GridViewColumn Header="İşlem" Width="130">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Engellendi" Visibility="{Binding IsBlocked, Converter={StaticResource BoolToVisibilityConverter}}" 
-                                             Foreground="Red" FontWeight="Bold" Margin="0,0,10,0"/>
-                                        <Button Content="Kapat" Tag="{Binding LocalPort}" Click="BlockPort_Click"
-                                             Visibility="{Binding IsBlocked, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                        <Button Content="Aç" Tag="{Binding LocalPort}" Click="UnblockPort_Click"
-                                             Visibility="{Binding IsBlocked, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        <Style x:Key="InfoCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="25"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="1" Direction="270" Color="Black" Opacity="0.08" BlurRadius="12"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="FilterRadioButton" TargetType="RadioButton">
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="16">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource RowHoverColor}"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SmallActionButton" TargetType="Button">
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DangerActionButton" TargetType="Button" BasedOn="{StaticResource SmallActionButton}">
+            <Setter Property="Background" Value="{StaticResource DangerColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Visibility" Value="Visible" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsBlocked}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SuccessActionButton" TargetType="Button" BasedOn="{StaticResource SmallActionButton}">
+            <Setter Property="Background" Value="{StaticResource SuccessColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Visibility" Value="{Binding IsBlocked, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        </Style>
+
+        <Style x:Key="ConnectionStateStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding State}" Value="Established">
+                    <Setter Property="Foreground" Value="{StaticResource SuccessColor}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="Listen">
+                    <Setter Property="Foreground" Value="{StaticResource WarningColor}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="TimeWait">
+                    <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- EXPORT CONTROL -->
+        <controls:ExportControl Grid.Row="0" x:Name="ExportControl" Margin="0,0,0,20"/>
+
+        <Border Grid.Row="1" Style="{StaticResource InfoCard}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="5,0,5,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Ağ ve Port Monitörü" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{StaticResource TextColorPrimary}"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <RadioButton x:Name="AllConnectionsRadio" Content="🔌 Tüm Bağlantılar" Style="{StaticResource FilterRadioButton}" IsChecked="True" Checked="Filter_Checked" Tag="All"/>
+                        <RadioButton x:Name="ListeningPortsRadio" Content="🔒 Listening Portlar" Tag="Listening" Style="{StaticResource FilterRadioButton}" Checked="Filter_Checked"/>
+                        <RadioButton x:Name="CriticalPortsRadio" Content="⚠️ Kritik Portlar" Tag="Critical" Style="{StaticResource FilterRadioButton}" Checked="Filter_Checked"/>
+                    </StackPanel>
+                </Grid>
+
+                <ListView Grid.Row="1" x:Name="ConnectionListView" BorderThickness="0" HorizontalContentAlignment="Stretch">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListViewItem">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                        <WrapPanel>
+                                            <TextBlock Text="{Binding ProcessName, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource TextColorPrimary}"/>
+                                            <TextBlock Foreground="{StaticResource TextColorSecondary}" Margin="8,0,0,0">
+                                                <Run Text="(PID:"/><Run Text="{Binding ProcessId, Mode=OneWay}"/><Run Text=")"/>
+                                            </TextBlock>
+                                        </WrapPanel>
+                                        <TextBlock Margin="0,5,0,0">
+                                            <Run Text="{Binding LocalAddress}" Foreground="{StaticResource AccentColor}"/><Run Text=":" Foreground="{StaticResource AccentColor}"/><Run Text="{Binding LocalPort}" FontWeight="SemiBold" Foreground="{StaticResource AccentColor}"/>
+                                            <Run Text=" → " Foreground="{StaticResource TextColorSecondary}"/>
+                                            <Run Text="{Binding RemoteAddress}" Foreground="DarkOrange"/><Run Text=":" Foreground="DarkOrange"/><Run Text="{Binding RemotePort}" FontWeight="SemiBold" Foreground="DarkOrange"/>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding RemoteDomain}" Opacity="0.7" FontStyle="Italic" FontSize="11" Margin="0,3,0,0"/>
                                     </StackPanel>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </StackPanel>
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                        <TextBlock Text="{Binding State}" Style="{StaticResource ConnectionStateStyle}"/>
+                                        <TextBlock Text="{Binding RiskLabel}" Foreground="Red" FontWeight="Bold" Visibility="{Binding IsRisky, Converter={StaticResource BoolToVisibilityConverter}}" TextAlignment="Right" Margin="0,2,0,0"/>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                            <TextBlock Text="Engellendi" Foreground="Red" FontWeight="Bold" Margin="0,0,10,0" VerticalAlignment="Center"
+                                                       Visibility="{Binding IsBlocked, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                                            <Button Style="{StaticResource DangerActionButton}" Click="BlockPort_Click" ToolTip="Bu porta giden ve gelen tüm trafiği engeller.">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                    <TextBlock Text="Portu Engelle"/>
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Style="{StaticResource SuccessActionButton}" Click="UnblockPort_Click" ToolTip="Bu port için engellemeyi kaldırır.">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                    <TextBlock Text="Engeli Kaldır"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

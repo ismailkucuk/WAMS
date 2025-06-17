@@ -3,23 +3,275 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:wam.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="500" d:DesignWidth="800">
+             d:DesignHeight="700" d:DesignWidth="1200"
+             Background="#F8F9FA">
 
-    <Grid Background="White" Margin="10">
-        <StackPanel>
-            <TextBlock Text="🛡️ Güvenlik Politikaları" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
+        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
+        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#EAECEF"/>
+        <SolidColorBrush x:Key="SuccessColor" Color="#28a745"/>
+        <SolidColorBrush x:Key="WarningColor" Color="#ffc107"/>
+        <SolidColorBrush x:Key="DangerColor" Color="#dc3545"/>
+        
+        <Style x:Key="InfoCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="25"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+        </Style>
 
-            <StackPanel Background="#f0f0f0" Margin="0,0,0,10">
-                <TextBlock x:Name="PasswordRequiredText" FontSize="14"/>
-                <TextBlock x:Name="MinPasswordLengthText" FontSize="14"/>
-                <TextBlock x:Name="ComplexPasswordText" FontSize="14"/>
-                <TextBlock x:Name="UacStatusText" FontSize="14"/>
-                <TextBlock x:Name="RdpStatusText" FontSize="14"/>
-                <TextBlock x:Name="GuestStatusText" FontSize="14"/>
-                <TextBlock x:Name="AdministratorStatusText" FontSize="14"/>
-                <TextBlock x:Name="SecurityScoreText" FontSize="14" FontWeight="Bold" Foreground="DarkGreen" Margin="0,10,0,0"/>
+        <Style x:Key="PolicyItemBorder" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <Style x:Key="EditButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="4" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#3A7BC8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#2E6CB0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="30">
+
+            <Grid Margin="30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Sol Panel: Güvenlik Politikaları -->
+                <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                <!-- Başlık -->
+                <Border Style="{StaticResource InfoCard}">
+                    <TextBlock Text="Güvenlik Politikaları" FontSize="18" FontWeight="SemiBold" 
+                               Foreground="{StaticResource TextColorPrimary}"/>
+                </Border>
+
+                <!-- Parola Politikaları -->
+                <Border Style="{StaticResource InfoCard}">
+                    <StackPanel>
+                        <TextBlock Text="Parola Politikaları" FontWeight="SemiBold" FontSize="16" 
+                                   Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,15"/>
+                        
+                        <Border x:Name="PasswordRequiredBorder" Style="{StaticResource PolicyItemBorder}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Parola Gerekli" FontWeight="SemiBold" FontSize="14"/>
+                                    <TextBlock Text="Kullanıcıların parola belirlemesi zorunlu" 
+                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                                </StackPanel>
+                                <TextBlock x:Name="PasswordRequiredStatus" Grid.Column="1" FontWeight="SemiBold" 
+                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <Button x:Name="EditPasswordRequiredBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
+                                        Content="Düzenle" Click="EditPasswordRequired_Click"/>
+                            </Grid>
+                        </Border>
+
+                        <Border x:Name="MinPasswordLengthBorder" Style="{StaticResource PolicyItemBorder}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Minimum Parola Uzunluğu" FontWeight="SemiBold" FontSize="14"/>
+                                    <TextBlock Text="Parolanın minimum karakter sayısı" 
+                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                                </StackPanel>
+                                <TextBlock x:Name="MinPasswordLengthValue" Grid.Column="1" FontWeight="SemiBold" 
+                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <Button x:Name="EditMinPasswordLengthBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
+                                        Content="Düzenle" Click="EditMinPasswordLength_Click"/>
+                            </Grid>
+                        </Border>
+
+                        <Border x:Name="ComplexPasswordBorder" Style="{StaticResource PolicyItemBorder}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Karmaşık Parola Gereksinimi" FontWeight="SemiBold" FontSize="14"/>
+                                    <TextBlock Text="Büyük/küçük harf, sayı ve özel karakter zorunluluğu" 
+                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                                </StackPanel>
+                                <TextBlock x:Name="ComplexPasswordStatus" Grid.Column="1" FontWeight="SemiBold" 
+                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <Button x:Name="EditComplexPasswordBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
+                                        Content="Düzenle" Click="EditComplexPassword_Click"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Sistem Güvenliği -->
+                <Border Style="{StaticResource InfoCard}">
+                    <StackPanel>
+                        <TextBlock Text="Sistem Güvenliği" FontWeight="SemiBold" FontSize="16" 
+                                   Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,15"/>
+                        
+                        <Border x:Name="UacBorder" Style="{StaticResource PolicyItemBorder}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="UAC (Kullanıcı Hesabı Denetimi)" FontWeight="SemiBold" FontSize="14"/>
+                                    <TextBlock Text="Yönetici izinleri için onay isteme" 
+                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                                </StackPanel>
+                                <TextBlock x:Name="UacStatus" Grid.Column="1" FontWeight="SemiBold" 
+                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <Button x:Name="EditUacBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
+                                        Content="Düzenle" Click="EditUac_Click"/>
+                            </Grid>
+                        </Border>
+
+                        <Border x:Name="RdpBorder" Style="{StaticResource PolicyItemBorder}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Uzak Masaüstü (RDP)" FontWeight="SemiBold" FontSize="14"/>
+                                    <TextBlock Text="Uzaktan bağlantı imkanı" 
+                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                                </StackPanel>
+                                <TextBlock x:Name="RdpStatus" Grid.Column="1" FontWeight="SemiBold" 
+                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <Button x:Name="EditRdpBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
+                                        Content="Düzenle" Click="EditRdp_Click"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Hesap Durumları -->
+                <Border Style="{StaticResource InfoCard}">
+                    <StackPanel>
+                        <TextBlock Text="Hesap Durumları" FontWeight="SemiBold" FontSize="16" 
+                                   Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,15"/>
+                        
+                        <Border x:Name="GuestBorder" Style="{StaticResource PolicyItemBorder}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Guest Hesabı" FontWeight="SemiBold" FontSize="14"/>
+                                    <TextBlock Text="Konuk kullanıcı hesabının durumu" 
+                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                                </StackPanel>
+                                <TextBlock x:Name="GuestStatus" Grid.Column="1" FontWeight="SemiBold" 
+                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <Button x:Name="EditGuestBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
+                                        Content="Düzenle" Click="EditGuestAccount_Click"/>
+                            </Grid>
+                        </Border>
+
+                        <Border x:Name="AdministratorBorder" Style="{StaticResource PolicyItemBorder}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Administrator Hesabı" FontWeight="SemiBold" FontSize="14"/>
+                                    <TextBlock Text="Yerleşik yönetici hesabının durumu" 
+                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                                </StackPanel>
+                                <TextBlock x:Name="AdministratorStatus" Grid.Column="1" FontWeight="SemiBold" 
+                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <Button x:Name="EditAdministratorBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
+                                        Content="Düzenle" Click="EditAdministratorAccount_Click"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
             </StackPanel>
+
+            <!-- Sağ Panel: Güvenlik Skoru -->
+            <Border Grid.Column="1" Style="{StaticResource InfoCard}">
+                <StackPanel>
+                    <TextBlock Text="Güvenlik Skoru" FontWeight="SemiBold" FontSize="16" 
+                               Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,20"/>
+                    
+                    <!-- Skor Göstergesi -->
+                    <Border Background="#F8F9FA" Padding="20" Margin="0,0,0,20">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock x:Name="SecurityScoreValue" Text="0" FontSize="48" FontWeight="Bold" 
+                                       HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="/ 100" FontSize="16" Foreground="{StaticResource TextColorSecondary}" 
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="SecurityScoreLabel" Text="Güvenlik Skoru" FontSize="14" FontWeight="SemiBold" 
+                                       HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Skor Detayları -->
+                    <StackPanel x:Name="ScoreDetailsPanel">
+                        <!-- Skor detayları dinamik olarak eklenir -->
+                    </StackPanel>
+
+                    <!-- Öneriler -->
+                    <StackPanel x:Name="RecommendationsPanel" Margin="0,20,0,0">
+                        <TextBlock Text="Öneriler" FontWeight="SemiBold" FontSize="14" 
+                                   Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,10"/>
+                        <!-- Öneriler dinamik olarak eklenir -->
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
         </StackPanel>
-    </Grid>
+    </ScrollViewer>
 </UserControl>

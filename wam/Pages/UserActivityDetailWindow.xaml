@@ -1,0 +1,95 @@
+﻿<Window x:Class="wam.Pages.UserActivityDetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Kullanıcı Aktivite Detayı" Height="350" Width="700"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        WindowStyle="ToolWindow"
+        ResizeMode="NoResize"
+        Background="#F4F6F9">
+    <Window.Resources>
+        <!-- Renkler -->
+        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
+        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
+        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#EAECEF"/>
+        <SolidColorBrush x:Key="SuccessColor" Color="#28a745"/>
+        <SolidColorBrush x:Key="DangerColor" Color="#dc3545"/>
+        <SolidColorBrush x:Key="WarningColor" Color="#ffc107"/>
+
+        <!-- Stiller -->
+        <Style x:Key="HeaderBorderStyle" TargetType="Border">
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Background" Value="{StaticResource TextColorSecondary}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding EventId}" Value="4624">
+                    <Setter Property="Background" Value="{StaticResource SuccessColor}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding EventId}" Value="4634">
+                    <Setter Property="Background" Value="{StaticResource DangerColor}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding EventId}" Value="4672">
+                    <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding EventId}" Value="4740">
+                    <Setter Property="Background" Value="{StaticResource WarningColor}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Margin" Value="0,0,15,0"/>
+        </Style>
+        <Style x:Key="ValueStyle" TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Başlık Alanı -->
+        <Border Grid.Row="0" Style="{StaticResource HeaderBorderStyle}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding EventId, StringFormat='Olay ID: {0}'}" FontSize="16" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="-" FontSize="16" FontWeight="Light" Foreground="White" Margin="10,0"/>
+                <TextBlock Text="{Binding EventType}" FontSize="16" FontWeight="Light" Foreground="White"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Detaylar Alanı -->
+        <Border Grid.Row="1" Padding="20" Background="White">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Kullanıcı Adı:" Style="{StaticResource LabelStyle}" Margin="0,0,15,15"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding UserName}" Style="{StaticResource ValueStyle}"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="İşlem Zamanı:" Style="{StaticResource LabelStyle}" Margin="0,0,15,15"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeCreated}" Style="{StaticResource ValueStyle}"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Oturum Tipi:" Style="{StaticResource LabelStyle}" Margin="0,0,15,15"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LogonType}" Style="{StaticResource ValueStyle}"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Kaynak IP Adresi:" Style="{StaticResource LabelStyle}" Margin="0,0,15,15"/>
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SourceIpAddress}" Style="{StaticResource ValueStyle}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

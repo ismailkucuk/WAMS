@@ -1,33 +1,363 @@
 ﻿<UserControl x:Class="wam.Pages.UserSessionInfoPage"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="800">
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:local="clr-namespace:wam.Pages"
+            xmlns:controls="clr-namespace:wam.Controls"
+            mc:Ignorable="d"
+            d:DesignHeight="700" d:DesignWidth="1200"
+            Background="#F8F9FA">
 
-    <Grid Margin="10">
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top">
 
-            <TextBlock Text="🧑‍💻 Oturum Açan Kullanıcı" FontSize="18" FontWeight="Bold" Margin="0,0,0,8"/>
-            <StackPanel Orientation="Vertical" Background="#eee" Margin="0,0,0,15">
-                <TextBlock x:Name="CurrentUserText" FontSize="14"/>
-                <TextBlock x:Name="UserSidText" FontSize="14"/>
-                <TextBlock x:Name="IsAdminText" FontSize="14"/>
-                <TextBlock x:Name="LoginDomainText" FontSize="14"/>
-                <TextBlock x:Name="LoginTimeText" FontSize="14"/>
-            </StackPanel>
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
+        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
+        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#EAECEF"/>
+        <SolidColorBrush x:Key="ControlHoverColor" Color="#F8F9FA"/>
+        <SolidColorBrush x:Key="SuccessColor" Color="#28a745"/>
+        <SolidColorBrush x:Key="DangerColor" Color="#dc3545"/>
+        <SolidColorBrush x:Key="DisabledColor" Color="#adb5bd"/>
 
-            <TextBlock Text="👥 Tüm Yerel Kullanıcılar" FontSize="18" FontWeight="Bold" Margin="0,0,0,8"/>
-            <DataGrid x:Name="UsersDataGrid" AutoGenerateColumns="False" Height="300">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Kullanıcı Adı" Binding="{Binding Name}" Width="*"/>
-                    <DataGridTextColumn Header="SID" Binding="{Binding Sid}" Width="*"/>
-                    <DataGridTextColumn Header="Admin Mi?" Binding="{Binding IsAdmin}" Width="*"/>
-                    <DataGridTextColumn Header="Etkin Mi?" Binding="{Binding IsActive}" Width="*"/>
-                </DataGrid.Columns>
-            </DataGrid>
+        <Style x:Key="InfoCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Padding" Value="25"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
 
+        <Style x:Key="ManagementButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="6">
+                            <ContentPresenter Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E9ECEF"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Silme butonu için özel stil -->
+        <Style x:Key="DangerManagementButton" TargetType="Button" BasedOn="{StaticResource ManagementButton}">
+            <Setter Property="Background" Value="#FFF5F5"/>
+            <Setter Property="BorderBrush" Value="#FED7D7"/>
+            <Setter Property="Foreground" Value="#C53030"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="6">
+                            <ContentPresenter Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FED7D7"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FC8181"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Kullanıcı listesi item stili -->
+        <Style x:Key="UserListItemBorder" TargetType="Border">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="2" ShadowDepth="0" Color="#000000" Opacity="0.04"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F3F5F8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <local:UserStatusToBrushConverter x:Key="UserStatusToBrushConverter"/>
+        <local:AdminStatusToBrushConverter x:Key="AdminStatusToBrushConverter"/>
+    </UserControl.Resources>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="400"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- EXPORT CONTROL -->
+        <controls:ExportControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+                               x:Name="ExportControl"
+                               Margin="0,0,0,20"/>
+
+        <!-- Sol Taraftaki Alanlar -->
+        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,20,0">
+
+            <!-- KIRMIZI ALAN: Anlık kullanıcı kartı -->
+            <Border Style="{StaticResource InfoCard}" Margin="0,0,0,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Width="64" Height="64" CornerRadius="32" Background="{StaticResource AccentColor}">
+                        <TextBlock Text="{Binding CurrentUser.Initial}" FontSize="32" FontWeight="Light" Foreground="White"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0">
+                        <TextBlock Text="{Binding CurrentUser.Name}" FontWeight="Bold" FontSize="18" Foreground="{StaticResource TextColorPrimary}"/>
+                        <TextBlock Margin="0,3,0,0">
+                            <Run Text="Rol:" Foreground="{StaticResource TextColorSecondary}"/>
+                            <Run Text="{Binding CurrentUser.Role}" FontWeight="SemiBold"/>
+                        </TextBlock>
+                        <TextBlock Margin="0,3,0,0">
+                            <Run Text="Son Giriş:" Foreground="{StaticResource TextColorSecondary}"/>
+                            <Run Text="{Binding CurrentUser.LastLogon}" FontWeight="SemiBold"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- YEŞİL ALAN: Tüm Yerel Kullanıcılar -->
+            <Border Style="{StaticResource InfoCard}">
+                <DockPanel>
+                    <!-- Başlık ve Yeni Kullanıcı Ekle butonu yan yana -->
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Grid.Column="0" Text="👥 Tüm Yerel Kullanıcılar" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        
+                        <Button Grid.Column="1" 
+                                Content="➕ Yeni Kullanıcı Ekle"
+                                Click="AddUserButton_Click"
+                                Background="{StaticResource AccentColor}"
+                                Foreground="White"
+                                BorderThickness="0"
+                                Padding="12,8"
+                                FontWeight="SemiBold"
+                                Cursor="Hand">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="border" 
+                                                        Background="{TemplateBinding Background}" 
+                                                        CornerRadius="6" 
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#3A7BC8"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsPressed" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#2E5A96"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+                    
+                    <ListView x:Name="UsersListView" 
+                  ItemsSource="{Binding AllLocalUsers}" 
+                  BorderThickness="0"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  SelectedItem="{Binding SelectedUser, Mode=TwoWay}"
+                  HorizontalContentAlignment="Stretch">
+                        <ListView.Resources>
+                            <SolidColorBrush x:Key="HoverBackgroundColor" Color="#F2F2F2"/>
+                            <SolidColorBrush x:Key="SelectedBackgroundColor" Color="#E0E0E0"/>
+
+                            <Style x:Key="UserListItemBorderStyle" TargetType="Border">
+                                <Setter Property="Padding" Value="12,10"/>
+                                <Setter Property="CornerRadius" Value="4"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource HoverBackgroundColor}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.Resources>
+
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <Border x:Name="Bd"
+                                        Style="{StaticResource UserListItemBorderStyle}"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        Margin="0,0,0,4">
+                                                <ContentPresenter />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource SelectedBackgroundColor}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Ellipse Width="12" Height="12"
+                                 VerticalAlignment="Center"
+                                 Fill="{Binding Status, Converter={StaticResource UserStatusToBrushConverter}}"/>
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0,10,0">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"/>
+                                        <TextBlock Text="{Binding FullName}" Foreground="{StaticResource TextColorSecondary}" FontSize="11" Margin="0,2,0,0"/>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Column="2"
+                                   Text="{Binding RoleIcon}"
+                                   FontFamily="Segoe MDL2 Assets" 
+                                   FontSize="16"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Right"
+                                   Foreground="{Binding IsAdmin, Converter={StaticResource AdminStatusToBrushConverter}}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </DockPanel>
+            </Border>
         </StackPanel>
+
+        <!-- SAĞ PANEL: Kullanıcı Detayları -->
+        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource InfoCard}" DataContext="{Binding SelectedUser}">
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="IsEnabled" Value="True"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=UsersListView, Path=SelectedItem}" Value="{x:Null}">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+
+                <!-- Kullanıcı Bilgi Kartı -->
+                <DockPanel Margin="0,0,0,20">
+                                        <StackPanel>
+                        <TextBlock Text="{Binding Name, FallbackValue='Lütfen bir kullanıcı seçin'}" 
+                                   FontWeight="Bold" FontSize="18" Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,8"/>
+                        <TextBlock Text="{Binding Sid}" Foreground="{StaticResource TextColorSecondary}" FontSize="11" 
+                                   FontFamily="Consolas" TextWrapping="Wrap" Margin="0,0,0,12"/>
+                        
+                        <!-- Durum -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Durum: " FontWeight="SemiBold" FontSize="14" Foreground="{StaticResource TextColorSecondary}"/>
+                            <Ellipse Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,8,0"
+                                     Fill="{Binding Status, Converter={StaticResource UserStatusToBrushConverter}}"/>
+                            <TextBlock Text="{Binding Status}" FontWeight="SemiBold" FontSize="14"/>
+                        </StackPanel>
+                        
+                        <!-- Rol -->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Rol: " FontWeight="SemiBold" FontSize="14" Foreground="{StaticResource TextColorSecondary}"/>
+                            <TextBlock Text="{Binding RoleIcon}" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,6,0"
+                                       Foreground="{Binding IsAdmin, Converter={StaticResource AdminStatusToBrushConverter}}"/>
+                            <TextBlock Text="{Binding IsAdmin, ConverterParameter='Yönetici;Standart', Converter={x:Static local:BoolToTextConverter.Instance}}" FontWeight="SemiBold" FontSize="14"/>
+                        </StackPanel>
+                    </StackPanel>
+                </DockPanel>
+
+                <!-- Gruplar -->
+                <StackPanel Margin="0,0,0,20">
+                    <TextBlock Text="Grup Üyelikleri" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10" 
+                               Foreground="{StaticResource TextColorPrimary}"/>
+                    <ItemsControl ItemsSource="{Binding Groups}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource ControlHoverColor}" BorderBrush="{StaticResource BorderColor}"
+                                        BorderThickness="1" Padding="10,6" Margin="0,0,8,8">
+                                    <TextBlock Text="{Binding}" FontSize="12" Foreground="{StaticResource TextColorSecondary}"/>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- Yönetim İşlemleri -->
+                <StackPanel>
+                    <TextBlock Text="Yönetim İşlemleri" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,12" 
+                               Foreground="{StaticResource TextColorPrimary}"/>
+                    
+                    <Button Style="{StaticResource ManagementButton}" Content="🔑 Parola Sıfırla" FontSize="13"
+                            Command="{Binding DataContext.ResetPasswordCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                            CommandParameter="{Binding}"/>
+                    
+                    <Button Style="{StaticResource ManagementButton}" Content="🔄 Hesabı Etkinleştir/Pasifleştir" FontSize="13"
+                            Command="{Binding DataContext.ToggleAccountStateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                            CommandParameter="{Binding}"/>
+                    
+                    <Button Style="{StaticResource ManagementButton}" Content="🛡️ Yönetici Yap/Al" FontSize="13"
+                            Command="{Binding DataContext.ToggleAdminRoleCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                            CommandParameter="{Binding}"/>
+                    
+                    <Button Style="{StaticResource DangerManagementButton}" Content="🗑️ Kullanıcıyı Sil" FontSize="13"
+                            Command="{Binding DataContext.DeleteUserCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                            CommandParameter="{Binding}"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

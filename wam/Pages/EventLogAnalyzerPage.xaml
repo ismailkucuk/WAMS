@@ -2,59 +2,173 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:wam.Pages"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:wam.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
-             Background="White">
+             d:DesignHeight="700" d:DesignWidth="1000"
+             Background="#F8F9FA">
 
-    <Grid Margin="10">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
+        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
+        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#EAECEF"/>
+        <SolidColorBrush x:Key="ControlHoverColor" Color="#F8F9FA"/>
+        <SolidColorBrush x:Key="ErrorColor" Color="#dc3545"/>
+        <SolidColorBrush x:Key="WarningColor" Color="#ffc107"/>
+        <SolidColorBrush x:Key="InfoColor" Color="#6C757D"/>
+
+        <Style x:Key="InfoCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="25"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="1" Direction="270" Color="Black" Opacity="0.08" BlurRadius="12"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="FilterRadioButton" TargetType="RadioButton">
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="16">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ControlHoverColor}"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CustomListViewItem" TargetType="ListViewItem">
+            <Setter Property="Cursor" Value="Hand"/>
+            <EventSetter Event="MouseLeftButtonUp" Handler="ListViewItem_MouseLeftButtonUp"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border x:Name="Bd" Background="Transparent" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ControlHoverColor}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="30">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="📊 Olay Günlüğü Analizi" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+        <!-- EXPORT CONTROL -->
+        <controls:ExportControl Grid.Row="0" x:Name="ExportControl" Margin="0,0,0,20"/>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="Olay Günlüğü Tipi:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+        <Border Grid.Row="1" Style="{StaticResource InfoCard}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-            <RadioButton Content="Uygulama" GroupName="LogType" IsChecked="True" 
-                         x:Name="ApplicationLogRadioButton"
-                         Checked="LogType_Checked" Tag="Application" Margin="0,0,10,0"/>
+                <Grid Grid.Row="0" Margin="5,0,5,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="📊 Olay Günlüğü Analizi" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{StaticResource TextColorPrimary}"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <RadioButton Content="Uygulama" Style="{StaticResource FilterRadioButton}" IsChecked="True" Tag="Application" Checked="LogType_Checked"/>
+                        <RadioButton Content="Sistem" Tag="System" Style="{StaticResource FilterRadioButton}" Checked="LogType_Checked"/>
+                        <RadioButton Content="Güvenlik" Tag="Security" Style="{StaticResource FilterRadioButton}" Checked="LogType_Checked"/>
+                    </StackPanel>
+                </Grid>
 
-            <RadioButton Content="Sistem" GroupName="LogType" 
-                         x:Name="SystemLogRadioButton"
-                         Checked="LogType_Checked" Tag="System" Margin="0,0,10,0"/>
+                <ListView Grid.Row="1" x:Name="EventLogListView" BorderThickness="0" HorizontalContentAlignment="Stretch"
+                          ItemsSource="{Binding EventLogEntries}"
+                          ItemContainerStyle="{StaticResource CustomListViewItem}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          PreviewMouseWheel="EventLogListView_PreviewMouseWheel">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Name="ItemBorder" BorderThickness="4,0,0,1" Padding="6,12,10,12">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderBrush" Value="{StaticResource InfoColor}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding EntryType}" Value="Warning">
+                                                <Setter Property="BorderBrush" Value="{StaticResource WarningColor}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding EntryType}" Value="Error">
+                                                <Setter Property="BorderBrush" Value="{StaticResource ErrorColor}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="150"/>
+                                    </Grid.ColumnDefinitions>
 
-            <RadioButton Content="Güvenlik" GroupName="LogType" 
-                         x:Name="SecurityLogRadioButton"
-                         Checked="LogType_Checked" Tag="Security" Margin="0,0,10,0"/>
+                                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0" FontFamily="Segoe MDL2 Assets" FontSize="20">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="&#xE946;"/>
+                                                <Setter Property="Foreground" Value="{StaticResource InfoColor}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding EntryType}" Value="Warning">
+                                                        <Setter Property="Text" Value="&#xE7BA;"/>
+                                                        <Setter Property="Foreground" Value="{StaticResource WarningColor}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding EntryType}" Value="Error">
+                                                        <Setter Property="Text" Value="&#xE894;"/>
+                                                        <Setter Property="Foreground" Value="{StaticResource ErrorColor}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
 
-            <Button Content="Yenile" Click="RefreshButton_Click" Margin="20,0,0,0" Height="25" Padding="10,0"/>
-        </StackPanel>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Source}" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Message}" Foreground="{StaticResource TextColorSecondary}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" ToolTip="Detayları görmek için tıklayın"/>
+                                    </StackPanel>
 
-        <DataGrid Grid.Row="2" 
-                  x:Name="EventLogDataGrid" 
-                  AutoGenerateColumns="False" 
-                  IsReadOnly="True" 
-                  HeadersVisibility="Column"
-                  GridLinesVisibility="Horizontal"
-                  HorizontalGridLinesBrush="#FFCCCCCC"
-                  VerticalGridLinesBrush="#FFCCCCCC"
-                  BorderBrush="#FFCCCCCC"
-                  BorderThickness="1">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Zaman" Binding="{Binding TimeGeneratedFormatted}" Width="Auto" MinWidth="150"/>
-                <DataGridTextColumn Header="Kaynak" Binding="{Binding Source}" Width="*" MinWidth="120"/>
-                <DataGridTextColumn Header="Seviye" Binding="{Binding EntryType}" Width="Auto" MinWidth="80"/>
-                <DataGridTextColumn Header="Olay ID" Binding="{Binding EventID}" Width="Auto" MinWidth="70"/>
-                <DataGridTextColumn Header="Kategori" Binding="{Binding Category}" Width="*" MinWidth="100"/>
-                <DataGridTextColumn Header="Mesaj" Binding="{Binding Message}" Width="3*" MinWidth="250"/>
-                <DataGridTextColumn Header="Bilgisayar" Binding="{Binding MachineName}" Width="Auto" MinWidth="100"/>
-                <DataGridTextColumn Header="Kullanıcı" Binding="{Binding UserName}" Width="Auto" MinWidth="100"/>
-            </DataGrid.Columns>
-        </DataGrid>
+                                    <TextBlock Grid.Column="2" Text="{Binding TimeGeneratedFormatted}" Foreground="{StaticResource TextColorSecondary}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

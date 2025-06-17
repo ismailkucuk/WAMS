@@ -2,21 +2,229 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:wam.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="White">
-        <StackPanel Margin="20">
-            <TextBlock Text="Yüklü Yazılımlar Listesi" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
-            <Button Content="Listeyi Güncelle" Width="150" Click="FetchSoftwareList_Click" Margin="0,0,0,10"/>
-            <DataGrid x:Name="SoftwareDataGrid" AutoGenerateColumns="False" Height="350">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Ad" Binding="{Binding Name}" Width="*"/>
-                    <DataGridTextColumn Header="Yayıncı" Binding="{Binding Publisher}" Width="*"/>
-                    <DataGridTextColumn Header="Sürüm" Binding="{Binding Version}" Width="*"/>
-                    <DataGridTextColumn Header="Yüklenme Tarihi" Binding="{Binding InstallDate}" Width="*"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
+             d:DesignHeight="700" d:DesignWidth="1000"
+             Background="#F8F9FA">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
+        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
+        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#DEE2E6"/>
+        <SolidColorBrush x:Key="ControlBackgroundColor" Color="Transparent"/>
+        <SolidColorBrush x:Key="ControlHoverColor" Color="#F1F1F1"/>
+        <SolidColorBrush x:Key="DangerColor" Color="#dc3545"/>
+
+        <Style x:Key="InfoCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="25"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="1" Direction="270" Color="Black" Opacity="0.08" BlurRadius="12"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernComboBox" TargetType="ComboBox">
+            <Setter Property="Background" Value="{StaticResource ControlBackgroundColor}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Name="ToggleButton" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Grid.Column="2" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"/>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="{TemplateBinding Padding}"/>
+                            <TextBlock Text="▼" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="{StaticResource TextColorSecondary}" FontSize="8"/>
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border Background="White" BorderThickness="1" BorderBrush="{StaticResource BorderColor}" CornerRadius="6">
+                                        <Border.Effect>
+                                            <DropShadowEffect ShadowDepth="2" BlurRadius="10" Opacity="0.1" />
+                                        </Border.Effect>
+                                        <ScrollViewer SnapsToDevicePixels="True">
+                                            <StackPanel IsItemsHost="True" />
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Padding" Value="10,8"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ControlHoverColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SortDirectionToggle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="{StaticResource ControlBackgroundColor}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Width" Value="38"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="6" BorderThickness="1">
+                            <Path x:Name="Arrow" Data="M 1,5 L 4.5,1.5 L 8,5" Stroke="{StaticResource TextColorSecondary}" StrokeThickness="1.5"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ControlHoverColor}"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="6" BorderThickness="1">
+                                    <Path x:Name="Arrow" Data="M 1,1.5 L 4.5,5 L 8,1.5" Stroke="{StaticResource TextColorSecondary}" StrokeThickness="1.5"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DangerActionButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource DangerColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CustomListViewItem" TargetType="ListViewItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <ContentPresenter />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- EXPORT CONTROL -->
+        <controls:ExportControl Grid.Row="0" x:Name="ExportControl" Margin="0,0,0,20"/>
+
+        <Border Grid.Row="1" Style="{StaticResource InfoCard}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="5,0,5,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="💿 Yüklü Yazılımlar" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{StaticResource TextColorPrimary}"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Text="Sırala:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{StaticResource TextColorSecondary}"/>
+                        <ComboBox Style="{StaticResource ModernComboBox}" Width="120" Margin="0,0,8,0" VerticalAlignment="Center"
+                                  SelectedValue="{Binding SortField}" SelectedValuePath="Tag"
+                                  SelectionChanged="Sort_SelectionChanged">
+                            <ComboBoxItem Content="İsim" Tag="Name" IsSelected="True"/>
+                            <ComboBoxItem Content="Yayıncı" Tag="Publisher"/>
+                            <ComboBoxItem Content="Boyut" Tag="Size"/>
+                        </ComboBox>
+                        <ToggleButton x:Name="SortDirectionButton" Style="{StaticResource SortDirectionToggle}"
+                                      IsChecked="{Binding SortDescending, Mode=TwoWay}"
+                                      Click="SortDirection_Click"/>
+                    </StackPanel>
+                </Grid>
+
+                <ListView Grid.Row="1" x:Name="SoftwareListView" BorderThickness="0" HorizontalContentAlignment="Stretch"
+                          ItemsSource="{Binding SoftwareList}"
+                          ItemContainerStyle="{StaticResource CustomListViewItem}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0" Text="&#xE737;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{StaticResource AccentColor}" VerticalAlignment="Center" Margin="0,0,20,0"/>
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource TextColorPrimary}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Publisher, Mode=OneWay}" FontSize="12" Foreground="{StaticResource TextColorSecondary}" Margin="0,3,0,0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                        <TextBlock TextAlignment="Right" Foreground="{StaticResource TextColorSecondary}">
+                        <Run Text="Sürüm:"/>
+                        <Run Text="{Binding Version, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                        <Run Text=" | "/>
+                        <Run Text="Boyut:"/>
+                        <Run Text="{Binding FormattedSize, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                                        </TextBlock>
+
+                                        <Button Style="{StaticResource DangerActionButton}" Margin="0,8,0,0" Padding="10,5" HorizontalAlignment="Right"
+                            Command="{Binding DataContext.UninstallCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                            CommandParameter="{Binding}"
+                            IsEnabled="{Binding CanUninstall, Mode=OneWay}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                <TextBlock Text="Kaldır" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>
