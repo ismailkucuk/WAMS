@@ -81,5 +81,40 @@ namespace wam.Services
 
             return 0;
         }
+
+        public static List<ProcessInfo> GetRunningApplications()
+        {
+            List<ProcessInfo> applications = new List<ProcessInfo>();
+            try
+            {
+                Process[] allProcesses = Process.GetProcesses();
+                
+                // Sadece ana pencereleri olan uygulamaları filtrele
+                foreach (var proc in allProcesses)
+                {
+                    try
+                    {
+                        if (proc.MainWindowHandle != System.IntPtr.Zero && !string.IsNullOrEmpty(proc.MainWindowTitle))
+                        {
+                            applications.Add(new ProcessInfo
+                            {
+                                Id = proc.Id,
+                                Name = proc.ProcessName,
+                                StartTime = proc.StartTime,
+                                ParentId = GetParentProcessId(proc.Id),
+                                ParentName = "Bilinmiyor"
+                            });
+                        }
+                    }
+                    catch { /* Bazı sistem process'leri erişilemez olabilir */ }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("GetRunningApplications error: " + ex.Message);
+            }
+
+            return applications;
+        }
     }
 }

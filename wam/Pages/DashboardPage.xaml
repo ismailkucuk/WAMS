@@ -4,211 +4,653 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:wam.Controls"
+             xmlns:local="clr-namespace:wam.Pages"
+             xmlns:converters="clr-namespace:wam.Converters"
              mc:Ignorable="d"
              d:DesignHeight="900" d:DesignWidth="1400"
-             Background="#F8F9FA">
+             Background="#FAFAFA">
 
-    <!-- Renk ve ikon stilleri -->
     <UserControl.Resources>
-        <SolidColorBrush x:Key="PrimaryColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="CardBackground" Color="White"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#E5E7EB"/>
-        <SolidColorBrush x:Key="HeaderColor" Color="#1D3557"/>
-        <SolidColorBrush x:Key="SubHeaderColor" Color="#6C757D"/>
-        <SolidColorBrush x:Key="SuccessColor" Color="#28a745"/>
-        <SolidColorBrush x:Key="WarningColor" Color="#ffc107"/>
-        <SolidColorBrush x:Key="DangerColor" Color="#dc3545"/>
-        <SolidColorBrush x:Key="ShadowColor" Color="#1d355710"/>
-        <Style x:Key="InfoCard" TargetType="Border">
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="Background" Value="{StaticResource CardBackground}"/>
-            <Setter Property="Padding" Value="22"/>
-            <Setter Property="Margin" Value="0,0,0,18"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+        <!-- Palette (aligned with SystemInfoPage) -->
+        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
+        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
+        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#DEE2E6"/>
+        <SolidColorBrush x:Key="BackgroundWhite" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="BackgroundLight" Color="#F8F9FA"/>
+        <SolidColorBrush x:Key="SuccessGreen" Color="#107C10"/>
+        <SolidColorBrush x:Key="WarningOrange" Color="#FF8C00"/>
+        <SolidColorBrush x:Key="DangerRed" Color="#D13438"/>
+
+        <!-- Backward compatibility aliases for existing XAML references -->
+        <SolidColorBrush x:Key="PrimaryBlue" Color="#4A90E2"/>
+        <SolidColorBrush x:Key="HoverBlue" Color="#3C7FD1"/>
+        <SolidColorBrush x:Key="LightBlue" Color="#EAECEF"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#212529"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#6C757D"/>
+        <SolidColorBrush x:Key="TextMuted" Color="#8A8F98"/>
+        <SolidColorBrush x:Key="BorderLight" Color="#DEE2E6"/>
+        <SolidColorBrush x:Key="BorderMedium" Color="#DEE2E6"/>
+        
+        <!-- InfoCard (match SystemInfoPage) -->
+        <Style x:Key="CleanCard" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource BackgroundWhite}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="25"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="8" Color="#18181822" ShadowDepth="1" Opacity="0.16"/>
+                    <DropShadowEffect ShadowDepth="1" Direction="270" Color="Black" Opacity="0.08" BlurRadius="12"/>
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="PrimaryButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
-            <Setter Property="Foreground" Value="White"/>
+
+        <!-- Section Header -->
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="12,4"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+
+        <!-- Windows-Style Subtitle -->
+        <Style x:Key="Subtitle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+
+        <!-- Minimal Metric Card -->
+        <Style x:Key="MetricCard" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource BackgroundWhite}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="MinHeight" Value="80"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="0" Color="#000000" BlurRadius="8" Opacity="0.04"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Windows-Style Button -->
+        <Style x:Key="WindowsButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource BackgroundWhite}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Margin" Value="6,0,0,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F1F5F9"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#EAECEF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Quick Access Button (rounded, subtle hover) -->
+        <Style x:Key="QuickAccessButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource BackgroundWhite}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F6F8FB"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#D4E2F6"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#EDF2FA"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Primary Action Button -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="6" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#3C7FD1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Clean Progress Ring -->
+        <Style x:Key="ProgressRing" TargetType="Ellipse">
+            <Setter Property="Width" Value="72"/>
+            <Setter Property="Height" Value="72"/>
+            <Setter Property="StrokeThickness" Value="6"/>
+            <Setter Property="Fill" Value="Transparent"/>
+            <Setter Property="StrokeStartLineCap" Value="Round"/>
+            <Setter Property="StrokeEndLineCap" Value="Round"/>
+        </Style>
+
+        <!-- Chip/Pill Style -->
+        <Style x:Key="Chip" TargetType="Border">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Background" Value="#F1F5F9"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+        </Style>
+
+        <!-- Converters -->
+        <converters:CircularProgressBarConverter x:Key="CircularProgressConverter"/>
+        <converters:SparklinePointsConverter x:Key="SparklinePointsConverter"/>
+        <converters:ThroughputFormatterConverter x:Key="ThroughputFormatter"/>
+        
+        <!-- KPI ProgressBar (rounded) -->
+        <Style x:Key="KpiProgressBar" TargetType="ProgressBar">
+            <Setter Property="Height" Value="12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#EAECEF"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid>
+                            <Border x:Name="PART_Track" CornerRadius="6" Background="{TemplateBinding Background}" />
+                            <Border x:Name="PART_Indicator" CornerRadius="6" Background="{TemplateBinding Foreground}" HorizontalAlignment="Left" />
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="24">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Background="Transparent">
+        <Grid Margin="32">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2.1*"/>
-                <ColumnDefinition Width="1.3*"/>
-            </Grid.ColumnDefinitions>
 
-            <!-- BAŞLIK -->
-            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                       Text="Dashboard" 
-                       FontSize="34"
-                       FontWeight="Bold"
-                       Foreground="{StaticResource HeaderColor}"
-                       Margin="0,0,0,18"/>
+            <!-- EXPORT CONTROL -->
+            <controls:ExportControl Grid.Row="0" 
+                                   x:Name="ExportControl"
+                                   Margin="0,0,0,24"/>
 
-            <!-- SOL ANA KARTLAR -->
-            <StackPanel Grid.Row="1" Grid.Column="0">
-                <!-- SİSTEM SAĞLIĞI -->
-                <Border Style="{StaticResource InfoCard}">
+            <!-- HEADER SECTION (Simple, corporate) -->
+            <Grid Grid.Row="1" Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Dashboard" FontFamily="Segoe UI" FontWeight="SemiBold" FontSize="22" Foreground="{StaticResource TextColorPrimary}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top">
+                    <Border Style="{StaticResource Chip}">
+                        <TextBlock Text="System Online" Foreground="{StaticResource TextColorPrimary}" FontSize="12" FontFamily="Segoe UI"/>
+                    </Border>
+                    <Border Style="{StaticResource Chip}">
+                        <TextBlock Foreground="{StaticResource TextColorPrimary}" FontSize="12" FontFamily="Segoe UI">
+                            <TextBlock.Text>
+                                <Binding Path="SecurityWarningsCount" StringFormat="{}{0} security events"/>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <!-- MAIN CONTENT -->
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.2*"/>
+                    <ColumnDefinition Width="0.8*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- KPI BAND -->
+                <Border Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource CleanCard}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="1.4*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <!-- ICONLU HEADER -->
-                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="28" 
-                                           Foreground="{StaticResource PrimaryColor}" Margin="0,0,8,0"/>
-                                <TextBlock Text="Sistem Sağlığı" FontSize="20" FontWeight="SemiBold"/>
-                            </StackPanel>
-                            <TextBlock Text="Çalışma Süresi: 2 gün, 2 saat"
-                                       Foreground="{StaticResource SubHeaderColor}" Margin="2,7,0,0"/>
+
+                        <!-- Processes -->
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Processes" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                            <TextBlock Text="{Binding ActiveProcessCount}" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource AccentColor}"/>
+                            <TextBlock Text="running" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
                         </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                            <!-- CPU -->
-                            <StackPanel>
-                                <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#24b26b" HorizontalAlignment="Center"/>
-                                <TextBlock Text="8%" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                <TextBlock Text="CPU" FontSize="12" Foreground="{StaticResource SubHeaderColor}" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                            <!-- RAM -->
-                            <StackPanel>
-                                <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#30a4db" HorizontalAlignment="Center"/>
-                                <TextBlock Text="6.5 GB" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                <TextBlock Text="RAM" FontSize="12" Foreground="{StaticResource SubHeaderColor}" HorizontalAlignment="Center"/>
-                            </StackPanel>
+
+                        <!-- Security events -->
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Security events" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                            <TextBlock Text="{Binding SecurityWarningsCount}" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource DangerRed}"/>
+                            <TextBlock Text="last 24h" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                        </StackPanel>
+
+                        <!-- USB devices -->
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="USB devices" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                            <TextBlock Text="{Binding UsbDeviceCount}" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                            <TextBlock Text="connected" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                        </StackPanel>
+
+                        <!-- Startup programs -->
+                        <StackPanel Grid.Column="3">
+                            <TextBlock Text="Startup programs" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                            <TextBlock Text="{Binding StartupProgramCount}" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                            <TextBlock Text="entries" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
                         </StackPanel>
                     </Grid>
                 </Border>
 
-                <!-- AĞ AKTİVİTESİ -->
-                <Border Style="{StaticResource InfoCard}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                <!-- LEFT PANEL - PERFORMANCE & SYSTEM -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,24,0">
+                    
+                    <!-- SYSTEM PERFORMANCE -->
+                    <Border Style="{StaticResource CleanCard}">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="24" Foreground="#a86ae1" Margin="0,0,8,0"/>
-                                <TextBlock Text="Ağ Aktivitesi" FontSize="18" FontWeight="SemiBold"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                                <StackPanel>
-                                    <TextBlock Text="20" FontSize="26" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Aktif Bağlantı" Foreground="{StaticResource SubHeaderColor}" HorizontalAlignment="Center"/>
-                                </StackPanel>
-                                <StackPanel>
-                                    <TextBlock Text="0" FontSize="26" FontWeight="Bold" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Dinleyen Port" Foreground="{StaticResource SubHeaderColor}" HorizontalAlignment="Center"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <Button Grid.Column="1" Content="Detaylar →" Style="{StaticResource PrimaryButton}" VerticalAlignment="Center" />
-                    </Grid>
-                </Border>
+                            <TextBlock Text="System Performance" Style="{StaticResource SectionHeader}"/>
+                            <TextBlock FontFamily="Segoe UI" FontSize="13" Foreground="{StaticResource TextColorSecondary}" Margin="0,0,0,16">
+                                <TextBlock.Text>
+                                    <Binding Path="Uptime" StringFormat="Uptime: {0}"/>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                <!-- SON AKTİVİTELER -->
-                <Border Style="{StaticResource InfoCard}">
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
-                            <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="21" Foreground="#e9942d" Margin="0,0,7,0"/>
-                            <TextBlock Text="Son Aktiviteler" FontSize="17" FontWeight="SemiBold"/>
-                        </StackPanel>
-                        <ListView ItemsSource="{Binding RecentActivities}" Height="150" BorderThickness="0">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,5">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Icon}" FontFamily="Segoe MDL2 Assets" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding IconColor}"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding Description}" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Grid.Column="2" Text="{Binding Time, StringFormat='HH:mm:ss'}" Foreground="{StaticResource SubHeaderColor}"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </StackPanel>
-                </Border>
-            </StackPanel>
+                                <!-- CPU Usage (Semi-circular gauge) -->
+                                <Border Grid.Column="0" Style="{StaticResource MetricCard}">
+                                    <StackPanel>
+                                        <controls:SemiCircularGauge Title="Processor" Value="{Binding CpuUsage, Mode=OneWay}" PeakValue="{Binding CpuPeak, Mode=OneWay}" ForegroundBrush="{Binding CpuStatusColor}"/>
+                                        <TextBlock FontSize="12" Foreground="{StaticResource TextColorSecondary}" Margin="0,8,0,0" TextTrimming="CharacterEllipsis">
+                                            <TextBlock.Text>
+                                                <Binding Path="CpuName"/>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
 
-            <!-- SAĞ KARTLAR -->
-            <StackPanel Grid.Row="1" Grid.Column="1">
-                <!-- GÜVENLİK ÖZETİ -->
-                <Border Style="{StaticResource InfoCard}">
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="23" Foreground="{StaticResource DangerColor}" Margin="0,0,8,0"/>
-                            <TextBlock Text="Güvenlik Özeti" FontSize="18" FontWeight="SemiBold"/>
-                        </StackPanel>
-                        <TextBlock Text="3 Kritik Uyarı" FontSize="27" FontWeight="Bold" Foreground="{StaticResource DangerColor}" Margin="0,6,0,0"/>
-                        <TextBlock Text="Güvenlik Duvarı, USB Portları, Kritik Olaylar" Margin="0,7,0,0" Foreground="{StaticResource SubHeaderColor}"/>
-                        <Button Content="Detaylar →" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Right" Margin="0,12,0,0"/>
-                    </StackPanel>
-                </Border>
+                                <!-- RAM Usage (Gauge) -->
+                                <Border Grid.Column="1" Style="{StaticResource MetricCard}">
+                                    <StackPanel>
+                                        <controls:SemiCircularGauge Title="Memory" Value="{Binding RamUsagePercent, Mode=OneWay}" PeakValue="{Binding RamPeak, Mode=OneWay}" ForegroundBrush="{Binding RamStatusColor}"/>
+                                        <TextBlock FontSize="12" Foreground="{StaticResource TextColorSecondary}" Margin="0,8,0,0">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0:F1} GB in use • {1:F1} GB total">
+                                                    <Binding Path="UsedRamGB"/>
+                                                    <Binding Path="TotalRamGB"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
 
-                <!-- HIZLI EYLEMLER -->
-                <Border Style="{StaticResource InfoCard}">
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#38bfc4" Margin="0,0,8,0"/>
-                            <TextBlock Text="Hızlı Eylemler" FontSize="17" FontWeight="SemiBold"/>
+                                <!-- GPU Usage (Gauge) -->
+                                <Border Grid.Column="2" Style="{StaticResource MetricCard}">
+                                    <StackPanel>
+                                        <controls:SemiCircularGauge Title="GPU" Value="{Binding GpuUsage, Mode=OneWay}" PeakValue="{Binding GpuPeak, Mode=OneWay}" ForegroundBrush="{Binding GpuStatusColor}"/>
+                                        <TextBlock FontSize="12" Foreground="{StaticResource TextColorSecondary}" Margin="0,8,0,0" TextTrimming="CharacterEllipsis">
+                                            <TextBlock.Text>
+                                                <Binding Path="GpuName"/>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
                         </StackPanel>
-                        <UniformGrid Rows="1" Columns="3" HorizontalAlignment="Center" Margin="0,6,0,0">
-                            <!-- Görev Yöneticisi -->
-                            <StackPanel HorizontalAlignment="Center">
-                                <Button Width="48" Height="48" Background="#e7f4ed" BorderThickness="0" Margin="3">
-                                    <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="26" Foreground="#4aa962" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Button>
-                                <TextBlock Text="Görev Yön." FontSize="12" HorizontalAlignment="Center" Foreground="{StaticResource SubHeaderColor}"/>
+                    </Border>
+
+                    <!-- NETWORK ACTIVITY -->
+                    <Border Style="{StaticResource CleanCard}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Network Activity" Style="{StaticResource SectionHeader}"/>
+                                <Grid Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <StackPanel Grid.Column="0" Margin="0,0,24,0">
+                                        <TextBlock Text="{Binding ActiveConnections}"
+                                                   FontSize="38"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource PrimaryBlue}"
+                                                   FontFamily="Segoe UI"/>
+                                        <TextBlock Text="Active connections" FontSize="13" Foreground="{StaticResource TextColorSecondary}" FontFamily="Segoe UI"/>
+                                        <Grid Margin="0,6,0,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Grid.Row="0" FontSize="12" Foreground="{StaticResource TextColorSecondary}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} down">
+                                                        <Binding Path="DownMbps" Converter="{StaticResource ThroughputFormatter}"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                            <Polyline Grid.Row="1" Points="{Binding Path=DownHistory, Converter={StaticResource SparklinePointsConverter}, ConverterParameter='160,28'}" Stroke="{StaticResource PrimaryBlue}" StrokeThickness="2" Opacity="0.8"/>
+                                        </Grid>
+                                    </StackPanel>
+                                    
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding ListeningPorts}"
+                                                   FontSize="38"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource SuccessGreen}"
+                                                   FontFamily="Segoe UI"/>
+                                        <TextBlock Text="Listening ports" FontSize="13" Foreground="{StaticResource TextColorSecondary}" FontFamily="Segoe UI"/>
+                                        <Grid Margin="0,6,0,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Grid.Row="0" FontSize="12" Foreground="{StaticResource TextColorSecondary}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} up">
+                                                        <Binding Path="UpMbps" Converter="{StaticResource ThroughputFormatter}"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                            <Polyline Grid.Row="1" Points="{Binding Path=UpHistory, Converter={StaticResource SparklinePointsConverter}, ConverterParameter='160,28'}" Stroke="{StaticResource SuccessGreen}" StrokeThickness="2" Opacity="0.8"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Grid>
                             </StackPanel>
-                            <!-- Kaynak İzleyicisi -->
-                            <StackPanel HorizontalAlignment="Center">
-                                <Button Width="48" Height="48" Background="#d9f0fa" BorderThickness="0" Margin="3">
-                                    <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="26" Foreground="#44b5e9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                            <Button Grid.Column="1" 
+                                    Content="View details" 
+                                    Style="{StaticResource PrimaryButton}"
+                                    VerticalAlignment="Center"
+                                    Click="NavigateToNetworkMonitor_Click"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- TOP APPS (replaced System Modules) -->
+                    <Border Style="{StaticResource CleanCard}">
+                        <StackPanel>
+                            <TextBlock Text="Top Applications (last 2 hours)" Style="{StaticResource SectionHeader}"/>
+                            <ItemsControl>
+                                <ItemsControl.ItemsSource>
+                                    <Binding Path="TopApplications"/>
+                                </ItemsControl.ItemsSource>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,6,0,6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Name}" FontSize="13" Foreground="{StaticResource TextColorPrimary}"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding StartTime, StringFormat=HH:mm}" FontSize="12" Foreground="{StaticResource TextMuted}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- RIGHT PANEL - QUICK ACCESS & ACTIVITIES -->
+                <StackPanel Grid.Row="1" Grid.Column="1">
+                    
+                    <!-- QUICK ACCESS -->
+                    <Border Style="{StaticResource CleanCard}">
+                        <StackPanel>
+                            <TextBlock Text="Quick Access" Style="{StaticResource SectionHeader}"/>
+                            
+                            <StackPanel>
+                                <Button Style="{StaticResource QuickAccessButton}" 
+                                        Click="NavigateToProcessMonitor_Click" 
+                                        Margin="0,0,0,8"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Background="{StaticResource AccentColor}" Width="4" Height="18" CornerRadius="2" Margin="0,0,12,0"/>
+                                        <TextBlock Text="Process Monitor" 
+                                                   FontSize="14" 
+                                                   FontFamily="Segoe UI"/>
+                                    </StackPanel>
                                 </Button>
-                                <TextBlock Text="Kaynak İzleyici" FontSize="12" HorizontalAlignment="Center" Foreground="{StaticResource SubHeaderColor}"/>
-                            </StackPanel>
-                            <!-- Olay Görüntüleyici -->
-                            <StackPanel HorizontalAlignment="Center">
-                                <Button Width="48" Height="48" Background="#fff6e0" BorderThickness="0" Margin="3">
-                                    <TextBlock Text="" FontFamily="Segoe MDL2 Assets" FontSize="26" Foreground="#e9942d" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                <Button Style="{StaticResource QuickAccessButton}" 
+                                        Click="NavigateToNetworkMonitor_Click" 
+                                        Margin="0,0,0,8"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Background="{StaticResource SuccessGreen}" Width="4" Height="18" CornerRadius="2" Margin="0,0,12,0"/>
+                                        <TextBlock Text="Network Monitor" 
+                                                   FontSize="14" 
+                                                   FontFamily="Segoe UI"/>
+                                    </StackPanel>
                                 </Button>
-                                <TextBlock Text="Olay Gör." FontSize="12" HorizontalAlignment="Center" Foreground="{StaticResource SubHeaderColor}"/>
+
+                                <Button Style="{StaticResource QuickAccessButton}" 
+                                        Click="NavigateToEventLogs_Click" 
+                                        Margin="0,0,0,8"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Background="{StaticResource WarningOrange}" Width="4" Height="18" CornerRadius="2" Margin="0,0,12,0"/>
+                                        <TextBlock Text="User Activities" 
+                                                   FontSize="14" 
+                                                   FontFamily="Segoe UI"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource QuickAccessButton}" 
+                                        Click="NavigateToSystemInfo_Click"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Background="{StaticResource DangerRed}" Width="4" Height="18" CornerRadius="2" Margin="0,0,12,0"/>
+                                        <TextBlock Text="USB Monitor" 
+                                                   FontSize="14" 
+                                                   FontFamily="Segoe UI"/>
+                                    </StackPanel>
+                                </Button>
                             </StackPanel>
-                        </UniformGrid>
-                    </StackPanel>
-                </Border>
-            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- RECENT ACTIVITIES -->
+                    <Border Style="{StaticResource CleanCard}">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,16">
+                                <TextBlock Text="Recent Activities" Style="{StaticResource SectionHeader}" Margin="0"/>
+                                <Border Background="{StaticResource BackgroundLight}" 
+                                        CornerRadius="2" 
+                                        Padding="6,2" 
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top">
+                                    <TextBlock Text="LIVE" 
+                                               FontSize="10" 
+                                               FontWeight="SemiBold" 
+                                               Foreground="{StaticResource TextMuted}"
+                                               FontFamily="Segoe UI"/>
+                                </Border>
+                            </Grid>
+                            
+                            <ListView ItemsSource="{Binding RecentActivities}"
+                                      BorderThickness="0"
+                                      Background="Transparent"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,8,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Ellipse Grid.Column="0" Width="6" Height="6" Fill="{Binding IconColor}" VerticalAlignment="Center" Margin="4,0,12,0"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Description}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" FontSize="13" FontFamily="Segoe UI" Foreground="{StaticResource TextPrimary}"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding Time, StringFormat='HH:mm'}" Foreground="{StaticResource TextMuted}" VerticalAlignment="Center" FontSize="12" FontFamily="Segoe UI"/>
+                                            <Rectangle Grid.ColumnSpan="3" Height="1" VerticalAlignment="Bottom" Fill="{StaticResource BorderColor}" Opacity="0.6" Margin="0,0,0,0"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- SYSTEM STATUS -->
+                    <Border Style="{StaticResource CleanCard}">
+                        <StackPanel>
+                            <TextBlock Text="System Status" Style="{StaticResource SectionHeader}"/>
+                            
+                            <StackPanel>
+                                <!-- Security Status -->
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse Grid.Column="0" 
+                                             Width="6" Height="6" 
+                                             Margin="0,0,12,0" 
+                                             VerticalAlignment="Center"
+                                             Fill="{Binding SecurityStatusBrush}"/>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding SecurityStatusMessage}" 
+                                                   FontSize="13"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   FontFamily="Segoe UI"/>
+                                        <TextBlock Text="{Binding LastSecurityEvent}" 
+                                                   FontSize="11" 
+                                                   Foreground="{StaticResource TextMuted}"
+                                                   FontFamily="Segoe UI"
+                                                   Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Performance Summary -->
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse Grid.Column="0" 
+                                             Width="6" Height="6" 
+                                             Fill="{StaticResource SuccessGreen}" 
+                                             Margin="0,0,12,0" 
+                                             VerticalAlignment="Center"/>
+                                    <StackPanel Grid.Column="1">
+                                                                                 <TextBlock FontSize="13"
+                                                    Foreground="{StaticResource TextPrimary}"
+                                                    FontFamily="Segoe UI">
+                                            <TextBlock.Text>
+                                                <Binding Path="ActiveProcessCount" StringFormat="{}{0} processes running"/>
+                                            </TextBlock.Text>
+                                         </TextBlock>
+                                        <TextBlock FontSize="11" 
+                                                   Foreground="{StaticResource TextMuted}"
+                                                   FontFamily="Segoe UI"
+                                                   Margin="0,2,0,0">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="CPU: {0}% • RAM: {1:F1} GB">
+                                                    <Binding Path="CpuUsage"/>
+                                                    <Binding Path="UsedRamGB"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                                
+                                <Button Content="View security details" 
+                                        Style="{StaticResource WindowsButton}"
+                                        HorizontalAlignment="Stretch"
+                                        Click="NavigateToSecurity_Click"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
         </Grid>
     </ScrollViewer>
 </UserControl>

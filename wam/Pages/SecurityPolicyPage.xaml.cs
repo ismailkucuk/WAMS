@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Management;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,15 +12,48 @@ using wam.Services;
 
 namespace wam.Pages
 {
-    public partial class SecurityPolicyPage : UserControl, ILoadablePage
+    public class ScoreToBrushConverter : System.Windows.Data.IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            try
+            {
+                int score = System.Convert.ToInt32(value);
+                Color color = score >= 80 ? Color.FromRgb(40, 167, 69) : // Success
+                              score >= 60 ? Color.FromRgb(74, 144, 226) : // Accent
+                              score >= 40 ? Color.FromRgb(255, 193, 7) :  // Warning
+                                            Color.FromRgb(220, 53, 69);   // Danger
+                return new SolidColorBrush(color);
+            }
+            catch { return new SolidColorBrush(Colors.Gray); }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public partial class SecurityPolicyPage : UserControl, ILoadablePage, System.ComponentModel.INotifyPropertyChanged
     {
         private readonly SecurityPolicyService _securityService;
         private SecurityPolicies _currentPolicies;
+
+        public ObservableCollection<PolicyItem> PasswordPolicies { get; } = new ObservableCollection<PolicyItem>();
+        public ObservableCollection<PolicyItem> SystemPolicies { get; } = new ObservableCollection<PolicyItem>();
+        public ObservableCollection<PolicyItem> AccountPolicies { get; } = new ObservableCollection<PolicyItem>();
+        public ObservableCollection<string> Recommendations { get; } = new ObservableCollection<string>();
+        public ObservableCollection<IssueItem> CriticalIssues { get; } = new ObservableCollection<IssueItem>();
+        public ObservableCollection<IssueItem> WarningIssues { get; } = new ObservableCollection<IssueItem>();
+        public ObservableCollection<string> PassedChecks { get; } = new ObservableCollection<string>();
+        public int SecurityScore { get; set; }
+        public string SecurityScoreLabel { get; set; }
 
         public SecurityPolicyPage()
         {
             InitializeComponent();
             _securityService = new SecurityPolicyService();
+            DataContext = this;
         }
 
         public async Task LoadDataAsync()
@@ -72,62 +107,14 @@ namespace wam.Pages
 
             var csvData = new List<dynamic>
             {
-                new
-                {
-                    PolicyType = "Password",
-                    PolicyName = "Password Required",
-                    Status = _currentPolicies.IsPasswordRequired ? "Enabled" : "Disabled",
-                    Recommendation = _currentPolicies.IsPasswordRequired ? "Good" : "Enable password requirement"
-                },
-                new
-                {
-                    PolicyType = "Password",
-                    PolicyName = "Minimum Password Length",
-                    Status = _currentPolicies.MinPasswordLength.ToString(),
-                    Recommendation = _currentPolicies.MinPasswordLength >= 8 ? "Good" : "Increase to at least 8 characters"
-                },
-                new
-                {
-                    PolicyType = "Password",
-                    PolicyName = "Password Complexity",
-                    Status = _currentPolicies.IsPasswordComplexityEnabled ? "Enabled" : "Disabled",
-                    Recommendation = _currentPolicies.IsPasswordComplexityEnabled ? "Good" : "Enable password complexity"
-                },
-                new
-                {
-                    PolicyType = "System",
-                    PolicyName = "UAC",
-                    Status = _currentPolicies.IsUacEnabled ? "Enabled" : "Disabled",
-                    Recommendation = _currentPolicies.IsUacEnabled ? "Good" : "Enable UAC for better security"
-                },
-                new
-                {
-                    PolicyType = "System",
-                    PolicyName = "RDP",
-                    Status = _currentPolicies.IsRdpEnabled ? "Enabled" : "Disabled",
-                    Recommendation = !_currentPolicies.IsRdpEnabled ? "Good" : "Consider disabling RDP if not needed"
-                },
-                new
-                {
-                    PolicyType = "Account",
-                    PolicyName = "Guest Account",
-                    Status = _currentPolicies.IsGuestEnabled ? "Enabled" : "Disabled",
-                    Recommendation = !_currentPolicies.IsGuestEnabled ? "Good" : "Disable guest account"
-                },
-                new
-                {
-                    PolicyType = "Account",
-                    PolicyName = "Administrator Account",
-                    Status = _currentPolicies.IsAdministratorEnabled ? "Enabled" : "Disabled",
-                    Recommendation = !_currentPolicies.IsAdministratorEnabled ? "Good" : "Consider disabling built-in admin"
-                },
-                new
-                {
-                    PolicyType = "Overall",
-                    PolicyName = "Security Score",
-                    Status = _currentPolicies.SecurityScore.ToString(),
-                    Recommendation = GetScoreRecommendation(_currentPolicies.SecurityScore)
-                }
+                new { PolicyType = "Password", PolicyName = "Password Required", Status = _currentPolicies.IsPasswordRequired ? "Enabled" : "Disabled", Recommendation = _currentPolicies.IsPasswordRequired ? "Good" : "Enable password requirement" },
+                new { PolicyType = "Password", PolicyName = "Minimum Password Length", Status = _currentPolicies.MinPasswordLength.ToString(), Recommendation = _currentPolicies.MinPasswordLength >= 8 ? "Good" : "Increase to at least 8 characters" },
+                new { PolicyType = "Password", PolicyName = "Password Complexity", Status = _currentPolicies.IsPasswordComplexityEnabled ? "Enabled" : "Disabled", Recommendation = _currentPolicies.IsPasswordComplexityEnabled ? "Good" : "Enable password complexity" },
+                new { PolicyType = "System", PolicyName = "UAC", Status = _currentPolicies.IsUacEnabled ? "Enabled" : "Disabled", Recommendation = _currentPolicies.IsUacEnabled ? "Good" : "Enable UAC for better security" },
+                new { PolicyType = "System", PolicyName = "RDP", Status = _currentPolicies.IsRdpEnabled ? "Enabled" : "Disabled", Recommendation = !_currentPolicies.IsRdpEnabled ? "Good" : "Consider disabling RDP if not needed" },
+                new { PolicyType = "Account", PolicyName = "Guest Account", Status = _currentPolicies.IsGuestEnabled ? "Enabled" : "Disabled", Recommendation = !_currentPolicies.IsGuestEnabled ? "Good" : "Disable guest account" },
+                new { PolicyType = "Account", PolicyName = "Administrator Account", Status = _currentPolicies.IsAdministratorEnabled ? "Enabled" : "Disabled", Recommendation = !_currentPolicies.IsAdministratorEnabled ? "Good" : "Consider disabling built-in admin" },
+                new { PolicyType = "Overall", PolicyName = "Security Score", Status = _currentPolicies.SecurityScore.ToString(), Recommendation = GetScoreRecommendation(_currentPolicies.SecurityScore) }
             };
 
             ExportService.ExportToCsv(csvData, GetModuleName());
@@ -178,121 +165,76 @@ namespace wam.Pages
             try
             {
                 _currentPolicies = await Task.Run(() => _securityService.GetSecurityPolicies());
-                
-                // UI'yi güncelle
-                UpdatePasswordPolicies(_currentPolicies);
-                UpdateSystemSecurity(_currentPolicies);
-                UpdateAccountStatuses(_currentPolicies);
-                UpdateSecurityScore(_currentPolicies);
+                BuildViewFromPolicies(_currentPolicies);
             }
             catch (Exception ex)
             {
-                // Hata durumunda güvenlik skoru kırmızı yap
-                SecurityScoreValue.Text = "ERR";
-                SecurityScoreValue.Foreground = new SolidColorBrush(Colors.Red);
-                SecurityScoreLabel.Text = $"Hata: {ex.Message}";
+                SecurityScore = 0;
+                SecurityScoreLabel = $"Hata: {ex.Message}";
+                OnPropertyChanged(nameof(SecurityScore));
+                OnPropertyChanged(nameof(SecurityScoreLabel));
             }
         }
 
-        private void UpdatePasswordPolicies(SecurityPolicies policies)
+        private void BuildViewFromPolicies(SecurityPolicies policies)
         {
-            // Parola gerekli
-            PasswordRequiredStatus.Text = policies.IsPasswordRequired ? "Evet" : "Hayır";
-            PasswordRequiredStatus.Foreground = GetStatusBrush(policies.IsPasswordRequired);
-            PasswordRequiredBorder.BorderBrush = GetStatusBrush(policies.IsPasswordRequired);
+            PasswordPolicies.Clear();
+            SystemPolicies.Clear();
+            AccountPolicies.Clear();
+            Recommendations.Clear();
+            CriticalIssues.Clear();
+            WarningIssues.Clear();
+            PassedChecks.Clear();
 
-            // Minimum parola uzunluğu
-            MinPasswordLengthValue.Text = policies.MinPasswordLength.ToString();
-            bool lengthOk = policies.MinPasswordLength >= 8;
-            MinPasswordLengthValue.Foreground = GetStatusBrush(lengthOk);
-            MinPasswordLengthBorder.BorderBrush = GetStatusBrush(lengthOk);
+            PasswordPolicies.Add(new PolicyItem { Title = "Parola Gerekli", Description = "Kullanıcıların parola belirlemesi zorunlu", StatusText = policies.IsPasswordRequired ? "Evet" : "Hayır", IsGood = policies.IsPasswordRequired, EditKey = "PasswordRequired" });
+            PasswordPolicies.Add(new PolicyItem { Title = "Minimum Parola Uzunluğu", Description = "Parolanın minimum karakter sayısı", StatusText = policies.MinPasswordLength.ToString(), IsGood = policies.MinPasswordLength >= 8, EditKey = "MinPasswordLength" });
+            PasswordPolicies.Add(new PolicyItem { Title = "Karmaşık Parola Gereksinimi", Description = "Büyük/küçük harf, sayı ve özel karakter", StatusText = policies.IsPasswordComplexityEnabled ? "Açık" : "Kapalı", IsGood = policies.IsPasswordComplexityEnabled, EditKey = "PasswordComplexity" });
 
-            // Karmaşık parola
-            ComplexPasswordStatus.Text = policies.IsPasswordComplexityEnabled ? "Açık" : "Kapalı";
-            ComplexPasswordStatus.Foreground = GetStatusBrush(policies.IsPasswordComplexityEnabled);
-            ComplexPasswordBorder.BorderBrush = GetStatusBrush(policies.IsPasswordComplexityEnabled);
-        }
+            SystemPolicies.Add(new PolicyItem { Title = "UAC (Kullanıcı Hesabı Denetimi)", Description = "Yönetici izinleri için onay isteme", StatusText = policies.IsUacEnabled ? "Etkin" : "Devre Dışı", IsGood = policies.IsUacEnabled, EditKey = "UAC" });
+            SystemPolicies.Add(new PolicyItem { Title = "Uzak Masaüstü (RDP)", Description = "Uzaktan bağlantı imkanı", StatusText = policies.IsRdpEnabled ? "Açık" : "Kapalı", IsGood = !policies.IsRdpEnabled, EditKey = "RDP" });
 
-        private void UpdateSystemSecurity(SecurityPolicies policies)
-        {
-            // UAC
-            UacStatus.Text = policies.IsUacEnabled ? "Etkin" : "Devre Dışı";
-            UacStatus.Foreground = GetStatusBrush(policies.IsUacEnabled);
-            UacBorder.BorderBrush = GetStatusBrush(policies.IsUacEnabled);
+            AccountPolicies.Add(new PolicyItem { Title = "Guest Hesabı", Description = "Konuk kullanıcı hesabının durumu", StatusText = policies.IsGuestEnabled ? "Etkin" : "Devre Dışı", IsGood = !policies.IsGuestEnabled, EditKey = "Guest" });
+            AccountPolicies.Add(new PolicyItem { Title = "Administrator Hesabı", Description = "Yerleşik yönetici hesabının durumu", StatusText = policies.IsAdministratorEnabled ? "Etkin" : "Devre Dışı", IsGood = !policies.IsAdministratorEnabled, EditKey = "Administrator" });
 
-            // RDP
-            RdpStatus.Text = policies.IsRdpEnabled ? "Açık" : "Kapalı";
-            RdpStatus.Foreground = GetStatusBrush(!policies.IsRdpEnabled); // RDP kapalı olması daha güvenli
-            RdpBorder.BorderBrush = GetStatusBrush(!policies.IsRdpEnabled);
-        }
+            SecurityScore = policies.SecurityScore;
+            SecurityScoreLabel = policies.SecurityScore >= 80 ? "Mükemmel" : policies.SecurityScore >= 60 ? "İyi" : policies.SecurityScore >= 40 ? "Orta" : "Zayıf";
+            OnPropertyChanged(nameof(SecurityScore));
+            OnPropertyChanged(nameof(SecurityScoreLabel));
 
-        private void UpdateAccountStatuses(SecurityPolicies policies)
-        {
-            // Guest hesabı
-            GuestStatus.Text = policies.IsGuestEnabled ? "Etkin" : "Devre Dışı";
-            GuestStatus.Foreground = GetStatusBrush(!policies.IsGuestEnabled); // Guest kapalı olması daha güvenli
-            GuestBorder.BorderBrush = GetStatusBrush(!policies.IsGuestEnabled);
+            foreach (var rec in _securityService.GetRecommendations(policies)) Recommendations.Add(rec);
 
-            // Administrator hesabı
-            AdministratorStatus.Text = policies.IsAdministratorEnabled ? "Etkin" : "Devre Dışı";
-            AdministratorStatus.Foreground = GetStatusBrush(!policies.IsAdministratorEnabled); // Admin kapalı olması daha güvenli
-            AdministratorBorder.BorderBrush = GetStatusBrush(!policies.IsAdministratorEnabled);
-        }
-
-        private void UpdateSecurityScore(SecurityPolicies policies)
-        {
-            SecurityScoreValue.Text = policies.SecurityScore.ToString();
-            SecurityScoreValue.Foreground = GetScoreBrush(policies.SecurityScore);
-
-            // Skor rengine göre label'ı güncelle
-            if (policies.SecurityScore >= 80)
-                SecurityScoreLabel.Text = "Mükemmel";
-            else if (policies.SecurityScore >= 60)
-                SecurityScoreLabel.Text = "İyi";
-            else if (policies.SecurityScore >= 40)
-                SecurityScoreLabel.Text = "Orta";
-            else
-                SecurityScoreLabel.Text = "Zayıf";
-
-            // Önerileri ekle
-            AddRecommendations(policies);
-        }
-
-        private void AddRecommendations(SecurityPolicies policies)
-        {
-            RecommendationsPanel.Children.Clear();
-
-            var recommendations = _securityService.GetRecommendations(policies);
-            foreach (var recommendation in recommendations)
-            {
-                var textBlock = new TextBlock
-                {
-                    Text = "• " + recommendation,
-                    FontSize = 12,
-                    Foreground = (SolidColorBrush)FindResource("TextColorSecondary"),
-                    TextWrapping = System.Windows.TextWrapping.Wrap,
-                    Margin = new System.Windows.Thickness(0, 0, 0, 8)
-                };
-                RecommendationsPanel.Children.Add(textBlock);
-            }
-        }
-
-        private SolidColorBrush GetStatusBrush(bool isGood)
-        {
-            return isGood ? 
-                (SolidColorBrush)FindResource("SuccessColor") : 
-                (SolidColorBrush)FindResource("DangerColor");
-        }
-
-        private SolidColorBrush GetScoreBrush(int score)
-        {
-            if (score >= 80) return (SolidColorBrush)FindResource("SuccessColor");
-            if (score >= 60) return (SolidColorBrush)FindResource("AccentColor");
-            if (score >= 40) return (SolidColorBrush)FindResource("WarningColor");
-            return (SolidColorBrush)FindResource("DangerColor");
+            // Issues classification
+            if (!policies.IsPasswordRequired) CriticalIssues.Add(new IssueItem { Title = "Parola zorunlu değil", Detail = "Tüm kullanıcılar için parola zorunluluğunu etkinleştirin", FixKey = "PasswordRequired" }); else PassedChecks.Add("Parola zorunluluğu etkin");
+            if (policies.MinPasswordLength < 8) WarningIssues.Add(new IssueItem { Title = "Kısa parola", Detail = $"Minimum {policies.MinPasswordLength} karakter", FixKey = "MinPasswordLength" }); else PassedChecks.Add("Parola uzunluğu uygun");
+            if (!policies.IsPasswordComplexityEnabled) WarningIssues.Add(new IssueItem { Title = "Karmaşık parola kapalı", Detail = "Harf, sayı ve özel karakter zorunlu değil", FixKey = "PasswordComplexity" }); else PassedChecks.Add("Karmaşık parola etkin");
+            if (!policies.IsUacEnabled) CriticalIssues.Add(new IssueItem { Title = "UAC devre dışı", Detail = "Yönetici izinleri kontrol edilmiyor", FixKey = "UAC" }); else PassedChecks.Add("UAC etkin");
+            if (policies.IsRdpEnabled) WarningIssues.Add(new IssueItem { Title = "RDP açık", Detail = "Gerekli değilse kapatın", FixKey = "RDP" }); else PassedChecks.Add("RDP kapalı");
+            if (policies.IsGuestEnabled) CriticalIssues.Add(new IssueItem { Title = "Guest hesabı etkin", Detail = "Konuk hesabını devre dışı bırakın", FixKey = "Guest" }); else PassedChecks.Add("Guest kapalı");
+            if (policies.IsAdministratorEnabled) WarningIssues.Add(new IssueItem { Title = "Yerleşik Administrator etkin", Detail = "Gerekli değilse kapatın", FixKey = "Administrator" }); else PassedChecks.Add("Yerleşik admin kapalı");
         }
 
         public event Action<bool, string> LoadingStateChanged;
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(name));
+
+        // Düzenleme butonları için genel olay işleyici
+        private void PolicyEdit_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is string key)
+            {
+                switch (key)
+                {
+                    case "PasswordRequired": EditPasswordRequired_Click(sender, e); break;
+                    case "MinPasswordLength": EditMinPasswordLength_Click(sender, e); break;
+                    case "PasswordComplexity": EditComplexPassword_Click(sender, e); break;
+                    case "UAC": EditUac_Click(sender, e); break;
+                    case "RDP": EditRdp_Click(sender, e); break;
+                    case "Guest": EditGuestAccount_Click(sender, e); break;
+                    case "Administrator": EditAdministratorAccount_Click(sender, e); break;
+                }
+            }
+        }
 
         // Düzenleme butonları için olay işleyiciler
         private void EditPasswordRequired_Click(object sender, RoutedEventArgs e)
@@ -585,6 +527,22 @@ namespace wam.Pages
         public int SecurityScore { get; set; }
     }
 
+    public class PolicyItem
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string StatusText { get; set; }
+        public bool IsGood { get; set; }
+        public string EditKey { get; set; }
+    }
+
+    public class IssueItem
+    {
+        public string Title { get; set; }
+        public string Detail { get; set; }
+        public string FixKey { get; set; }
+    }
+
     public class SecurityPolicyService
     {
         public SecurityPolicies GetSecurityPolicies()
@@ -604,7 +562,6 @@ namespace wam.Pages
             }
             catch
             {
-                // Hata durumunda varsayılan değerler
                 policies.SecurityScore = 0;
             }
 
@@ -615,29 +572,14 @@ namespace wam.Pages
         {
             var recommendations = new List<string>();
 
-            if (!policies.IsPasswordRequired)
-                recommendations.Add("Tüm kullanıcılar için parola zorunluluğu etkinleştirin");
-
-            if (policies.MinPasswordLength < 8)
-                recommendations.Add("Minimum parola uzunluğunu en az 8 karakter yapın");
-
-            if (!policies.IsPasswordComplexityEnabled)
-                recommendations.Add("Karmaşık parola gereksinimini etkinleştirin");
-
-            if (!policies.IsUacEnabled)
-                recommendations.Add("UAC (Kullanıcı Hesabı Denetimi) özelliğini etkinleştirin");
-
-            if (policies.IsRdpEnabled)
-                recommendations.Add("Gerekli değilse RDP (Uzak Masaüstü) özelliğini devre dışı bırakın");
-
-            if (policies.IsGuestEnabled)
-                recommendations.Add("Guest (Konuk) hesabını devre dışı bırakın");
-
-            if (policies.IsAdministratorEnabled)
-                recommendations.Add("Yerleşik Administrator hesabını devre dışı bırakın");
-
-            if (recommendations.Count == 0)
-                recommendations.Add("Güvenlik yapılandırmanız mükemmel görünüyor!");
+            if (!policies.IsPasswordRequired) recommendations.Add("Tüm kullanıcılar için parola zorunluluğu etkinleştirin");
+            if (policies.MinPasswordLength < 8) recommendations.Add("Minimum parola uzunluğunu en az 8 karakter yapın");
+            if (!policies.IsPasswordComplexityEnabled) recommendations.Add("Karmaşık parola gereksinimini etkinleştirin");
+            if (!policies.IsUacEnabled) recommendations.Add("UAC (Kullanıcı Hesabı Denetimi) özelliğini etkinleştirin");
+            if (policies.IsRdpEnabled) recommendations.Add("Gerekli değilse RDP (Uzak Masaüstü) özelliğini devre dışı bırakın");
+            if (policies.IsGuestEnabled) recommendations.Add("Guest (Konuk) hesabını devre dışı bırakın");
+            if (policies.IsAdministratorEnabled) recommendations.Add("Yerleşik Administrator hesabını devre dışı bırakın");
+            if (recommendations.Count == 0) recommendations.Add("Güvenlik yapılandırmanız mükemmel görünüyor!");
 
             return recommendations;
         }
@@ -645,7 +587,6 @@ namespace wam.Pages
         private int CalculateSecurityScore(SecurityPolicies policies)
         {
             int score = 0;
-
             if (policies.IsPasswordRequired) score += 20;
             if (policies.MinPasswordLength >= 8) score += 15;
             if (policies.IsPasswordComplexityEnabled) score += 15;
@@ -653,7 +594,6 @@ namespace wam.Pages
             if (!policies.IsRdpEnabled) score += 15;
             if (!policies.IsGuestEnabled) score += 10;
             if (!policies.IsAdministratorEnabled) score += 10;
-
             return score;
         }
 
@@ -661,65 +601,75 @@ namespace wam.Pages
         {
             try
             {
-                using var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Lsa");
-                return key?.GetValue("PasswordHistorySize") != null;
+                using var searcher = new ManagementObjectSearcher("SELECT PasswordRequired, Disabled FROM Win32_UserAccount WHERE LocalAccount = TRUE");
+                foreach (ManagementObject obj in searcher.Get())
+                {
+                    bool disabled = obj["Disabled"] is bool d && d;
+                    if (!disabled)
+                    {
+                        bool requiresPassword = obj["PasswordRequired"] is bool pr && pr;
+                        if (!requiresPassword) return false;
+                    }
+                }
+                return true; // all enabled local accounts require password
+            }
+            catch { }
+
+            // Fallback: if WMI fails, infer from minimum length
+            try
+            {
+                return GetMinimumPasswordLength() > 0;
             }
             catch { return false; }
         }
-
         private int GetMinimumPasswordLength()
         {
             try
             {
                 using var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Lsa");
-                var value = key?.GetValue("MinimumPasswordLength");
-                return value != null ? Convert.ToInt32(value) : 0;
+                var v = key?.GetValue("MinimumPasswordLength");
+                if (v != null) return Convert.ToInt32(v);
+            }
+            catch { }
+            try
+            {
+                using var key2 = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System");
+                var v2 = key2?.GetValue("MinimumPasswordLength");
+                return v2 != null ? Convert.ToInt32(v2) : 0;
             }
             catch { return 0; }
         }
-
         private bool IsPasswordComplexityEnabled()
         {
             try
             {
                 using var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Lsa");
-                var value = key?.GetValue("PasswordComplexity");
-                return value != null && Convert.ToInt32(value) == 1;
+                var v = key?.GetValue("PasswordComplexity");
+                if (v != null) return Convert.ToInt32(v) == 1;
+            }
+            catch { }
+            try
+            {
+                using var key2 = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System");
+                var v2 = key2?.GetValue("PasswordComplexity");
+                return v2 != null && Convert.ToInt32(v2) == 1;
             }
             catch { return false; }
         }
-
         private bool IsUacEnabled()
         {
-            try
-            {
-                using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System");
-                return key?.GetValue("EnableLUA")?.ToString() == "1";
-            }
-            catch { return false; }
+            try { using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"); return key?.GetValue("EnableLUA")?.ToString() == "1"; } catch { return false; }
         }
-
         private bool IsRdpEnabled()
         {
-            try
-            {
-                using var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Terminal Server");
-                return key?.GetValue("fDenyTSConnections")?.ToString() == "0";
-            }
-            catch { return false; }
+            try { using var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Terminal Server"); return key?.GetValue("fDenyTSConnections")?.ToString() == "0"; } catch { return false; }
         }
-
         private bool IsAccountEnabled(string userName)
         {
             try
             {
-                using var searcher = new ManagementObjectSearcher(
-                    $"SELECT Disabled FROM Win32_UserAccount WHERE Name = '{userName}' AND LocalAccount = TRUE");
-
-                foreach (ManagementObject obj in searcher.Get())
-                {
-                    return !(bool)obj["Disabled"];
-                }
+                using var searcher = new ManagementObjectSearcher($"SELECT Disabled FROM Win32_UserAccount WHERE Name = '{userName}' AND LocalAccount = TRUE");
+                foreach (ManagementObject obj in searcher.Get()) { return !(bool)obj["Disabled"]; }
             }
             catch { }
             return false;

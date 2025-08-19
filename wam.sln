@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36202.13 d17.14
+VisualStudioVersion = 17.14.36202.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wam", "wam\wam.csproj", "{E7F8A8B8-2104-41F0-8CD5-7723FDF12566}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "WamsSetup", "WamsSetup\WamsSetup.vdproj", "{6CDE7DAA-089D-F41A-5BE4-DB696FA5BBC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E7F8A8B8-2104-41F0-8CD5-7723FDF12566}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E7F8A8B8-2104-41F0-8CD5-7723FDF12566}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7F8A8B8-2104-41F0-8CD5-7723FDF12566}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{E7F8A8B8-2104-41F0-8CD5-7723FDF12566}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{E7F8A8B8-2104-41F0-8CD5-7723FDF12566}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7F8A8B8-2104-41F0-8CD5-7723FDF12566}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CDE7DAA-089D-F41A-5BE4-DB696FA5BBC0}.Debug|Any CPU.ActiveCfg = Debug
+		{6CDE7DAA-089D-F41A-5BE4-DB696FA5BBC0}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

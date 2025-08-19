@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:controls="clr-namespace:wam.Controls"
+             xmlns:local="clr-namespace:wam.Pages"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="1200"
              Background="#F8F9FA">
@@ -63,215 +63,143 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="PolicyItemTemplateStyle" TargetType="Border" BasedOn="{StaticResource PolicyItemBorder}"/>
+        <local:ScoreToBrushConverter x:Key="ScoreToBrushConverter"/>
+
+        <DataTemplate x:Key="PolicyItemTemplate">
+            <Border Style="{StaticResource PolicyItemTemplateStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14"/>
+                        <TextBlock Text="{Binding Description}" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="{Binding StatusText}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <Button Grid.Column="2" Content="Düzenle" Style="{StaticResource EditButton}" Tag="{Binding EditKey}" Click="PolicyEdit_Click"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="30">
+        <Grid Margin="30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-            <Grid Margin="30">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Sol Panel: Güvenlik Politikaları -->
-                <StackPanel Grid.Column="0" Margin="0,0,20,0">
-                <!-- Başlık -->
+            <!-- Left: Policies -->
+            <StackPanel Grid.Column="0" Margin="0,0,20,0">
                 <Border Style="{StaticResource InfoCard}">
-                    <TextBlock Text="Güvenlik Politikaları" FontSize="18" FontWeight="SemiBold" 
-                               Foreground="{StaticResource TextColorPrimary}"/>
+                    <TextBlock Text="Güvenlik Durumu" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
                 </Border>
 
-                <!-- Parola Politikaları -->
+                <!-- Critical Issues -->
                 <Border Style="{StaticResource InfoCard}">
                     <StackPanel>
-                        <TextBlock Text="Parola Politikaları" FontWeight="SemiBold" FontSize="16" 
-                                   Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,15"/>
-                        
-                        <Border x:Name="PasswordRequiredBorder" Style="{StaticResource PolicyItemBorder}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Parola Gerekli" FontWeight="SemiBold" FontSize="14"/>
-                                    <TextBlock Text="Kullanıcıların parola belirlemesi zorunlu" 
-                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
-                                </StackPanel>
-                                <TextBlock x:Name="PasswordRequiredStatus" Grid.Column="1" FontWeight="SemiBold" 
-                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <Button x:Name="EditPasswordRequiredBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
-                                        Content="Düzenle" Click="EditPasswordRequired_Click"/>
-                            </Grid>
-                        </Border>
-
-                        <Border x:Name="MinPasswordLengthBorder" Style="{StaticResource PolicyItemBorder}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Minimum Parola Uzunluğu" FontWeight="SemiBold" FontSize="14"/>
-                                    <TextBlock Text="Parolanın minimum karakter sayısı" 
-                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
-                                </StackPanel>
-                                <TextBlock x:Name="MinPasswordLengthValue" Grid.Column="1" FontWeight="SemiBold" 
-                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <Button x:Name="EditMinPasswordLengthBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
-                                        Content="Düzenle" Click="EditMinPasswordLength_Click"/>
-                            </Grid>
-                        </Border>
-
-                        <Border x:Name="ComplexPasswordBorder" Style="{StaticResource PolicyItemBorder}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Karmaşık Parola Gereksinimi" FontWeight="SemiBold" FontSize="14"/>
-                                    <TextBlock Text="Büyük/küçük harf, sayı ve özel karakter zorunluluğu" 
-                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
-                                </StackPanel>
-                                <TextBlock x:Name="ComplexPasswordStatus" Grid.Column="1" FontWeight="SemiBold" 
-                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <Button x:Name="EditComplexPasswordBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
-                                        Content="Düzenle" Click="EditComplexPassword_Click"/>
-                            </Grid>
-                        </Border>
+                        <TextBlock Text="Kritik Sorunlar" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource DangerColor}" Margin="0,0,0,10"/>
+                        <ItemsControl ItemsSource="{Binding CriticalIssues}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource PolicyItemTemplateStyle}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Ellipse Width="8" Height="8" Fill="{StaticResource DangerColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{Binding Detail}" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                                            </StackPanel>
+                                            <Button Grid.Column="2" Content="Düzelt" Style="{StaticResource EditButton}" Tag="{Binding FixKey}" Click="PolicyEdit_Click"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
                 </Border>
 
-                <!-- Sistem Güvenliği -->
+                <!-- Warnings -->
                 <Border Style="{StaticResource InfoCard}">
                     <StackPanel>
-                        <TextBlock Text="Sistem Güvenliği" FontWeight="SemiBold" FontSize="16" 
-                                   Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,15"/>
-                        
-                        <Border x:Name="UacBorder" Style="{StaticResource PolicyItemBorder}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="UAC (Kullanıcı Hesabı Denetimi)" FontWeight="SemiBold" FontSize="14"/>
-                                    <TextBlock Text="Yönetici izinleri için onay isteme" 
-                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
-                                </StackPanel>
-                                <TextBlock x:Name="UacStatus" Grid.Column="1" FontWeight="SemiBold" 
-                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <Button x:Name="EditUacBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
-                                        Content="Düzenle" Click="EditUac_Click"/>
-                            </Grid>
-                        </Border>
-
-                        <Border x:Name="RdpBorder" Style="{StaticResource PolicyItemBorder}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Uzak Masaüstü (RDP)" FontWeight="SemiBold" FontSize="14"/>
-                                    <TextBlock Text="Uzaktan bağlantı imkanı" 
-                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
-                                </StackPanel>
-                                <TextBlock x:Name="RdpStatus" Grid.Column="1" FontWeight="SemiBold" 
-                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <Button x:Name="EditRdpBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
-                                        Content="Düzenle" Click="EditRdp_Click"/>
-                            </Grid>
-                        </Border>
+                        <TextBlock Text="Uyarılar" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource WarningColor}" Margin="0,0,0,10"/>
+                        <ItemsControl ItemsSource="{Binding WarningIssues}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource PolicyItemTemplateStyle}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Ellipse Width="8" Height="8" Fill="{StaticResource WarningColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{Binding Detail}" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                                            </StackPanel>
+                                            <Button Grid.Column="2" Content="Düzelt" Style="{StaticResource EditButton}" Tag="{Binding FixKey}" Click="PolicyEdit_Click"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
                 </Border>
 
-                <!-- Hesap Durumları -->
+                <!-- Passed Checks -->
                 <Border Style="{StaticResource InfoCard}">
                     <StackPanel>
-                        <TextBlock Text="Hesap Durumları" FontWeight="SemiBold" FontSize="16" 
-                                   Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,15"/>
-                        
-                        <Border x:Name="GuestBorder" Style="{StaticResource PolicyItemBorder}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Guest Hesabı" FontWeight="SemiBold" FontSize="14"/>
-                                    <TextBlock Text="Konuk kullanıcı hesabının durumu" 
-                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
-                                </StackPanel>
-                                <TextBlock x:Name="GuestStatus" Grid.Column="1" FontWeight="SemiBold" 
-                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <Button x:Name="EditGuestBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
-                                        Content="Düzenle" Click="EditGuestAccount_Click"/>
-                            </Grid>
-                        </Border>
-
-                        <Border x:Name="AdministratorBorder" Style="{StaticResource PolicyItemBorder}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Administrator Hesabı" FontWeight="SemiBold" FontSize="14"/>
-                                    <TextBlock Text="Yerleşik yönetici hesabının durumu" 
-                                               Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
-                                </StackPanel>
-                                <TextBlock x:Name="AdministratorStatus" Grid.Column="1" FontWeight="SemiBold" 
-                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <Button x:Name="EditAdministratorBtn" Grid.Column="2" Style="{StaticResource EditButton}" 
-                                        Content="Düzenle" Click="EditAdministratorAccount_Click"/>
-                            </Grid>
-                        </Border>
+                        <TextBlock Text="Geçilen Kontroller" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,10"/>
+                        <ItemsControl ItemsSource="{Binding PassedChecks}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="0,4,0,4">
+                                        <Ellipse Width="8" Height="8" Fill="{StaticResource SuccessColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <TextBlock Text="{Binding}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
                 </Border>
             </StackPanel>
 
-            <!-- Sağ Panel: Güvenlik Skoru -->
+            <!-- Right: Score & Recommendations -->
             <Border Grid.Column="1" Style="{StaticResource InfoCard}">
                 <StackPanel>
-                    <TextBlock Text="Güvenlik Skoru" FontWeight="SemiBold" FontSize="16" 
-                               Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,20"/>
-                    
-                    <!-- Skor Göstergesi -->
+                    <TextBlock Text="Güvenlik Skoru" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,20"/>
                     <Border Background="#F8F9FA" Padding="20" Margin="0,0,0,20">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000000" BlurRadius="8" ShadowDepth="0" Opacity="0.1"/>
+                        </Border.Effect>
                         <StackPanel HorizontalAlignment="Center">
-                            <TextBlock x:Name="SecurityScoreValue" Text="0" FontSize="48" FontWeight="Bold" 
-                                       HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                            <TextBlock Text="/ 100" FontSize="16" Foreground="{StaticResource TextColorSecondary}" 
-                                       HorizontalAlignment="Center"/>
-                            <TextBlock x:Name="SecurityScoreLabel" Text="Güvenlik Skoru" FontSize="14" FontWeight="SemiBold" 
-                                       HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                            <TextBlock Text="{Binding SecurityScore}" FontSize="48" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5" Foreground="{Binding SecurityScore, Converter={StaticResource ScoreToBrushConverter}}"/>
+                            <TextBlock Text="/ 100" FontSize="16" Foreground="{StaticResource TextColorSecondary}" HorizontalAlignment="Center"/>
+                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding SecurityScore}" Height="8" Margin="10,10,10,6" Background="{StaticResource BorderColor}" Foreground="{Binding SecurityScore, Converter={StaticResource ScoreToBrushConverter}}"/>
+                            <TextBlock Text="{Binding SecurityScoreLabel}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,6,0,0" Foreground="{Binding SecurityScore, Converter={StaticResource ScoreToBrushConverter}}"/>
                         </StackPanel>
                     </Border>
 
-                    <!-- Skor Detayları -->
-                    <StackPanel x:Name="ScoreDetailsPanel">
-                        <!-- Skor detayları dinamik olarak eklenir -->
-                    </StackPanel>
-
-                    <!-- Öneriler -->
-                    <StackPanel x:Name="RecommendationsPanel" Margin="0,20,0,0">
-                        <TextBlock Text="Öneriler" FontWeight="SemiBold" FontSize="14" 
-                                   Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,10"/>
-                        <!-- Öneriler dinamik olarak eklenir -->
+                    <StackPanel>
+                        <TextBlock Text="Öneriler" FontWeight="SemiBold" FontSize="14" Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,10"/>
+                        <ItemsControl ItemsSource="{Binding Recommendations}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ., StringFormat=• {0}}" FontSize="12" Foreground="{StaticResource TextColorSecondary}" TextWrapping="Wrap" Margin="0,0,0,6"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
                 </StackPanel>
             </Border>
         </Grid>
-        </StackPanel>
     </ScrollViewer>
 </UserControl>

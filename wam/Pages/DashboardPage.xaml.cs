@@ -1,129 +1,129 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Management;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
-using wam.Services; // Servislerinizin olduğu namespace (varsayım)
+using System.Windows.Data;
+using System.Linq;
+using System.Management;
+using Microsoft.Win32;
+using wam.Services;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using wam;
+using System.Net.NetworkInformation;
 
 namespace wam.Pages
 {
-    public partial class DashboardPage : UserControl, ILoadablePage, IDisposable
+    public partial class DashboardPage : UserControl, ILoadablePage
     {
-        private readonly DashboardViewModel _viewModel;
+        public event Action<bool, string> LoadingStateChanged;
+        private DashboardViewModel _viewModel;
 
         public DashboardPage()
         {
-            InitializeComponent();
-            _viewModel = new DashboardViewModel();
-            this.DataContext = _viewModel;
-            
-            // Sayfadan ayrılırken timer gibi kaynakları temizlemek için
-            this.Unloaded += UserControl_Unloaded;
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("Dashboard: Başlatılıyor...");
+                
+                InitializeComponent();
+                
+                // ViewModel'i hemen oluştur ama veri yükleme işlemlerini LoadDataAsync'e bırak
+                _viewModel = new DashboardViewModel();
+                DataContext = _viewModel;
+                
+                System.Diagnostics.Debug.WriteLine("Dashboard: Başarıyla başlatıldı");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Dashboard Constructor Error: {ex.Message}");
+                MessageBox.Show($"Dashboard yüklenirken hata: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public async Task LoadDataAsync()
         {
-            await _viewModel.LoadInitialDataAsync();
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("Dashboard: LoadDataAsync başlatıldı");
+                LoadingStateChanged?.Invoke(true, "Dashboard verileri yükleniyor...");
+                
+                if (_viewModel != null)
+                {
+                    // Sadece temel verileri yükle, ağır veriler arka planda yüklensin
+                    await _viewModel.LoadInitialDataAsync();
+                }
+                
+                System.Diagnostics.Debug.WriteLine("Dashboard: LoadDataAsync tamamlandı");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Dashboard LoadDataAsync Error: {ex.Message}");
+            }
+            finally
+            {
+                LoadingStateChanged?.Invoke(false, "");
+            }
         }
 
-        // ILoadablePage export metodları
+        public void UnloadData()
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("Dashboard: UnloadData başlatıldı");
+                
+                _viewModel?.Dispose();
+                
+                System.Diagnostics.Debug.WriteLine("Dashboard: UnloadData tamamlandı");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Dashboard UnloadData Error: {ex.Message}");
+            }
+        }
+
         public void ExportToJson()
         {
-            var exportData = new
+            try
             {
-                SystemMetrics = new
-                {
-                    CpuUsage = _viewModel.CpuUsage,
-                    UsedRamGB = _viewModel.UsedRamGB,
-                    TotalRamGB = _viewModel.TotalRamGB,
-                    Uptime = _viewModel.Uptime,
-                    ActiveConnections = _viewModel.ActiveConnections,
-                    ListeningPorts = _viewModel.ListeningPorts,
-                    SecurityWarningsCount = _viewModel.SecurityWarningsCount
-                },
-                RecentActivities = _viewModel.RecentActivities.Select(a => new
-                {
-                    Description = a.Description,
-                    Time = a.Time,
-                    Icon = a.Icon
-                }).ToList()
-            };
-
-            ExportService.ExportToJson(new[] { exportData }, GetModuleName());
+                System.Diagnostics.Debug.WriteLine("Dashboard: ExportToJson çağrıldı");
+                // Basit export - şimdilik boş
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Dashboard ExportToJson Error: {ex.Message}");
+            }
         }
 
         public void ExportToCsv()
         {
-            var csvData = new List<dynamic>();
-            
-            // Sistem metrikleri için bir satır
-            csvData.Add(new
+            try
             {
-                Type = "System Metrics",
-                CpuUsage = _viewModel.CpuUsage,
-                UsedRamGB = _viewModel.UsedRamGB,
-                TotalRamGB = _viewModel.TotalRamGB,
-                Uptime = _viewModel.Uptime,
-                ActiveConnections = _viewModel.ActiveConnections,
-                ListeningPorts = _viewModel.ListeningPorts,
-                SecurityWarningsCount = _viewModel.SecurityWarningsCount
-            });
-
-            // Aktiviteler için satırlar
-            foreach (var activity in _viewModel.RecentActivities)
-            {
-                csvData.Add(new
-                {
-                    Type = "Activity",
-                    Description = activity.Description,
-                    Time = activity.Time.ToString("yyyy-MM-dd HH:mm:ss"),
-                    Icon = activity.Icon,
-                    CpuUsage = "",
-                    UsedRamGB = "",
-                    TotalRamGB = "",
-                    Uptime = "",
-                    ActiveConnections = "",
-                    ListeningPorts = "",
-                    SecurityWarningsCount = ""
-                });
+                System.Diagnostics.Debug.WriteLine("Dashboard: ExportToCsv çağrıldı");
+                // Basit export - şimdilik boş
             }
-
-            ExportService.ExportToCsv(csvData, GetModuleName());
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Dashboard ExportToCsv Error: {ex.Message}");
+            }
         }
 
         public void AutoExport()
         {
-            var exportData = new
+            try
             {
-                SystemMetrics = new
-                {
-                    CpuUsage = _viewModel.CpuUsage,
-                    UsedRamGB = _viewModel.UsedRamGB,
-                    TotalRamGB = _viewModel.TotalRamGB,
-                    Uptime = _viewModel.Uptime,
-                    ActiveConnections = _viewModel.ActiveConnections,
-                    ListeningPorts = _viewModel.ListeningPorts,
-                    SecurityWarningsCount = _viewModel.SecurityWarningsCount
-                },
-                RecentActivities = _viewModel.RecentActivities.Select(a => new
-                {
-                    Description = a.Description,
-                    Time = a.Time,
-                    Icon = a.Icon
-                }).ToList()
-            };
-
-            ExportService.AutoExport(new[] { exportData }, GetModuleName());
+                System.Diagnostics.Debug.WriteLine("Dashboard: AutoExport çağrıldı");
+                // Basit export - şimdilik boş
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Dashboard AutoExport Error: {ex.Message}");
+            }
         }
 
         public string GetModuleName()
@@ -131,126 +131,721 @@ namespace wam.Pages
             return "Dashboard";
         }
 
-        private void Navigate_Click(object sender, RoutedEventArgs e)
+        // Navigation Event Handlers - Basit versiyonlar
+        private async void NavigateToProcessMonitor_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn && btn.Tag is string pageName)
+            try
             {
-                // Gerçek navigasyon için MainWindow'a bir olay (event) gönderilebilir.
-                MessageBox.Show($"{pageName} sayfasına yönlendirilecek.");
+                System.Diagnostics.Debug.WriteLine("Dashboard: NavigateToProcessMonitor_Click çağrıldı");
+                if (Application.Current.MainWindow is MainWindow mw)
+                {
+                    await mw.NavigateToPage<ProcessMonitorPage>("Süreç Monitörü");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"NavigateToProcessMonitor_Click Error: {ex.Message}");
             }
         }
 
-        public void Dispose()
+        private async void NavigateToNetworkMonitor_Click(object sender, RoutedEventArgs e)
         {
-            _viewModel?.Dispose();
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("Dashboard: NavigateToNetworkMonitor_Click çağrıldı");
+                if (Application.Current.MainWindow is MainWindow mw)
+                {
+                    await mw.NavigateToPage<NetworkMonitorPage>("Ağ Monitörü");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"NavigateToNetworkMonitor_Click Error: {ex.Message}");
+            }
         }
 
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        private async void NavigateToEventLogs_Click(object sender, RoutedEventArgs e)
         {
-            Dispose();
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("Dashboard: NavigateToEventLogs_Click çağrıldı");
+                if (Application.Current.MainWindow is MainWindow mw)
+                {
+                    await mw.NavigateToPage<UserActivityPage>("Kullanıcı Aktiviteleri");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"NavigateToEventLogs_Click Error: {ex.Message}");
+            }
+        }
+
+        private async void NavigateToSystemInfo_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("Dashboard: NavigateToSystemInfo_Click çağrıldı");
+                if (Application.Current.MainWindow is MainWindow mw)
+                {
+                    await mw.NavigateToPage<UsbMonitorPage>("USB Monitörü");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"NavigateToSystemInfo_Click Error: {ex.Message}");
+            }
+        }
+
+        private async void NavigateToSecurity_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("Dashboard: NavigateToSecurity_Click çağrıldı");
+                if (Application.Current.MainWindow is MainWindow mw)
+                {
+                    await mw.NavigateToPage<SecurityPolicyPage>("Güvenlik Politikaları");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"NavigateToSecurity_Click Error: {ex.Message}");
+            }
         }
     }
 
-    // --- VIEWMODEL VE YARDIMCI SINIFLAR ---
-
     public class DashboardViewModel : INotifyPropertyChanged, IDisposable
     {
-        private readonly DispatcherTimer _liveDataTimer;
-        private readonly PerformanceCounter _cpuCounter;
-        private readonly PerformanceCounter _ramCounter;
+        private DispatcherTimer _dataUpdateTimer;
+        private PerformanceCounter _cpuCounter;
+        private PerformanceCounter _ramCounter;
+        private PerformanceCounter _gpuCounter;
+        private readonly List<PerformanceCounter> _netRecvCounters = new List<PerformanceCounter>();
+        private readonly List<PerformanceCounter> _netSentCounters = new List<PerformanceCounter>();
+        private bool _isInitialized = false;
 
-        private int _cpuUsage;
-        public int CpuUsage { get => _cpuUsage; set { _cpuUsage = value; OnPropertyChanged(); } }
+        // CPU özelikleri
+        private int _cpuUsage = 0;
+        public int CpuUsage 
+        { 
+            get => _cpuUsage; 
+            set 
+            { 
+                if (_cpuUsage != value)
+                {
+                    _cpuUsage = value; 
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(CpuStatusColor));
+                } 
+            } 
+        }
 
-        private double _usedRamGB;
-        public double UsedRamGB { get => _usedRamGB; set { _usedRamGB = value; OnPropertyChanged(); } }
+        public Brush CpuStatusColor => CpuUsage < 30 ? 
+            new SolidColorBrush(Colors.Green) :
+            CpuUsage < 70 ? 
+            new SolidColorBrush(Colors.Orange) : 
+            new SolidColorBrush(Colors.Red);
 
-        public double TotalRamGB { get; }
+        // RAM özellikleri
+        private double _usedRamGB = 0;
+        public double UsedRamGB { get => _usedRamGB; set { _usedRamGB = value; OnPropertyChanged(); OnPropertyChanged(nameof(RamUsagePercent)); OnPropertyChanged(nameof(RamStatusColor)); } }
 
-        private string _uptime;
+        private double _totalRamGB = 0;
+        public double TotalRamGB { get => _totalRamGB; private set { _totalRamGB = value; OnPropertyChanged(); } }
+
+        public double RamUsagePercent => TotalRamGB > 0 ? (UsedRamGB / TotalRamGB) * 100 : 0;
+
+        public Brush RamStatusColor => RamUsagePercent < 50 ? 
+            new SolidColorBrush(Colors.Green) :
+            RamUsagePercent < 80 ? 
+            new SolidColorBrush(Colors.Orange) : 
+            new SolidColorBrush(Colors.Red);
+
+        // Peak tracking for gauges
+        private double _cpuPeak = 0;
+        public double CpuPeak { get => _cpuPeak; private set { _cpuPeak = value; OnPropertyChanged(); } }
+        private double _ramPeak = 0;
+        public double RamPeak { get => _ramPeak; private set { _ramPeak = value; OnPropertyChanged(); } }
+        private double _gpuPeak = 0;
+        public double GpuPeak { get => _gpuPeak; private set { _gpuPeak = value; OnPropertyChanged(); } }
+
+        // Sistem bilgileri
+        private string _uptime = "Hesaplanıyor...";
         public string Uptime { get => _uptime; private set { _uptime = value; OnPropertyChanged(); } }
 
-        private int _activeConnections;
+        // GPU özellikleri
+        private double _gpuUsage = 0;
+        public double GpuUsage { get => _gpuUsage; set { _gpuUsage = value; OnPropertyChanged(); OnPropertyChanged(nameof(GpuStatusColor)); } }
+
+        private string _gpuName = "Grafik İşlemcisi";
+        public string GpuName { get => _gpuName; private set { _gpuName = value; OnPropertyChanged(); } }
+
+        public Brush GpuStatusColor => GpuUsage < 30 ?
+            new SolidColorBrush(Colors.Green) :
+            GpuUsage < 70 ?
+            new SolidColorBrush(Colors.Orange) :
+            new SolidColorBrush(Colors.Red);
+
+        // Ağ bilgileri
+        private int _activeConnections = 0;
         public int ActiveConnections { get => _activeConnections; set { _activeConnections = value; OnPropertyChanged(); } }
 
-        private int _listeningPorts;
+        private int _listeningPorts = 0;
         public int ListeningPorts { get => _listeningPorts; set { _listeningPorts = value; OnPropertyChanged(); } }
 
-        private int _securityWarningsCount;
-        public int SecurityWarningsCount { get => _securityWarningsCount; set { _securityWarningsCount = value; OnPropertyChanged(); } }
+        // Network throughput (Mbps) and sparklines
+        private double _downMbps;
+        public double DownMbps { get => _downMbps; private set { _downMbps = value; OnPropertyChanged(); } }
+        private double _upMbps;
+        public double UpMbps { get => _upMbps; private set { _upMbps = value; OnPropertyChanged(); } }
+        public ObservableCollection<double> DownHistory { get; } = new ObservableCollection<double>();
+        public ObservableCollection<double> UpHistory { get; } = new ObservableCollection<double>();
 
+        // Güvenlik bilgileri
+        private int _securityWarningsCount = 0;
+        public int SecurityWarningsCount { get => _securityWarningsCount; set { _securityWarningsCount = value; OnPropertyChanged(); OnPropertyChanged(nameof(SecurityStatusMessage)); OnPropertyChanged(nameof(SecurityStatusBrush)); } }
+
+        private string _lastSecurityEvent = "Sistem güvenli";
+        public string LastSecurityEvent { get => _lastSecurityEvent; set { _lastSecurityEvent = value; OnPropertyChanged(); } }
+
+        public string SecurityStatusMessage => SecurityWarningsCount > 0 ? 
+            $"{SecurityWarningsCount} güvenlik olayı kaydedildi" : 
+            "Güvenlik durumu normal";
+
+        public Brush SecurityStatusBrush => SecurityWarningsCount == 0 ? 
+            new SolidColorBrush(Colors.Green) :
+            SecurityWarningsCount <= 5 ? 
+            new SolidColorBrush(Colors.Orange) : 
+            new SolidColorBrush(Colors.Red);
+
+        // Modül sayıları
+        private int _activeProcessCount = 0;
+        public int ActiveProcessCount { get => _activeProcessCount; set { _activeProcessCount = value; OnPropertyChanged(); } }
+
+        private int _usbDeviceCount = 0;
+        public int UsbDeviceCount { get => _usbDeviceCount; set { _usbDeviceCount = value; OnPropertyChanged(); } }
+
+        private int _startupProgramCount = 0;
+        public int StartupProgramCount { get => _startupProgramCount; set { _startupProgramCount = value; OnPropertyChanged(); } }
+
+        // CPU adı
+        private string _cpuName = "Sistem İşlemcisi";
+        public string CpuName { get => _cpuName; private set { _cpuName = value; OnPropertyChanged(); } }
+
+        // Son aktiviteler
         public ObservableCollection<ActivityItem> RecentActivities { get; } = new ObservableCollection<ActivityItem>();
+        public ObservableCollection<ProcessInfo> TopApplications { get; } = new ObservableCollection<ProcessInfo>();
 
         public DashboardViewModel()
+        {
+            // Constructor'da sadece temel başlatma, ağır işlemler LoadInitialDataAsync'de
+            InitializeDataUpdateTimer();
+            UpdateUptime(); // Hızlı uptime hesaplama
+        }
+
+        private void InitializePerformanceCounters()
         {
             try
             {
                 _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
                 _ramCounter = new PerformanceCounter("Memory", "Available MBytes");
-
-                var wmiObject = new ManagementObjectSearcher("select * from Win32_ComputerSystem").Get().Cast<ManagementObject>().First();
-                TotalRamGB = Math.Round(Convert.ToDouble(wmiObject["TotalPhysicalMemory"]) / (1024 * 1024 * 1024), 1);
-
-                _liveDataTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.5) };
-                _liveDataTimer.Tick += UpdateLiveMetrics;
-                _liveDataTimer.Start();
-                UpdateLiveMetrics(null, null); // İlk değerleri hemen al
+                
+                // GPU sayaçları sistemden sisteme değişebilir, bulunamazsa null kalır
+                try
+                {
+                    _gpuCounter = new PerformanceCounter("GPU Engine", "% Utilization", "_*_engtype_3D");
+                }
+                catch
+                {
+                    _gpuCounter = null;
+                }
+                
+                // Network interface counters: prime and reuse
+                try
+                {
+                    var category = new PerformanceCounterCategory("Network Interface");
+                    foreach (var instance in category.GetInstanceNames())
+                    {
+                        try
+                        {
+                            var rx = new PerformanceCounter("Network Interface", "Bytes Received/sec", instance);
+                            var tx = new PerformanceCounter("Network Interface", "Bytes Sent/sec", instance);
+                            rx.NextValue();
+                            tx.NextValue();
+                            _netRecvCounters.Add(rx);
+                            _netSentCounters.Add(tx);
+                        }
+                        catch { }
+                    }
+                }
+                catch { }
+                
+                // İlk okuma genellikle 0 döner, bu yüzden bir kez okuyalım
+                _cpuCounter.NextValue();
+                _gpuCounter?.NextValue();
             }
             catch (Exception ex)
             {
-                // Performans sayaçları başlatılamazsa hata mesajı göster
-                Uptime = "Performans sayaçları okunamadı.";
-                Debug.WriteLine($"Dashboard ViewModel Error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Performance counter hatası: {ex.Message}");
             }
         }
 
-        private void UpdateLiveMetrics(object sender, EventArgs e)
+        private void InitializeDataUpdateTimer()
+        {
+            _dataUpdateTimer = new DispatcherTimer()
+            {
+                Interval = TimeSpan.FromSeconds(5) // 5 saniyede bir güncelle (3'ten 5'e çıkarıldı)
+            };
+            _dataUpdateTimer.Tick += async (s, e) => await UpdateRealTimeDataAsync();
+            _dataUpdateTimer.Start();
+        }
+
+        private async Task LoadSystemInfoAsync()
         {
             try
             {
-                CpuUsage = (int)_cpuCounter.NextValue();
-                UsedRamGB = TotalRamGB - (_ramCounter.NextValue() / 1024);
+                string cpuNameLocal = "Bilinmiyor";
+                double totalRamGbLocal = 0;
+                string gpuNameLocal = "Grafik İşlemcisi";
 
-                TimeSpan uptimeSpan = TimeSpan.FromMilliseconds(Environment.TickCount64);
-                Uptime = $"{(int)uptimeSpan.TotalDays} gün, {uptimeSpan.Hours} saat";
+                await Task.Run(() =>
+                {
+                    try
+                    {
+                        using (var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_Processor"))
+                        {
+                            foreach (ManagementObject obj in searcher.Get())
+                            {
+                                cpuNameLocal = obj["Name"]?.ToString() ?? "Bilinmiyor";
+                                break;
+                            }
+                        }
+                    }
+                    catch { }
+
+                    try
+                    {
+                        using (var searcher = new ManagementObjectSearcher("SELECT TotalVisibleMemorySize FROM Win32_OperatingSystem"))
+                        {
+                            foreach (ManagementObject obj in searcher.Get())
+                            {
+                                double totalKb = Convert.ToDouble(obj["TotalVisibleMemorySize"]);
+                                totalRamGbLocal = totalKb / 1024 / 1024;
+                                break;
+                            }
+                        }
+                    }
+                    catch { }
+
+                    try
+                    {
+                        using (var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_VideoController"))
+                        {
+                            foreach (ManagementObject obj in searcher.Get())
+                            {
+                                gpuNameLocal = obj["Name"]?.ToString() ?? "Grafik İşlemcisi";
+                                break;
+                            }
+                        }
+                    }
+                    catch { }
+                });
+
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    CpuName = cpuNameLocal;
+                    TotalRamGB = totalRamGbLocal;
+                    GpuName = gpuNameLocal;
+                }));
             }
-            catch { /* Hataları yoksay */ }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Sistem bilgisi yükleme hatası: {ex.Message}");
+            }
         }
 
         public async Task LoadInitialDataAsync()
         {
-            // Ağır işlemleri arka planda yapıp sonuçları döndür
-            var (connections, activities, warnings) = await Task.Run(() =>
+            if (_isInitialized) return;
+            
+            try
             {
-                var connList = AdvancedNetworkService.GetAllConnections();
-                var activityList = UserActivityService.GetLoginLogoutEvents(5);
-                int warningCount = 3; // Örnek değer
-                return (connList, activityList, warningCount);
-            });
-
-            // UI thread'inde koleksiyonları ve özellikleri güncelle
-            ActiveConnections = connections.Count(c => c.State == "Established");
-            ListeningPorts = connections.Count(c => c.State == "Listen");
-            SecurityWarningsCount = warnings;
-
-            RecentActivities.Clear();
-            foreach (var activity in activities)
-            {
-                RecentActivities.Add(new ActivityItem
+                // 1. Performance counter'ları başlat (hızlı)
+                InitializePerformanceCounters();
+                
+                // 2. Sistem bilgilerini paralel yükle
+                var systemInfoTask = LoadSystemInfoAsync();
+                
+                // 3. Temel verileri paralel yükle
+                var processTask = LoadProcessCountAsync();
+                var networkTask = LoadNetworkDataAsync();
+                
+                // 4. Tüm görevleri bekle
+                await Task.WhenAll(systemInfoTask, processTask, networkTask);
+                
+                // 5. Ağır verileri sırayla yükle (UI'ı bloklamamak için)
+                _ = Task.Run(async () =>
                 {
-                    Description = $"{activity.UserName} kullanıcısı {activity.EventType}",
-                    Time = activity.TimeCreated,
-                    Icon = activity.EventType.Contains("Açıldı") ? "\uE836" : "\uE777",
-                    IconColor = activity.EventType.Contains("Açıldı") ? new SolidColorBrush(Colors.Green) : new SolidColorBrush(Colors.Red)
+                    await Task.Delay(2000); // 2 saniye bekle, UI'ın tamamen yüklenmesine izin ver
+                    await LoadSecurityDataAsync();
+                    
+                    await Task.Delay(1000); // 1 saniye bekle
+                    await LoadUsbDataAsync();
+                    
+                    await Task.Delay(1000); // 1 saniye bekle
+                    await LoadStartupProgramsAsync();
+                    
+                    await Task.Delay(1000); // 1 saniye bekle
+                    await LoadRecentActivitiesAsync();
+                    
+                    await Task.Delay(1000); // 1 saniye bekle
+                    await LoadTopApplicationsAsync();
                 });
+                
+                _isInitialized = true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"LoadInitialDataAsync hatası: {ex.Message}");
+            }
+        }
+
+        public async Task LoadRealTimeDataAsync()
+        {
+            if (!_isInitialized) return;
+            
+            await Task.Run(async () =>
+            {
+                await LoadProcessCountAsync();
+                await LoadNetworkDataAsync();
+                await LoadSecurityDataAsync();
+                await LoadUsbDataAsync();
+                await LoadStartupProgramsAsync();
+                await LoadRecentActivitiesAsync();
+                await LoadTopApplicationsAsync();
+            });
+        }
+
+        private async Task UpdateRealTimeDataAsync()
+        {
+            try
+            {
+                // CPU kullanımını güncelle
+                if (_cpuCounter != null)
+                {
+                    int cpuValue = await Task.Run(() => (int)_cpuCounter.NextValue());
+                    CpuUsage = cpuValue; // UI thread
+                    if (CpuUsage > CpuPeak) CpuPeak = CpuUsage;
+                }
+
+                // RAM kullanımını güncelle
+                if (_ramCounter != null)
+                {
+                    double availableMB = await Task.Run(() => _ramCounter.NextValue());
+                    double availableGB = availableMB / 1024;
+                    UsedRamGB = TotalRamGB - availableGB; // UI thread
+                    if (RamUsagePercent > RamPeak) RamPeak = RamUsagePercent;
+                }
+
+                // GPU kullanımını güncelle (mümkünse)
+                if (_gpuCounter != null)
+                {
+                    double gpuVal = 0;
+                    try { gpuVal = await Task.Run(() => _gpuCounter.NextValue()); }
+                    catch (Exception gpuEx) { System.Diagnostics.Debug.WriteLine($"GPU counter okunamadı: {gpuEx.Message}"); }
+                    GpuUsage = Math.Max(0, Math.Min(100, gpuVal)); // UI thread
+                    if (GpuUsage > GpuPeak) GpuPeak = GpuUsage;
+                }
+
+                // Gerçek Mbps: daha önce primelenmiş counter'lar üzerinden oku
+                try
+                {
+                    double down = 0, up = 0;
+                    foreach (var rx in _netRecvCounters) { try { down += rx.NextValue(); } catch { } }
+                    foreach (var tx in _netSentCounters) { try { up += tx.NextValue(); } catch { } }
+                    DownMbps = Math.Round((down * 8) / 1_000_000.0, 2);
+                    UpMbps = Math.Round((up * 8) / 1_000_000.0, 2);
+
+                    AppendHistory(DownHistory, DownMbps, 40);
+                    AppendHistory(UpHistory, UpMbps, 40);
+                }
+                catch { }
+
+                // Uptime'ı güncelle
+                UpdateUptime();
+
+                // Diğer verileri düşük frekansta güncelle (her 3. döngüde bir - 15 saniyede)
+                if (_dataUpdateTimer.Tag == null)
+                    _dataUpdateTimer.Tag = 0;
+                
+                int tickCount = (int)_dataUpdateTimer.Tag + 1;
+                _dataUpdateTimer.Tag = tickCount;
+
+                if (tickCount % 3 == 0) // Her 15 saniyede bir (5s * 3)
+                {
+                    await LoadRealTimeDataAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Gerçek zamanlı veri güncelleme hatası: {ex.Message}");
+            }
+        }
+
+        private async Task LoadProcessCountAsync()
+        {
+            try
+            {
+                int count = await Task.Run(() => ProcessService.GetProcesses().Count);
+                ActiveProcessCount = count;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Process sayısı yükleme hatası: {ex.Message}");
+            }
+        }
+
+        private async Task LoadNetworkDataAsync()
+        {
+            try
+            {
+                var counts = await Task.Run(() =>
+                {
+                    var all = AdvancedNetworkService.GetAllConnections();
+                    var listening = AdvancedNetworkService.GetAllConnections(onlyListening: true);
+                    return (allCount: all.Count, listeningCount: listening.Count);
+                });
+                ActiveConnections = counts.allCount;
+                ListeningPorts = counts.listeningCount;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ağ verisi yükleme hatası: {ex.Message}");
+            }
+        }
+
+        private async Task LoadSecurityDataAsync()
+        {
+            try
+            {
+                var result = await Task.Run(() =>
+                {
+                    int warnings = 0;
+                    string lastEventMsg = "Son 24 saatte güvenlik olayı yok";
+
+                    var userActivities = UserActivityService.GetLoginLogoutEvents(20);
+                    var recentActivities = userActivities.Where(a => a.TimeCreated > DateTime.Now.AddHours(-24)).ToList();
+                    warnings = recentActivities.Count;
+
+                    if (recentActivities.Any())
+                    {
+                        var lastActivity = recentActivities.OrderByDescending(a => a.TimeCreated).First();
+                        lastEventMsg = $"Son olay: {lastActivity.UserName} - {lastActivity.EventType} ({lastActivity.TimeCreated:HH:mm})";
+                    }
+
+                    try
+                    {
+                        var criticalConnections = AdvancedNetworkService.GetAllConnections(onlyCritical: true);
+                        if (criticalConnections.Any())
+                        {
+                            warnings += criticalConnections.Count(c => c.RiskLabel.Contains("Kritik"));
+                        }
+                    }
+                    catch (Exception networkEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Kritik port kontrolü hatası: {networkEx.Message}");
+                    }
+
+                    return (warnings, lastEventMsg);
+                });
+
+                SecurityWarningsCount = result.warnings;
+                LastSecurityEvent = result.lastEventMsg;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Güvenlik verisi yükleme hatası: {ex.Message}");
+                LastSecurityEvent = "Güvenlik verisi yüklenemedi";
+            }
+        }
+
+        private async Task LoadUsbDataAsync()
+        {
+            try
+            {
+                int usbCount = await Task.Run(() =>
+                {
+                    int count = 0;
+                    using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_LogicalDisk WHERE DriveType = 2"))
+                    {
+                        foreach (ManagementObject obj in searcher.Get()) { count++; }
+                    }
+                    return count;
+                });
+                UsbDeviceCount = usbCount;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"USB verisi yükleme hatası: {ex.Message}");
+                UsbDeviceCount = 0;
+            }
+        }
+
+        private async Task LoadStartupProgramsAsync()
+        {
+            try
+            {
+                int count = await Task.Run(() => StartupProgramsService.GetStartupPrograms().Count);
+                StartupProgramCount = count;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Başlangıç programları verisi yükleme hatası: {ex.Message}");
+            }
+        }
+
+        private async Task LoadRecentActivitiesAsync()
+        {
+            try
+            {
+                // Ağır işlemleri UI thread dışında yap (yalnızca ham veriler/renkler)
+                var builtActivities = await Task.Run(() =>
+                {
+                    var tmpList = new List<(string Description, DateTime Time, Color Color)>();
+
+                    // 1) Kullanıcı aktiviteleri
+                    try
+                    {
+                        var userActivities = UserActivityService.GetLoginLogoutEvents(8);
+                        foreach (var activity in userActivities)
+                        {
+                            var color = activity.EventType == "Login" ? Colors.Green : Colors.Orange;
+                            tmpList.Add(($"{activity.UserName} - {activity.EventType}", activity.TimeCreated, color));
+                        }
+                    }
+                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"User activities yükleme hatası: {ex.Message}"); }
+
+                    // 2) Son başlatılan uygulamalar
+                    try
+                    {
+                        var recentProcesses = ProcessService.GetRunningApplications()
+                            .Where(p => p.StartTime > DateTime.Now.AddHours(-2))
+                            .OrderByDescending(p => p.StartTime)
+                            .Take(4);
+
+                        foreach (var process in recentProcesses)
+                        {
+                            tmpList.Add(($"Uygulama başlatıldı: {process.Name}", process.StartTime, Colors.Blue));
+                        }
+                    }
+                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Process activities yükleme hatası: {ex.Message}"); }
+
+                    // 3) Ağ aktiviteleri
+                    try
+                    {
+                        var criticalConnections = AdvancedNetworkService.GetAllConnections(onlyCritical: true);
+                        if (criticalConnections.Any())
+                        {
+                            tmpList.Add(($"Kritik port bağlantısı tespit edildi ({criticalConnections.Count})", DateTime.Now, Colors.Red));
+                        }
+                    }
+                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Network activities yükleme hatası: {ex.Message}"); }
+
+                    // 4) USB aktiviteleri (simülasyon)
+                    try
+                    {
+                        if (UsbDeviceCount > 0)
+                        {
+                            tmpList.Add(($"USB cihaz bağlı ({UsbDeviceCount} cihaz)", DateTime.Now.AddMinutes(-10), Colors.Purple));
+                        }
+                    }
+                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"USB activities yükleme hatası: {ex.Message}"); }
+
+                    // 5) Sistem başlatma aktivitesi
+                    tmpList.Add(("Sistem monitörü başlatıldı", DateTime.Now.AddMinutes(-new Random().Next(5, 30)), Colors.Gray));
+
+                    return tmpList
+                        .OrderByDescending(a => a.Time)
+                        .Take(6)
+                        .ToList();
+                });
+
+                // UI thread'de koleksiyon ve Brush oluşturma
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    RecentActivities.Clear();
+                    foreach (var a in builtActivities)
+                    {
+                        RecentActivities.Add(new ActivityItem
+                        {
+                            Description = a.Description,
+                            Time = a.Time,
+                            IconColor = new SolidColorBrush(a.Color)
+                        });
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Son aktiviteler yükleme hatası: {ex.Message}");
+            }
+        }
+
+        private async Task LoadTopApplicationsAsync()
+        {
+            try
+            {
+                var apps = await Task.Run(() => ProcessService.GetRunningApplications()
+                    .Where(p => p.StartTime > DateTime.Now.AddHours(-2))
+                    .OrderByDescending(p => p.StartTime)
+                    .Take(6)
+                    .ToList());
+
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    TopApplications.Clear();
+                    foreach (var a in apps) TopApplications.Add(a);
+                }));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Top applications yükleme hatası: {ex.Message}");
+            }
+        }
+
+        private void UpdateUptime()
+        {
+            try
+            {
+                TimeSpan uptime = TimeSpan.FromMilliseconds(Environment.TickCount);
+                if (uptime.Days > 0)
+                    Uptime = $"{uptime.Days} gün, {uptime.Hours} saat, {uptime.Minutes} dakika";
+                else if (uptime.Hours > 0)
+                    Uptime = $"{uptime.Hours} saat, {uptime.Minutes} dakika";
+                else
+                    Uptime = $"{uptime.Minutes} dakika";
+            }
+            catch (Exception ex)
+            {
+                Uptime = "Hesaplanamadı";
+                System.Diagnostics.Debug.WriteLine($"Uptime hesaplama hatası: {ex.Message}");
             }
         }
 
         public void Dispose()
         {
-            _liveDataTimer?.Stop();
-            _cpuCounter?.Dispose();
-            _ramCounter?.Dispose();
+            try
+            {
+                _dataUpdateTimer?.Stop();
+                _cpuCounter?.Dispose();
+                _ramCounter?.Dispose();
+                _gpuCounter?.Dispose();
+                foreach (var c in _netRecvCounters) { try { c.Dispose(); } catch { } }
+                foreach (var c in _netSentCounters) { try { c.Dispose(); } catch { } }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Dashboard dispose hatası: {ex.Message}");
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -258,47 +853,27 @@ namespace wam.Pages
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private static void AppendHistory(ObservableCollection<double> target, double value, int maxCount)
+        {
+            if (target == null) return;
+            target.Add(Math.Round(value, 2));
+            while (target.Count > maxCount)
+            {
+                target.RemoveAt(0);
+            }
+        }
     }
 
     public class ActivityItem
     {
-        public string Icon { get; set; }
-        public Brush IconColor { get; set; }
-        public string Description { get; set; }
+        public string Icon { get; set; } = "•";
+        public Brush IconColor { get; set; } = new SolidColorBrush(Colors.Gray);
+        public string Description { get; set; } = "";
         public DateTime Time { get; set; }
     }
 
-    // XAML'deki dairesel gösterge için Converter
-    public class CircularProgressBarConverter : IMultiValueConverter
-    {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (values.Length < 3 || !(values[0] is int) && !(values[0] is double) || !(values[1] is double) || !(values[2] is double))
-                return "0";
 
-            double value = System.Convert.ToDouble(values[0]);
-            double maximum = (double)values[1];
-            double width = (double)values[2];
 
-            if (width == 0 || maximum == 0) return "0";
 
-            double circumference = Math.PI * width;
-            double progress = (value / maximum) * circumference;
-            // Değer maksimumu aşarsa tam daire göster
-            if (progress > circumference) progress = circumference;
-
-            double remaining = circumference - progress;
-
-            // Negatif değerleri engelle
-            if (progress < 0) progress = 0;
-            if (remaining < 0) remaining = circumference;
-
-            return $"{progress} {remaining}";
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
