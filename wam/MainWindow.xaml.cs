@@ -3,12 +3,19 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using wam.Pages;
+using Forms = System.Windows.Forms;
+using System.IO;
+using System.Text.Json;
+using System.Windows.Input;
 
 namespace wam
 {
     public partial class MainWindow : Window
     {
         private Button _activeButton;
+        private Forms.NotifyIcon _trayIcon;
+        private bool _minimizeOnClose = false;
+        private bool _forceClose = false;
 
         public MainWindow()
         {
@@ -16,6 +23,15 @@ namespace wam
             // Açılışta Dashboard'u otomatik olarak yükle
             Loaded += MainWindow_Loaded;
             ContentTitle.Text = "Dashboard";
+            InitializeTray();
+            LoadWindowSettings();
+            // Geliştirici deneyimi: VS altında çalışırken kapatınca gerçekten kapansın
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                _minimizeOnClose = false;
+            }
+            Closing += MainWindow_Closing;
+            Application.Current.Exit += (_, __) => { try { _trayIcon.Visible = false; _trayIcon.Dispose(); } catch { } };
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -205,6 +221,134 @@ namespace wam
         {
             SetActiveButton(EventLogButton);
             await NavigateToPage<EventLogAnalyzerPage>("Olay Günlüğü Analizi");
+        }
+    }
+
+    // ---------------- Tray & Close Handling ----------------
+    partial class MainWindow
+    {
+        private void InitializeTray()
+        {
+            try
+            {
+                _trayIcon = new Forms.NotifyIcon
+                {
+                    Icon = new System.Drawing.Icon(Application.GetResourceStream(new Uri("pack://application:,,,/Resources/wams.ico")).Stream),
+                    Visible = true,
+                    Text = "WAM"
+                };
+
+                var menu = new Forms.ContextMenuStrip();
+                menu.Items.Add("Göster", null, (s, e) => ShowMainWindow());
+                menu.Items.Add("Seçimi Unut", null, (s, e) => { _minimizeOnClose = false; SaveWindowSettings(); _trayIcon.ShowBalloonTip(1200, "WAM", "Tercih sıfırlandı.", Forms.ToolTipIcon.Info); });
+                menu.Items.Add("Çıkış", null, (s, e) => { _forceClose = true; Close(); });
+                _trayIcon.ContextMenuStrip = menu;
+                _trayIcon.DoubleClick += (s, e) => ShowMainWindow();
+            }
+            catch { }
+        }
+
+        private void ShowMainWindow()
+        {
+            try
+            {
+                Show();
+                WindowState = WindowState.Normal;
+                Activate();
+                Topmost = true; Topmost = false;
+                ShowInTaskbar = true;
+            }
+            catch { }
+        }
+
+        private string GetSettingsPath()
+        {
+            var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WAM");
+            Directory.CreateDirectory(dir);
+            return Path.Combine(dir, "settings.json");
+        }
+
+        private void LoadWindowSettings()
+        {
+            try
+            {
+                var path = GetSettingsPath();
+                if (!File.Exists(path)) return;
+                var json = File.ReadAllText(path);
+                var s = JsonSerializer.Deserialize<WindowSettings>(json);
+                _minimizeOnClose = s?.MinimizeOnClose ?? false;
+            }
+            catch { _minimizeOnClose = false; }
+        }
+
+        private void SaveWindowSettings()
+        {
+            try
+            {
+                var path = GetSettingsPath();
+                var s = new WindowSettings { MinimizeOnClose = _minimizeOnClose };
+                File.WriteAllText(path, JsonSerializer.Serialize(s, new JsonSerializerOptions { WriteIndented = true }));
+            }
+            catch { }
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // VS ile çalışırken build kilidi yaşamamak için her zaman tamamen kapat
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                _forceClose = true;
+            }
+            if (_forceClose)
+            {
+                try { _trayIcon.Visible = false; _trayIcon.Dispose(); } catch { }
+                SaveWindowSettings();
+                return;
+            }
+
+            // Ctrl/Shift ile kapatma → tercihi geçici olarak yok say ve diyalogu göster
+            bool overridePrompt = (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift ||
+                                   (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
+
+            if (_minimizeOnClose && !overridePrompt)
+            {
+                e.Cancel = true;
+                ShowInTaskbar = false;
+                Hide();
+                _trayIcon?.ShowBalloonTip(1500, "WAM", "Uygulama simge durumuna küçültüldü.", Forms.ToolTipIcon.Info);
+                return;
+            }
+
+            // Profesyonel seçenek penceresi
+            var dialog = new wam.Dialogs.CloseConfirmDialog
+            {
+                Owner = this
+            };
+            bool? result = dialog.ShowDialog();
+            if (result == true && dialog.MinimizeSelected)
+            {
+                e.Cancel = true;
+                _minimizeOnClose = dialog.AlwaysMinimize;
+                SaveWindowSettings();
+                ShowInTaskbar = false;
+                Hide();
+                _trayIcon?.ShowBalloonTip(1500, "WAM", "Uygulama simge durumuna küçültüldü.", Forms.ToolTipIcon.Info);
+            }
+            else if (result == true && dialog.CloseSelected)
+            {
+                _minimizeOnClose = dialog.AlwaysMinimize; // Kullanıcı kapatsa da tercihi kaydet
+                SaveWindowSettings();
+                try { _trayIcon.Visible = false; _trayIcon.Dispose(); } catch { }
+            }
+            else
+            {
+                e.Cancel = true; // Dialog kapandıysa iptal
+            }
+        }
+
+        private class WindowSettings
+        {
+            public bool MinimizeOnClose { get; set; }
         }
     }
 }

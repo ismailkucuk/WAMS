@@ -2,13 +2,25 @@
 using System.Windows;
 using System.IO;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace wam
 {
     public partial class App : Application
     {
+        private static Mutex _singleInstanceMutex;
         protected override void OnStartup(StartupEventArgs e)
         {
+            // Tek örnek kontrolü (VS altında iki simge oluşmasını engeller)
+            bool createdNew;
+            _singleInstanceMutex = new Mutex(true, "WAM_SINGLE_INSTANCE", out createdNew);
+            if (!createdNew)
+            {
+                // Zaten çalışıyor; yeni örneği kapat
+                Shutdown();
+                return;
+            }
+
             AppDomain.CurrentDomain.UnhandledException += (s, args) =>
             {
                 try { LogCrash(args.ExceptionObject as Exception, "AppDomain"); } catch { }

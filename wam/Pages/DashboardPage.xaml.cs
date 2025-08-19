@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using wam;
 using System.Net.NetworkInformation;
+using System.IO;
+using System.Text.Json;
 
 namespace wam.Pages
 {
@@ -51,15 +53,28 @@ namespace wam.Pages
             try
             {
                 System.Diagnostics.Debug.WriteLine("Dashboard: LoadDataAsync başlatıldı");
+
+                // 1) Cache'den yüklemeyi dene; başarılıysa HEMEN geri dön ve UI çizilsin
+                bool cacheLoaded = await LoadFromCacheAsync();
+                if (cacheLoaded)
+                {
+                    _ = Task.Run(async () =>
+                    {
+                        await _viewModel.LoadInitialDataAsync();
+                        await _viewModel.LoadRealTimeDataAsync();
+                        await SaveToCacheAsync();
+                    });
+                    return; // Page host overlay hızlıca kapanacak
+                }
+
+                // 2) Cache yoksa normal yükleme + overlay
                 LoadingStateChanged?.Invoke(true, "Dashboard verileri yükleniyor...");
-                
                 if (_viewModel != null)
                 {
-                    // Sadece temel verileri yükle, ağır veriler arka planda yüklensin
                     await _viewModel.LoadInitialDataAsync();
+                    _ = _viewModel.LoadRealTimeDataAsync();
+                    await SaveToCacheAsync();
                 }
-                
-                System.Diagnostics.Debug.WriteLine("Dashboard: LoadDataAsync tamamlandı");
             }
             catch (Exception ex)
             {
@@ -68,6 +83,47 @@ namespace wam.Pages
             finally
             {
                 LoadingStateChanged?.Invoke(false, "");
+                System.Diagnostics.Debug.WriteLine("Dashboard: LoadDataAsync tamamlandı");
+            }
+        }
+
+        private async Task<bool> LoadFromCacheAsync()
+        {
+            try
+            {
+                string cacheDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WAM");
+                string cacheFile = Path.Combine(cacheDir, "dashboard_cache.json");
+                if (!File.Exists(cacheFile)) return false;
+
+                var json = await File.ReadAllTextAsync(cacheFile);
+                var cache = JsonSerializer.Deserialize<DashboardCacheData>(json);
+                if (cache == null) return false;
+
+                _viewModel.LoadFromCache(cache);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Cache yükleme hatası: {ex.Message}");
+                return false;
+            }
+        }
+
+        private async Task SaveToCacheAsync()
+        {
+            try
+            {
+                string cacheDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WAM");
+                Directory.CreateDirectory(cacheDir);
+                string cacheFile = Path.Combine(cacheDir, "dashboard_cache.json");
+
+                var cache = _viewModel.GetCacheData();
+                var json = JsonSerializer.Serialize(cache, new JsonSerializerOptions { WriteIndented = true });
+                await File.WriteAllTextAsync(cacheFile, json);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Cache kaydetme hatası: {ex.Message}");
             }
         }
 
@@ -76,9 +132,8 @@ namespace wam.Pages
             try
             {
                 System.Diagnostics.Debug.WriteLine("Dashboard: UnloadData başlatıldı");
-                
                 _viewModel?.Dispose();
-                
+                _ = SaveToCacheAsync();
                 System.Diagnostics.Debug.WriteLine("Dashboard: UnloadData tamamlandı");
             }
             catch (Exception ex)
@@ -863,6 +918,91 @@ namespace wam.Pages
                 target.RemoveAt(0);
             }
         }
+
+        public void LoadFromCache(DashboardCacheData cache)
+        {
+            try
+            {
+                CpuUsage = cache.CpuUsage;
+                UsedRamGB = cache.UsedRamGB;
+                TotalRamGB = cache.TotalRamGB;
+                CpuPeak = cache.CpuPeak;
+                RamPeak = cache.RamPeak;
+                GpuUsage = cache.GpuUsage;
+                GpuPeak = cache.GpuPeak;
+                Uptime = cache.Uptime;
+                ActiveConnections = cache.ActiveConnections;
+                ListeningPorts = cache.ListeningPorts;
+                DownMbps = cache.DownMbps;
+                UpMbps = cache.UpMbps;
+                SecurityWarningsCount = cache.SecurityWarningsCount;
+                LastSecurityEvent = cache.LastSecurityEvent;
+                ActiveProcessCount = cache.ActiveProcessCount;
+                UsbDeviceCount = cache.UsbDeviceCount;
+                StartupProgramCount = cache.StartupProgramCount;
+                CpuName = cache.CpuName;
+                GpuName = cache.GpuName;
+
+                RecentActivities.Clear();
+                foreach (var a in cache.RecentActivities)
+                {
+                    RecentActivities.Add(new ActivityItem
+                    {
+                        Description = a.Description,
+                        Time = a.Time,
+                        IconColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString(a.IconColorHex ?? "#FF808080"))
+                    });
+                }
+
+                TopApplications.Clear();
+                foreach (var a in cache.TopApplications)
+                {
+                    TopApplications.Add(new ProcessInfo { Name = a.Name, StartTime = a.StartTime });
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Cache'den yüklerken hata: {ex.Message}");
+            }
+        }
+
+        public DashboardCacheData GetCacheData()
+        {
+            var cache = new DashboardCacheData
+            {
+                CpuUsage = CpuUsage,
+                UsedRamGB = UsedRamGB,
+                TotalRamGB = TotalRamGB,
+                CpuPeak = CpuPeak,
+                RamPeak = RamPeak,
+                GpuUsage = GpuUsage,
+                GpuPeak = GpuPeak,
+                Uptime = Uptime,
+                ActiveConnections = ActiveConnections,
+                ListeningPorts = ListeningPorts,
+                DownMbps = DownMbps,
+                UpMbps = UpMbps,
+                SecurityWarningsCount = SecurityWarningsCount,
+                LastSecurityEvent = LastSecurityEvent,
+                ActiveProcessCount = ActiveProcessCount,
+                UsbDeviceCount = UsbDeviceCount,
+                StartupProgramCount = StartupProgramCount,
+                CpuName = CpuName,
+                GpuName = GpuName,
+                RecentActivities = RecentActivities.Select(a => new ActivityItemCache
+                {
+                    Description = a.Description,
+                    Time = a.Time,
+                    IconColorHex = (a.IconColor as SolidColorBrush)?.Color.ToString() ?? "#FF808080"
+                }).ToList(),
+                TopApplications = TopApplications.Select(a => new ProcessInfoCache
+                {
+                    Name = a.Name,
+                    StartTime = a.StartTime
+                }).ToList()
+            };
+            return cache;
+        }
     }
 
     public class ActivityItem
@@ -873,7 +1013,41 @@ namespace wam.Pages
         public DateTime Time { get; set; }
     }
 
+    public class DashboardCacheData
+    {
+        public int CpuUsage { get; set; }
+        public double UsedRamGB { get; set; }
+        public double TotalRamGB { get; set; }
+        public double CpuPeak { get; set; }
+        public double RamPeak { get; set; }
+        public double GpuUsage { get; set; }
+        public double GpuPeak { get; set; }
+        public string Uptime { get; set; }
+        public int ActiveConnections { get; set; }
+        public int ListeningPorts { get; set; }
+        public double DownMbps { get; set; }
+        public double UpMbps { get; set; }
+        public int SecurityWarningsCount { get; set; }
+        public string LastSecurityEvent { get; set; }
+        public int ActiveProcessCount { get; set; }
+        public int UsbDeviceCount { get; set; }
+        public int StartupProgramCount { get; set; }
+        public string CpuName { get; set; }
+        public string GpuName { get; set; }
+        public List<ActivityItemCache> RecentActivities { get; set; } = new List<ActivityItemCache>();
+        public List<ProcessInfoCache> TopApplications { get; set; } = new List<ProcessInfoCache>();
+    }
 
+    public class ActivityItemCache
+    {
+        public string Description { get; set; }
+        public DateTime Time { get; set; }
+        public string IconColorHex { get; set; }
+    }
 
-
+    public class ProcessInfoCache
+    {
+        public string Name { get; set; }
+        public DateTime StartTime { get; set; }
+    }
 }
