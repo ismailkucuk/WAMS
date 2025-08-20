@@ -16,6 +16,7 @@ namespace wam
         private Forms.NotifyIcon _trayIcon;
         private bool _minimizeOnClose = false;
         private bool _forceClose = false;
+        private bool _rememberChoice = false;
 
         public MainWindow()
         {
@@ -123,6 +124,7 @@ namespace wam
             if (pageType == typeof(UserActivityPage)) return UserActivityButton;
             if (pageType == typeof(UserSessionInfoPage)) return UserSessionButton;
             if (pageType == typeof(SecurityPolicyPage)) return SecurityPolicyButton;
+            if (pageType == typeof(SettingsPage)) return SettingsButton;
             return null;
         }
 
@@ -222,6 +224,12 @@ namespace wam
             SetActiveButton(EventLogButton);
             await NavigateToPage<EventLogAnalyzerPage>("Olay Günlüğü Analizi");
         }
+
+        private async void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveButton(SettingsButton);
+            await NavigateToPage<SettingsPage>("Ayarlar");
+        }
     }
 
     // ---------------- Tray & Close Handling ----------------
@@ -240,7 +248,7 @@ namespace wam
 
                 var menu = new Forms.ContextMenuStrip();
                 menu.Items.Add("Göster", null, (s, e) => ShowMainWindow());
-                menu.Items.Add("Seçimi Unut", null, (s, e) => { _minimizeOnClose = false; SaveWindowSettings(); _trayIcon.ShowBalloonTip(1200, "WAM", "Tercih sıfırlandı.", Forms.ToolTipIcon.Info); });
+                menu.Items.Add("Seçimi Unut", null, (s, e) => { _rememberChoice = false; SaveWindowSettings(); _trayIcon.ShowBalloonTip(1200, "WAM", "Tercih sıfırlandı.", Forms.ToolTipIcon.Info); });
                 menu.Items.Add("Çıkış", null, (s, e) => { _forceClose = true; Close(); });
                 _trayIcon.ContextMenuStrip = menu;
                 _trayIcon.DoubleClick += (s, e) => ShowMainWindow();
@@ -277,6 +285,7 @@ namespace wam
                 var json = File.ReadAllText(path);
                 var s = JsonSerializer.Deserialize<WindowSettings>(json);
                 _minimizeOnClose = s?.MinimizeOnClose ?? false;
+                _rememberChoice = s?.RememberChoice ?? false;
             }
             catch { _minimizeOnClose = false; }
         }
@@ -286,10 +295,18 @@ namespace wam
             try
             {
                 var path = GetSettingsPath();
-                var s = new WindowSettings { MinimizeOnClose = _minimizeOnClose };
+                var s = new WindowSettings { MinimizeOnClose = _minimizeOnClose, RememberChoice = _rememberChoice };
                 File.WriteAllText(path, JsonSerializer.Serialize(s, new JsonSerializerOptions { WriteIndented = true }));
             }
             catch { }
+        }
+
+        // SettingsPage'den anında uygulamak için
+        public void ApplyMinimizeOnCloseSetting(bool minimizeOnClose)
+        {
+            _minimizeOnClose = minimizeOnClose;
+            _rememberChoice = true; // Ayarlardan gelen tercih her zaman hatırlansın
+            SaveWindowSettings();
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -310,13 +327,23 @@ namespace wam
             bool overridePrompt = (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift ||
                                    (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
 
-            if (_minimizeOnClose && !overridePrompt)
+            // Kaydedilmiş tercih varsa diyalog göstermeden uygula
+            if (_rememberChoice && !overridePrompt)
             {
-                e.Cancel = true;
-                ShowInTaskbar = false;
-                Hide();
-                _trayIcon?.ShowBalloonTip(1500, "WAM", "Uygulama simge durumuna küçültüldü.", Forms.ToolTipIcon.Info);
-                return;
+                if (_minimizeOnClose)
+                {
+                    e.Cancel = true;
+                    ShowInTaskbar = false;
+                    Hide();
+                    _trayIcon?.ShowBalloonTip(1500, "WAM", "Uygulama simge durumuna küçültüldü.", Forms.ToolTipIcon.Info);
+                    return;
+                }
+                else
+                {
+                    // Kapatmayı tercih ediyorsa doğrudan kapat
+                    SaveWindowSettings();
+                    return; // e.Cancel = false → kapanmaya devam
+                }
             }
 
             // Profesyonel seçenek penceresi
@@ -328,7 +355,11 @@ namespace wam
             if (result == true && dialog.MinimizeSelected)
             {
                 e.Cancel = true;
-                _minimizeOnClose = dialog.AlwaysMinimize;
+                if (dialog.AlwaysMinimize)
+                {
+                    _rememberChoice = true;
+                    _minimizeOnClose = true;
+                }
                 SaveWindowSettings();
                 ShowInTaskbar = false;
                 Hide();
@@ -336,7 +367,11 @@ namespace wam
             }
             else if (result == true && dialog.CloseSelected)
             {
-                _minimizeOnClose = dialog.AlwaysMinimize; // Kullanıcı kapatsa da tercihi kaydet
+                if (dialog.AlwaysMinimize)
+                {
+                    _rememberChoice = true;
+                    _minimizeOnClose = false;
+                }
                 SaveWindowSettings();
                 try { _trayIcon.Visible = false; _trayIcon.Dispose(); } catch { }
             }
@@ -349,6 +384,7 @@ namespace wam
         private class WindowSettings
         {
             public bool MinimizeOnClose { get; set; }
+            public bool RememberChoice { get; set; }
         }
     }
 }

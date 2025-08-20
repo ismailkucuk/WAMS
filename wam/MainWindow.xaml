@@ -157,6 +157,8 @@
                         <Button x:Name="UserActivityButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE716;" Content="User Activity" Click="UserActivity_Click"/>
                         <Button x:Name="UserSessionButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE8AF;" Content="Oturum Bilgileri" Click="UserSessionInfo_Click"/>
                         <Button x:Name="SecurityPolicyButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE72E;" Content="Güvenlik Politikaları" Click="SecurityPolicy_Click"/>
+                        <TextBlock Text="AYARLAR" Style="{StaticResource NavGroupHeader}"/>
+                        <Button x:Name="SettingsButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE713;" Content="Ayarlar" Click="Settings_Click"/>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

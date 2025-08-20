@@ -98,6 +98,7 @@
                     <RadioButton x:Name="MinimizeOption" Content="Simge durumuna küçült" IsChecked="True" FontSize="13"/>
                     <RadioButton x:Name="CloseOption" Content="Kapat" FontSize="13"/>
                     <CheckBox x:Name="RememberOption" Content="Seçimimi hatırla" Margin="0,12,0,0" FontSize="12"/>
+                    <TextBlock Text="Bu seçimi daha sonra Ayarlar'dan değiştirebilirsiniz." FontSize="11" Foreground="#6C757D" Margin="0,4,0,0"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
