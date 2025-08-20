@@ -100,13 +100,13 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="5,0,5,20">
+                <Grid Grid.Row="0" Margin="5,0,5,12">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="🧑‍💻 Kullanıcı Aktivite Monitörü" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{StaticResource TextColorPrimary}"/>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <!-- Filters left-aligned -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
                         <RadioButton Content="Tümü" Style="{StaticResource FilterRadioButton}" IsChecked="True" Tag="All" Checked="Filter_Checked"/>
                         <RadioButton Content="Oturum Açma/Kapatma" Tag="LogonLogoff" Style="{StaticResource FilterRadioButton}" Checked="Filter_Checked"/>
                         <RadioButton Content="Kritik Olaylar" Tag="Critical" Style="{StaticResource FilterRadioButton}" Checked="Filter_Checked"/>
@@ -128,6 +128,7 @@
                                         <ColumnDefinition Width="200"/>
                                     </Grid.ColumnDefinitions>
 
+                                    <!-- Liste ikonları geri getirildi ve kurumsal: event tipine göre renkleniyor -->
                                     <TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0" FontFamily="Segoe MDL2 Assets" FontSize="24">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">

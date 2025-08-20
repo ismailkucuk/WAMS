@@ -93,12 +93,13 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="🔌 USB Port Kontrol ve Takip Modülü" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                <!-- Başlıkta emoji kaldırıldı -->
+                <TextBlock Grid.Row="0" Text="USB Port Kontrol ve Takip Modülü" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,20"/>
 
                 <StackPanel Grid.Row="1" Orientation="Horizontal">
-                    <Button Content="🔓 USB Portlarını Aç" Style="{StaticResource SuccessButton}" Width="200" Margin="0,0,10,0" Click="EnableUsbPorts_Click"
+                    <Button Content="USB Portlarını Aç" Style="{StaticResource SuccessButton}" Width="200" Margin="0,0,10,0" Click="EnableUsbPorts_Click"
                             IsEnabled="{Binding ArePortsDisabled}"/>
-                    <Button Content="🔒 USB Portlarını Kapat" Style="{StaticResource DangerButton}" Width="200" Click="DisableUsbPorts_Click"
+                    <Button Content="USB Portlarını Kapat" Style="{StaticResource DangerButton}" Width="200" Click="DisableUsbPorts_Click"
                             IsEnabled="{Binding ArePortsEnabled}"/>
                 </StackPanel>
 

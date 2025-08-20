@@ -12,43 +12,23 @@
         <SolidColorBrush x:Key="SuccessColor" Color="#28a745"/>
         <SolidColorBrush x:Key="InfoColor" Color="#17a2b8"/>
         
-        <!-- Modern Export Button Style -->
-        <Style x:Key="ModernExportButton" TargetType="Button">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="16,10"/>
-            <Setter Property="Margin" Value="4"/>
+        <!-- Subtle link-like button (less obtrusive) -->
+        <Style x:Key="SubtleLinkButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="12,0,0,0"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" 
-                                Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="1" 
-                                CornerRadius="8"
-                                SnapsToDevicePixels="True">
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="4" ShadowDepth="1" Color="#000000" Opacity="0.08"/>
-                            </Border.Effect>
-                            <ContentPresenter x:Name="contentPresenter" 
-                                            Margin="{TemplateBinding Padding}" 
-                                            HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"/>
-                        </Border>
+                        <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AccentColor}"/>
-                                <Setter TargetName="border" Property="Background" Value="{StaticResource ControlHoverColor}"/>
                                 <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#E6F1FF"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="#3A7BC8"/>
+                                <Setter Property="TextBlock.TextDecorations" Value="Underline"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.6"/>
@@ -60,83 +40,23 @@
         </Style>
     </UserControl.Resources>
     
-    <Border Background="Transparent" 
-            Margin="10"
-            Padding="0">
-        
+    <Border Background="Transparent" Margin="4" Padding="0">
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            
-            <!-- Başlık -->
-            <TextBlock Grid.Column="0"
-                       Text="📤 Verileri Dışa Aktar" 
-                       VerticalAlignment="Center"
-                       Foreground="{StaticResource TextColorPrimary}"
-                       FontWeight="SemiBold"
-                       FontSize="16"/>
-            
-            <!-- Export Buttons -->
-            <StackPanel Grid.Column="1" 
-                       Orientation="Horizontal" 
-                       HorizontalAlignment="Right">
-                
-                <!-- JSON Export Button -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <!-- JSON Export Link -->
                 <Button x:Name="JsonExportButton"
-                        Style="{StaticResource ModernExportButton}"
+                        Style="{StaticResource SubtleLinkButton}"
                         Click="JsonExportButton_Click"
-                        ToolTip="Verileri JSON formatında dışa aktar">
-                    <StackPanel Orientation="Horizontal">
-                        <Border Width="24" Height="24" 
-                                Background="{StaticResource InfoColor}" 
-                                CornerRadius="4" 
-                                Margin="0,0,8,0">
-                            <TextBlock Text="📒" 
-                                      FontFamily="Consolas"
-                                      FontWeight="Bold"
-                                      FontSize="10"
-                                      Foreground="White" 
-                                      HorizontalAlignment="Center" 
-                                      VerticalAlignment="Center"/>
-                        </Border>
-                        <TextBlock Text="JSON" 
-                                  VerticalAlignment="Center"
-                                  FontWeight="SemiBold"/>
-                    </StackPanel>
+                        ToolTip="JSON olarak dışa aktar">
+                    <TextBlock Text="JSON"/>
                 </Button>
-                
-                <!-- CSV Export Button -->
+                <!-- CSV Export Link -->
                 <Button x:Name="CsvExportButton"
-                        Style="{StaticResource ModernExportButton}"
+                        Style="{StaticResource SubtleLinkButton}"
                         Click="CsvExportButton_Click"
-                        ToolTip="Verileri CSV formatında dışa aktar">
-                    <StackPanel Orientation="Horizontal">
-                        <Border Width="24" Height="24" 
-                                Background="{StaticResource SuccessColor}" 
-                                CornerRadius="4" 
-                                Margin="0,0,8,0">
-                            <Grid>
-                                <Rectangle Width="16" Height="2" 
-                                          Fill="White" 
-                                          VerticalAlignment="Top" 
-                                          Margin="0,6,0,0"/>
-                                <Rectangle Width="16" Height="2" 
-                                          Fill="White" 
-                                          VerticalAlignment="Center"/>
-                                <Rectangle Width="16" Height="2" 
-                                          Fill="White" 
-                                          VerticalAlignment="Bottom" 
-                                          Margin="0,0,0,6"/>
-                            </Grid>
-                        </Border>
-                        <TextBlock Text="CSV" 
-                                  VerticalAlignment="Center"
-                                  FontWeight="SemiBold"/>
-                    </StackPanel>
+                        ToolTip="CSV olarak dışa aktar">
+                    <TextBlock Text="CSV"/>
                 </Button>
-                
             </StackPanel>
         </Grid>
     </Border>

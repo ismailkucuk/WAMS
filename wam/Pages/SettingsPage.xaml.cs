@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Security.Principal;
 using wam; // MainWindow erişimi için
 using wam.Services; // ExportService için
 
@@ -19,11 +20,12 @@ namespace wam.Pages
 		public SettingsPage()
 		{
 			InitializeComponent();
-			ExportControl.TargetPage = this;
 			BtnClearDashboardCache.Click += BtnClearDashboardCache_Click;
 			BtnOpenSettingsFolder.Click += BtnOpenSettingsFolder_Click;
 			TglMinimizeOnClose.Checked += TglMinimizeOnClose_Changed;
 			TglMinimizeOnClose.Unchecked += TglMinimizeOnClose_Changed;
+			BtnRelaunchAsAdmin.Click += BtnRelaunchAsAdmin_Click;
+			BtnRelaunchNormal.Click += BtnRelaunchNormal_Click;
 		}
 
 		public async Task LoadDataAsync()
@@ -42,6 +44,9 @@ namespace wam.Pages
 				{
 					TglMinimizeOnClose.IsChecked = false;
 				}
+
+				// Oturum bilgisi
+				TxtSessionRole.Text = IsRunningAsAdmin() ? "Yönetici" : "Normal Kullanıcı";
 			}
 			catch { TglMinimizeOnClose.IsChecked = false; }
 		}
@@ -125,6 +130,66 @@ namespace wam.Pages
 			var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WAM");
 			Directory.CreateDirectory(dir);
 			return Path.Combine(dir, "settings.json");
+		}
+
+		private static bool IsRunningAsAdmin()
+		{
+			try
+			{
+				using var identity = WindowsIdentity.GetCurrent();
+				var principal = new WindowsPrincipal(identity);
+				return principal.IsInRole(WindowsBuiltInRole.Administrator);
+			}
+			catch { return false; }
+		}
+
+		private void BtnRelaunchAsAdmin_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				if (IsRunningAsAdmin())
+				{
+					MessageBox.Show("Uygulama zaten yönetici modunda çalışıyor.", "Bilgi", MessageBoxButton.OK, MessageBoxImage.Information);
+					return;
+				}
+
+				var exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+				if (string.IsNullOrEmpty(exePath)) { MessageBox.Show("Yürütülebilir dosya yolu bulunamadı."); return; }
+
+				var psi = new System.Diagnostics.ProcessStartInfo
+				{
+					FileName = exePath,
+					UseShellExecute = true,
+					Verb = "runas"
+				};
+				System.Diagnostics.Process.Start(psi);
+				Application.Current.Shutdown();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"Yönetici olarak başlatılamadı: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+		}
+
+		private void BtnRelaunchNormal_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				var exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+				if (string.IsNullOrEmpty(exePath)) { MessageBox.Show("Yürütülebilir dosya yolu bulunamadı."); return; }
+
+				var psi = new System.Diagnostics.ProcessStartInfo
+				{
+					FileName = exePath,
+					UseShellExecute = true
+				};
+				System.Diagnostics.Process.Start(psi);
+				Application.Current.Shutdown();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"Normal modda başlatılamadı: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
 		}
 	}
 }

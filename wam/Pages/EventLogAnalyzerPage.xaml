@@ -99,13 +99,13 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="5,0,5,20">
+                <Grid Grid.Row="0" Margin="5,0,5,12">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="📊 Olay Günlüğü Analizi" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{StaticResource TextColorPrimary}"/>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <!-- Filters left-aligned -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
                         <RadioButton Content="Uygulama" Style="{StaticResource FilterRadioButton}" IsChecked="True" Tag="Application" Checked="LogType_Checked"/>
                         <RadioButton Content="Sistem" Tag="System" Style="{StaticResource FilterRadioButton}" Checked="LogType_Checked"/>
                         <RadioButton Content="Güvenlik" Tag="Security" Style="{StaticResource FilterRadioButton}" Checked="LogType_Checked"/>
@@ -140,6 +140,7 @@
                                         <ColumnDefinition Width="150"/>
                                     </Grid.ColumnDefinitions>
 
+                                    <!-- Liste ikonları geri getirildi ve kurumsal: entry tipine göre renkleniyor -->
                                     <TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0" FontFamily="Segoe MDL2 Assets" FontSize="20">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">

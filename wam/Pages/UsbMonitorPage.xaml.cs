@@ -29,8 +29,8 @@ namespace wam.Pages
 
         public async Task LoadDataAsync()
         {
-            // USB monitoring başlatır, veri yükler
-            await Task.CompletedTask; // USB monitor zaten constructor'da başlıyor
+            // USB monitor zaten constructor'da başlıyor; ek bir yükleme yok
+            await Task.CompletedTask;
         }
 
         // ILoadablePage export metodları

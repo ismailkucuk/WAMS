@@ -64,6 +64,7 @@ namespace wam
             if (PageHost.Content is UserSessionInfoPage oldUserSessionPage) { oldUserSessionPage.LoadingStateChanged -= OnPageLoadingStateChanged; }
             if (PageHost.Content is SecurityPolicyPage oldSecurityPage) { oldSecurityPage.LoadingStateChanged -= OnPageLoadingStateChanged; }
             if (PageHost.Content is DashboardPage oldDashboardPage) { oldDashboardPage.LoadingStateChanged -= OnPageLoadingStateChanged; }
+            if (PageHost.Content is NetworkMonitorPage oldNetworkPage) { oldNetworkPage.LoadingStateChanged -= OnPageLoadingStateChanged; }
 
             // 1. Yükleme ekranını göster
             LoadingOverlay.Visibility = Visibility.Visible;
@@ -82,6 +83,7 @@ namespace wam
                 if (page is UserSessionInfoPage newUserSessionPage) { newUserSessionPage.LoadingStateChanged += OnPageLoadingStateChanged; }
                 if (page is SecurityPolicyPage newSecurityPage) { newSecurityPage.LoadingStateChanged += OnPageLoadingStateChanged; }
                 if (page is DashboardPage newDashboardPage) { newDashboardPage.LoadingStateChanged += OnPageLoadingStateChanged; }
+                if (page is NetworkMonitorPage newNetworkPage) { newNetworkPage.LoadingStateChanged += OnPageLoadingStateChanged; }
 
                 // 4. Sayfayı ÖNCE ekrana yerleştir (UI donmasın)
                 PageHost.Content = page;

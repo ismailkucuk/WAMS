@@ -137,83 +137,83 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="5,0,5,20">
+                <Grid Grid.Row="0" Margin="5,0,5,12">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Ağ ve Port Monitörü" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{StaticResource TextColorPrimary}"/>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <RadioButton x:Name="AllConnectionsRadio" Content="🔌 Tüm Bağlantılar" Style="{StaticResource FilterRadioButton}" IsChecked="True" Checked="Filter_Checked" Tag="All"/>
-                        <RadioButton x:Name="ListeningPortsRadio" Content="🔒 Listening Portlar" Tag="Listening" Style="{StaticResource FilterRadioButton}" Checked="Filter_Checked"/>
-                        <RadioButton x:Name="CriticalPortsRadio" Content="⚠️ Kritik Portlar" Tag="Critical" Style="{StaticResource FilterRadioButton}" Checked="Filter_Checked"/>
+                    <!-- Filters left-aligned -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <RadioButton x:Name="AllConnectionsRadio" Content="Tüm Bağlantılar" Style="{StaticResource FilterRadioButton}" IsChecked="True" Checked="Filter_Checked" Tag="All"/>
+                        <RadioButton x:Name="ListeningPortsRadio" Content="Listening Portlar" Tag="Listening" Style="{StaticResource FilterRadioButton}" Checked="Filter_Checked"/>
+                        <RadioButton x:Name="CriticalPortsRadio" Content="Kritik Portlar" Tag="Critical" Style="{StaticResource FilterRadioButton}" Checked="Filter_Checked"/>
                     </StackPanel>
                 </Grid>
 
                 <ListView Grid.Row="1" x:Name="ConnectionListView" BorderThickness="0" HorizontalContentAlignment="Stretch">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListViewItem">
-                                        <ContentPresenter />
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListView.ItemContainerStyle>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.ItemContainerStyle>
 
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                        <WrapPanel>
-                                            <TextBlock Text="{Binding ProcessName, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource TextColorPrimary}"/>
-                                            <TextBlock Foreground="{StaticResource TextColorSecondary}" Margin="8,0,0,0">
-                                                <Run Text="(PID:"/><Run Text="{Binding ProcessId, Mode=OneWay}"/><Run Text=")"/>
+                                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                            <WrapPanel>
+                                                <TextBlock Text="{Binding ProcessName, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource TextColorPrimary}"/>
+                                                <TextBlock Foreground="{StaticResource TextColorSecondary}" Margin="8,0,0,0">
+                                                    <Run Text="(PID:"/><Run Text="{Binding ProcessId, Mode=OneWay}"/><Run Text=")"/>
+                                                </TextBlock>
+                                            </WrapPanel>
+                                            <TextBlock Margin="0,5,0,0">
+                                                <Run Text="{Binding LocalAddress}" Foreground="{StaticResource AccentColor}"/><Run Text=":" Foreground="{StaticResource AccentColor}"/><Run Text="{Binding LocalPort}" FontWeight="SemiBold" Foreground="{StaticResource AccentColor}"/>
+                                                <Run Text=" → " Foreground="{StaticResource TextColorSecondary}"/>
+                                                <Run Text="{Binding RemoteAddress}" Foreground="DarkOrange"/><Run Text=":" Foreground="DarkOrange"/><Run Text="{Binding RemotePort}" FontWeight="SemiBold" Foreground="DarkOrange"/>
                                             </TextBlock>
-                                        </WrapPanel>
-                                        <TextBlock Margin="0,5,0,0">
-                                            <Run Text="{Binding LocalAddress}" Foreground="{StaticResource AccentColor}"/><Run Text=":" Foreground="{StaticResource AccentColor}"/><Run Text="{Binding LocalPort}" FontWeight="SemiBold" Foreground="{StaticResource AccentColor}"/>
-                                            <Run Text=" → " Foreground="{StaticResource TextColorSecondary}"/>
-                                            <Run Text="{Binding RemoteAddress}" Foreground="DarkOrange"/><Run Text=":" Foreground="DarkOrange"/><Run Text="{Binding RemotePort}" FontWeight="SemiBold" Foreground="DarkOrange"/>
-                                        </TextBlock>
-                                        <TextBlock Text="{Binding RemoteDomain}" Opacity="0.7" FontStyle="Italic" FontSize="11" Margin="0,3,0,0"/>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                        <TextBlock Text="{Binding State}" Style="{StaticResource ConnectionStateStyle}"/>
-                                        <TextBlock Text="{Binding RiskLabel}" Foreground="Red" FontWeight="Bold" Visibility="{Binding IsRisky, Converter={StaticResource BoolToVisibilityConverter}}" TextAlignment="Right" Margin="0,2,0,0"/>
-
-                                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                            <TextBlock Text="Engellendi" Foreground="Red" FontWeight="Bold" Margin="0,0,10,0" VerticalAlignment="Center"
-                                                       Visibility="{Binding IsBlocked, Converter={StaticResource BoolToVisibilityConverter}}"/>
-
-                                            <Button Style="{StaticResource DangerActionButton}" Click="BlockPort_Click" ToolTip="Bu porta giden ve gelen tüm trafiği engeller.">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                                    <TextBlock Text="Portu Engelle"/>
-                                                </StackPanel>
-                                            </Button>
-
-                                            <Button Style="{StaticResource SuccessActionButton}" Click="UnblockPort_Click" ToolTip="Bu port için engellemeyi kaldırır.">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                                    <TextBlock Text="Engeli Kaldır"/>
-                                                </StackPanel>
-                                            </Button>
+                                            <TextBlock Text="{Binding RemoteDomain}" Opacity="0.7" FontStyle="Italic" FontSize="11" Margin="0,3,0,0"/>
                                         </StackPanel>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
+
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                            <TextBlock Text="{Binding State}" Style="{StaticResource ConnectionStateStyle}"/>
+                                            <TextBlock Text="{Binding RiskLabel}" Foreground="Red" FontWeight="Bold" Visibility="{Binding IsRisky, Converter={StaticResource BoolToVisibilityConverter}}" TextAlignment="Right" Margin="0,2,0,0"/>
+
+                                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                                <TextBlock Text="Engellendi" Foreground="Red" FontWeight="Bold" Margin="0,0,10,0" VerticalAlignment="Center"
+                                                           Visibility="{Binding IsBlocked, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                                                <Button Style="{StaticResource DangerActionButton}" Click="BlockPort_Click" ToolTip="Bu porta giden ve gelen tüm trafiği engeller.">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                        <TextBlock Text="Portu Engelle"/>
+                                                    </StackPanel>
+                                                </Button>
+
+                                                <Button Style="{StaticResource SuccessActionButton}" Click="UnblockPort_Click" ToolTip="Bu port için engellemeyi kaldırır.">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                        <TextBlock Text="Engeli Kaldır"/>
+                                                    </StackPanel>
+                                                </Button>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
                 </ListView>
             </Grid>
         </Border>

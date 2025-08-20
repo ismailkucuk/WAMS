@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using wam.Services;
+using System.Security.Principal;
 
 namespace wam.Pages
 {
@@ -33,6 +34,17 @@ namespace wam.Pages
 
         public async Task LoadDataAsync()
         {
+            if (!IsRunningAsAdmin())
+            {
+                var dlg = new wam.Dialogs.AdminRequiredDialog { Owner = Application.Current.MainWindow };
+                var goSettings = dlg.ShowDialog() == true;
+                if (goSettings && Application.Current.MainWindow is MainWindow mw)
+                {
+                    await mw.NavigateToPage<SettingsPage>("Ayarlar");
+                }
+                return;
+            }
+
             await _viewModel.LoadUserActivitiesAsync("All");
         }
 
@@ -141,6 +153,17 @@ namespace wam.Pages
         }
 
         public event Action<bool, string> LoadingStateChanged;
+
+        private static bool IsRunningAsAdmin()
+        {
+            try
+            {
+                using var identity = WindowsIdentity.GetCurrent();
+                var principal = new WindowsPrincipal(identity);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+            catch { return false; }
+        }
     }
 
     public class UserActivityViewModel

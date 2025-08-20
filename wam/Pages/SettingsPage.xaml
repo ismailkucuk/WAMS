@@ -35,6 +35,62 @@
 			<Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
 			<Setter Property="Margin" Value="0,0,0,16"/>
 		</Style>
+
+		<!-- Button Styles (project-wide look) -->
+		<Style x:Key="PrimaryButton" TargetType="Button">
+			<Setter Property="Background" Value="{StaticResource AccentColor}"/>
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Padding" Value="12,8"/>
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Cursor" Value="Hand"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter TargetName="bd" Property="Background" Value="#3C7FD1"/>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter TargetName="bd" Property="Opacity" Value="0.92"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<Style x:Key="SecondaryButton" TargetType="Button">
+			<Setter Property="Background" Value="White"/>
+			<Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Padding" Value="12,8"/>
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="Cursor" Value="Hand"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter TargetName="bd" Property="Background" Value="#F6F8FB"/>
+								<Setter TargetName="bd" Property="BorderBrush" Value="#D4E2F6"/>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter TargetName="bd" Property="Background" Value="#EDF2FA"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</UserControl.Resources>
 
 	<ScrollViewer VerticalScrollBarVisibility="Auto" Background="Transparent">
@@ -44,10 +100,7 @@
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
 
-			<!-- EXPORT CONTROL -->
-			<controls:ExportControl Grid.Row="0"
-				x:Name="ExportControl"
-				Margin="0,0,0,20"/>
+			<!-- Export kaldırıldı -->
 
 			<StackPanel Grid.Row="1">
 				<TextBlock Text="Uygulama Ayarları" Style="{StaticResource SectionHeader}"/>
@@ -83,10 +136,25 @@
 
 				<Border Style="{StaticResource CleanCard}">
 					<StackPanel>
+						<TextBlock Text="Yönetici Modu" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextColorSecondary}"/>
+						<StackPanel Orientation="Horizontal" Margin="0,12,0,0" VerticalAlignment="Center">
+							<TextBlock Text="Mevcut oturum:" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="Segoe UI" FontSize="14"/>
+							<TextBlock x:Name="TxtSessionRole" VerticalAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+							<Button x:Name="BtnRelaunchAsAdmin" Content="Yönetici Olarak Yeniden Başlat" Padding="14,8" Style="{StaticResource PrimaryButton}"/>
+							<Button x:Name="BtnRelaunchNormal" Content="Normal Modda Yeniden Başlat" Padding="14,8" Margin="8,0,0,0" Style="{StaticResource SecondaryButton}"/>
+						</StackPanel>
+						<TextBlock Text="Bazı modüller yönetici izni gerektirir. Bu işlem uygulamayı kapatıp yeniden açar." FontSize="11" Foreground="{StaticResource TextColorSecondary}" Margin="0,8,0,0"/>
+					</StackPanel>
+				</Border>
+
+				<Border Style="{StaticResource CleanCard}">
+					<StackPanel>
 						<TextBlock Text="Önbellek" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextColorSecondary}"/>
 						<StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-							<Button x:Name="BtnClearDashboardCache" Content="Dashboard önbelleğini temizle" Padding="14,8" Margin="0,0,12,0"/>
-							<Button x:Name="BtnOpenSettingsFolder" Content="Ayarlar klasörünü aç" Padding="14,8"/>
+							<Button x:Name="BtnClearDashboardCache" Content="Dashboard önbelleğini temizle" Padding="14,8" Margin="0,0,12,0" Style="{StaticResource SecondaryButton}"/>
+							<Button x:Name="BtnOpenSettingsFolder" Content="Ayarlar klasörünü aç" Padding="14,8" Style="{StaticResource SecondaryButton}"/>
 						</StackPanel>
 					</StackPanel>
 				</Border>

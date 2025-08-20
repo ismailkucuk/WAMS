@@ -234,28 +234,8 @@
                                    x:Name="ExportControl"
                                    Margin="0,0,0,24"/>
 
-            <!-- HEADER SECTION (Simple, corporate) -->
-            <Grid Grid.Row="1" Margin="0,0,0,24">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="Dashboard" FontFamily="Segoe UI" FontWeight="SemiBold" FontSize="22" Foreground="{StaticResource TextColorPrimary}"/>
-                </StackPanel>
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top">
-                    <Border Style="{StaticResource Chip}">
-                        <TextBlock Text="System Online" Foreground="{StaticResource TextColorPrimary}" FontSize="12" FontFamily="Segoe UI"/>
-                    </Border>
-                    <Border Style="{StaticResource Chip}">
-                        <TextBlock Foreground="{StaticResource TextColorPrimary}" FontSize="12" FontFamily="Segoe UI">
-                            <TextBlock.Text>
-                                <Binding Path="SecurityWarningsCount" StringFormat="{}{0} security events"/>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </Border>
-                </StackPanel>
-            </Grid>
+            <!-- HEADER SECTION removed to avoid duplicate page title (MainWindow shows title) -->
+            <Grid Grid.Row="1" Margin="0,0,0,0"/>
 
             <!-- MAIN CONTENT -->
             <Grid Grid.Row="2">

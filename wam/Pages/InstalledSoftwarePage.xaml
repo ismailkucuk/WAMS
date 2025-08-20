@@ -158,13 +158,13 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="5,0,5,20">
+                <Grid Grid.Row="0" Margin="5,0,5,12">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="💿 Yüklü Yazılımlar" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{StaticResource TextColorPrimary}"/>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <!-- Sort controls left-aligned -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
                         <TextBlock Text="Sırala:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{StaticResource TextColorSecondary}"/>
                         <ComboBox Style="{StaticResource ModernComboBox}" Width="120" Margin="0,0,8,0" VerticalAlignment="Center"
                                   SelectedValue="{Binding SortField}" SelectedValuePath="Tag"
@@ -193,6 +193,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
+                                    <!-- Liste ikonları kurumsal ve işlevsel; geri getirildi -->
                                     <TextBlock Grid.Column="0" Text="&#xE737;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{StaticResource AccentColor}" VerticalAlignment="Center" Margin="0,0,20,0"/>
 
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
