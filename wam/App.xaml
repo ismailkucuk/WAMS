@@ -5,6 +5,11 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Default Light Theme - will be replaced by ThemeService -->
+                <ResourceDictionary Source="pack://application:,,,/Themes/LightTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
             <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
         </ResourceDictionary>

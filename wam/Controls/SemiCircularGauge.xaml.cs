@@ -76,7 +76,7 @@ namespace wam.Controls
 
 				// Track arc (semi-circle 180°)
 				TrackPath.Data = CreateArcGeometry(center, radius, -180, 0);
-				TrackPath.Stroke = new SolidColorBrush(Color.FromRgb(234, 236, 239));
+				// Use the same color as defined in the XAML theme resources
 
 				// Progress arc from -180° to angle based on Value (end at needle)
 				double clamped = Math.Max(0, Math.Min(100, Value));

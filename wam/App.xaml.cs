@@ -3,6 +3,7 @@ using System.Windows;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
+using wam.Services;
 
 namespace wam
 {
@@ -39,6 +40,10 @@ namespace wam
                 try { LogCrash(args3.Exception, "TaskScheduler"); } catch { }
                 args3.SetObserved();
             };
+            
+            // Initialize theme service
+            _ = ThemeService.Instance;
+            
             base.OnStartup(e);
         }
 

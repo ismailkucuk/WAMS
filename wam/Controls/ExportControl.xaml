@@ -3,15 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
     <UserControl.Resources>
-        <!-- Tasarım sistemi renkleri -->
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#EAECEF"/>
-        <SolidColorBrush x:Key="ControlHoverColor" Color="#F8F9FA"/>
-        <SolidColorBrush x:Key="SuccessColor" Color="#28a745"/>
-        <SolidColorBrush x:Key="InfoColor" Color="#17a2b8"/>
-        
         <!-- Subtle link-like button (less obtrusive) -->
         <Style x:Key="SubtleLinkButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
@@ -19,7 +10,7 @@
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Margin" Value="12,0,0,0"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorSecondary}"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -27,7 +18,7 @@
                         <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
                                 <Setter Property="TextBlock.TextDecorations" Value="Underline"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
@@ -45,14 +36,14 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <!-- JSON Export Link -->
                 <Button x:Name="JsonExportButton"
-                        Style="{StaticResource SubtleLinkButton}"
+                        Style="{DynamicResource SubtleLinkButton}"
                         Click="JsonExportButton_Click"
                         ToolTip="JSON olarak dışa aktar">
                     <TextBlock Text="JSON"/>
                 </Button>
                 <!-- CSV Export Link -->
                 <Button x:Name="CsvExportButton"
-                        Style="{StaticResource SubtleLinkButton}"
+                        Style="{DynamicResource SubtleLinkButton}"
                         Click="CsvExportButton_Click"
                         ToolTip="CSV olarak dışa aktar">
                     <TextBlock Text="CSV"/>

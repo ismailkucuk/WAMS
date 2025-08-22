@@ -6,22 +6,13 @@
              xmlns:controls="clr-namespace:wam.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1000"
-             Background="#F8F9FA">
+             Background="{DynamicResource BackgroundPage}">
 
     <UserControl.Resources>
-        <!-- Renkler -->
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#EAECEF"/>
-        <SolidColorBrush x:Key="ControlHoverColor" Color="#F8F9FA"/>
-        <SolidColorBrush x:Key="SuccessColor" Color="#28a745"/>
-        <SolidColorBrush x:Key="DangerColor" Color="#dc3545"/>
-        <SolidColorBrush x:Key="WarningColor" Color="#ffc107"/>
 
         <!-- Stiller -->
         <Style x:Key="InfoCard" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundCard}"/>
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Padding" Value="25"/>
             <Setter Property="Effect">
@@ -38,8 +29,8 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorSecondary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -53,12 +44,12 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource ControlHoverColor}"/>
+                    <Setter Property="Background" Value="{DynamicResource ControlHoverColor}"/>
                 </Trigger>
                 <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
                     <Setter Property="Foreground" Value="White"/>
-                    <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -75,7 +66,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ControlHoverColor}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ControlHoverColor}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -120,7 +111,7 @@
                           PreviewMouseWheel="ActivityListView_PreviewMouseWheel">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,12">
+                            <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,12">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -133,23 +124,23 @@
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Text" Value="&#xE77B;"/>
-                                                <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource TextColorSecondary}"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding EventId}" Value="4624">
                                                         <Setter Property="Text" Value="&#xE836;"/>
-                                                        <Setter Property="Foreground" Value="{StaticResource SuccessColor}"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource SuccessColor}"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding EventId}" Value="4634">
                                                         <Setter Property="Text" Value="&#xE777;"/>
-                                                        <Setter Property="Foreground" Value="{StaticResource DangerColor}"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource DangerColor}"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding EventId}" Value="4672">
                                                         <Setter Property="Text" Value="&#xE72E;"/>
-                                                        <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding EventId}" Value="4740">
                                                         <Setter Property="Text" Value="&#xE7F4;"/>
-                                                        <Setter Property="Foreground" Value="{StaticResource WarningColor}"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource WarningColor}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -157,11 +148,11 @@
                                     </TextBlock>
 
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding UserName}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource TextColorPrimary}"/>
-                                        <TextBlock Text="{Binding EventType}" FontSize="12" Foreground="{StaticResource TextColorSecondary}" Margin="0,2,0,0"/>
+                                        <TextBlock Text="{Binding UserName}" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource TextColorPrimary}"/>
+                                        <TextBlock Text="{Binding EventType}" FontSize="12" Foreground="{DynamicResource TextColorSecondary}" Margin="0,2,0,0"/>
                                     </StackPanel>
 
-                                    <TextBlock Grid.Column="2" Text="{Binding TimeCreated}" Foreground="{StaticResource TextColorSecondary}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding TimeCreated}" Foreground="{DynamicResource TextColorSecondary}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>

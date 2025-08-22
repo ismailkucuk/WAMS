@@ -12,23 +12,23 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<TextBlock x:Name="TitleText" Grid.Row="0" Text="Utilization" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="#212529" Margin="0,0,0,6"/>
+		<TextBlock x:Name="TitleText" Grid.Row="0" Text="Utilization" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}" Margin="0,0,0,6"/>
 
 		<Grid Grid.Row="1" x:Name="GaugeHost">
 			<Canvas x:Name="GaugeCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 				<!-- Track (light) -->
-				<Path x:Name="TrackPath" Stroke="#EAECEF" StrokeThickness="12" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+				<Path x:Name="TrackPath" Stroke="{DynamicResource ProgressBarBackground}" StrokeThickness="12" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
 				<!-- Progress arc -->
-				<Path x:Name="ProgressPath" Stroke="#4A90E2" StrokeThickness="12" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+				<Path x:Name="ProgressPath" Stroke="{DynamicResource AccentColor}" StrokeThickness="12" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
 				<!-- Top notch (tick at the apex) -->
-				<Line x:Name="TopNotch" Stroke="#ADB5BD" StrokeThickness="3" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+				<Line x:Name="TopNotch" Stroke="{DynamicResource BorderColor}" StrokeThickness="3" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
 				<!-- Needle -->
-				<Line x:Name="Needle" Stroke="#6C757D" StrokeThickness="4" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+				<Line x:Name="Needle" Stroke="{DynamicResource TextColorSecondary}" StrokeThickness="4" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
 			</Canvas>
 		</Grid>
 
 		<TextBlock Grid.Row="2" x:Name="ValueText" Text="0 %" HorizontalAlignment="Center" Margin="0,8,0,0"
-		           FontFamily="Segoe UI" FontSize="13" Foreground="#6C757D"/>
+		           FontFamily="Segoe UI" FontSize="13" Foreground="{DynamicResource TextColorSecondary}"/>
 	</Grid>
 </UserControl>
 

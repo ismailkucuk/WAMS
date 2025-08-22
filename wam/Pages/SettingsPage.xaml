@@ -7,24 +7,17 @@
 	xmlns:local="clr-namespace:wam.Pages"
 	mc:Ignorable="d"
 	d:DesignHeight="900" d:DesignWidth="1400"
-	Background="#FAFAFA">
+	Background="{DynamicResource BackgroundPage}">
 
 	<UserControl.Resources>
-		<SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-		<SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-		<SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-		<SolidColorBrush x:Key="BorderColor" Color="#DEE2E6"/>
-		<SolidColorBrush x:Key="BackgroundWhite" Color="#FFFFFF"/>
-		<SolidColorBrush x:Key="BackgroundLight" Color="#F8F9FA"/>
-
 		<Style x:Key="CleanCard" TargetType="Border">
-			<Setter Property="Background" Value="{StaticResource BackgroundWhite}"/>
+			<Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
 			<Setter Property="CornerRadius" Value="8"/>
 			<Setter Property="Padding" Value="24"/>
 			<Setter Property="Margin" Value="0,0,0,20"/>
 			<Setter Property="Effect">
 				<Setter.Value>
-					<DropShadowEffect ShadowDepth="1" Direction="270" Color="Black" Opacity="0.08" BlurRadius="12"/>
+					<DropShadowEffect ShadowDepth="1" Direction="270" Color="{DynamicResource ShadowColor}" Opacity="0.08" BlurRadius="12"/>
 				</Setter.Value>
 			</Setter>
 		</Style>
@@ -32,13 +25,13 @@
 			<Setter Property="FontFamily" Value="Segoe UI"/>
 			<Setter Property="FontSize" Value="18"/>
 			<Setter Property="FontWeight" Value="SemiBold"/>
-			<Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+			<Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
 			<Setter Property="Margin" Value="0,0,0,16"/>
 		</Style>
 
 		<!-- Button Styles (project-wide look) -->
 		<Style x:Key="PrimaryButton" TargetType="Button">
-			<Setter Property="Background" Value="{StaticResource AccentColor}"/>
+			<Setter Property="Background" Value="{DynamicResource AccentColor}"/>
 			<Setter Property="Foreground" Value="White"/>
 			<Setter Property="BorderThickness" Value="0"/>
 			<Setter Property="Padding" Value="12,8"/>
@@ -53,7 +46,7 @@
 						</Border>
 						<ControlTemplate.Triggers>
 							<Trigger Property="IsMouseOver" Value="True">
-								<Setter TargetName="bd" Property="Background" Value="#3C7FD1"/>
+								<Setter TargetName="bd" Property="Background" Value="{DynamicResource PrimaryButtonHover}"/>
 							</Trigger>
 							<Trigger Property="IsPressed" Value="True">
 								<Setter TargetName="bd" Property="Opacity" Value="0.92"/>
@@ -65,9 +58,9 @@
 		</Style>
 
 		<Style x:Key="SecondaryButton" TargetType="Button">
-			<Setter Property="Background" Value="White"/>
-			<Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
-			<Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+			<Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
+			<Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
 			<Setter Property="BorderThickness" Value="1"/>
 			<Setter Property="Padding" Value="12,8"/>
 			<Setter Property="FontSize" Value="14"/>
@@ -80,11 +73,11 @@
 						</Border>
 						<ControlTemplate.Triggers>
 							<Trigger Property="IsMouseOver" Value="True">
-								<Setter TargetName="bd" Property="Background" Value="#F6F8FB"/>
-								<Setter TargetName="bd" Property="BorderBrush" Value="#D4E2F6"/>
+								<Setter TargetName="bd" Property="Background" Value="{DynamicResource SecondaryButtonHover}"/>
+								<Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
 							</Trigger>
 							<Trigger Property="IsPressed" Value="True">
-								<Setter TargetName="bd" Property="Background" Value="#EDF2FA"/>
+								<Setter TargetName="bd" Property="Background" Value="{DynamicResource SecondaryButtonPressed}"/>
 							</Trigger>
 						</ControlTemplate.Triggers>
 					</ControlTemplate>
@@ -107,24 +100,51 @@
 
 				<Border Style="{StaticResource CleanCard}">
 					<StackPanel>
-						<TextBlock Text="Genel" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextColorSecondary}"/>
+						<TextBlock Text="Genel" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColorSecondary}"/>
+						
+						<!-- Tema Seçimi -->
 						<StackPanel Orientation="Horizontal" Margin="0,12,0,0" VerticalAlignment="Center">
-							<TextBlock Text="Kapatırken simge durumuna küçült" VerticalAlignment="Center" Margin="0,0,12,0" FontFamily="Segoe UI" FontSize="14"/>
+							<TextBlock Text="Karanlık Tema" VerticalAlignment="Center" Margin="0,0,12,0" FontFamily="Segoe UI" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
+							<ToggleButton x:Name="TglDarkTheme" Width="54" Height="28" Cursor="Hand">
+								<ToggleButton.Template>
+									<ControlTemplate TargetType="ToggleButton">
+										<Grid>
+											<Border x:Name="SwitchTrack" CornerRadius="14" Background="{DynamicResource SwitchTrackOff}"/>
+											<Border x:Name="SwitchThumb" Width="22" Height="22" Background="{DynamicResource SwitchThumb}" CornerRadius="11" Margin="3" HorizontalAlignment="Left"/>
+										</Grid>
+										<ControlTemplate.Triggers>
+											<Trigger Property="IsChecked" Value="True">
+												<Setter TargetName="SwitchTrack" Property="Background" Value="{DynamicResource SwitchTrackOn}"/>
+												<Setter TargetName="SwitchThumb" Property="HorizontalAlignment" Value="Right"/>
+											</Trigger>
+											<Trigger Property="IsEnabled" Value="False">
+												<Setter TargetName="SwitchTrack" Property="Background" Value="{DynamicResource SwitchTrackDisabled}"/>
+												<Setter TargetName="SwitchThumb" Property="Background" Value="{DynamicResource SwitchThumbDisabled}"/>
+											</Trigger>
+										</ControlTemplate.Triggers>
+									</ControlTemplate>
+								</ToggleButton.Template>
+							</ToggleButton>
+						</StackPanel>
+						
+						<!-- Minimize on Close -->
+						<StackPanel Orientation="Horizontal" Margin="0,12,0,0" VerticalAlignment="Center">
+							<TextBlock Text="Kapatırken simge durumuna küçült" VerticalAlignment="Center" Margin="0,0,12,0" FontFamily="Segoe UI" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
 							<ToggleButton x:Name="TglMinimizeOnClose" Width="54" Height="28" Cursor="Hand">
 								<ToggleButton.Template>
 									<ControlTemplate TargetType="ToggleButton">
 										<Grid>
-											<Border x:Name="SwitchTrack" CornerRadius="14" Background="#CED4DA"/>
-											<Border x:Name="SwitchThumb" Width="22" Height="22" Background="White" CornerRadius="11" Margin="3" HorizontalAlignment="Left"/>
+											<Border x:Name="SwitchTrack" CornerRadius="14" Background="{DynamicResource SwitchTrackOff}"/>
+											<Border x:Name="SwitchThumb" Width="22" Height="22" Background="{DynamicResource SwitchThumb}" CornerRadius="11" Margin="3" HorizontalAlignment="Left"/>
 										</Grid>
 										<ControlTemplate.Triggers>
 											<Trigger Property="IsChecked" Value="True">
-												<Setter TargetName="SwitchTrack" Property="Background" Value="#4A90E2"/>
+												<Setter TargetName="SwitchTrack" Property="Background" Value="{DynamicResource SwitchTrackOn}"/>
 												<Setter TargetName="SwitchThumb" Property="HorizontalAlignment" Value="Right"/>
 											</Trigger>
 											<Trigger Property="IsEnabled" Value="False">
-												<Setter TargetName="SwitchTrack" Property="Background" Value="#E9ECEF"/>
-												<Setter TargetName="SwitchThumb" Property="Background" Value="#F8F9FA"/>
+												<Setter TargetName="SwitchTrack" Property="Background" Value="{DynamicResource SwitchTrackDisabled}"/>
+												<Setter TargetName="SwitchThumb" Property="Background" Value="{DynamicResource SwitchThumbDisabled}"/>
 											</Trigger>
 										</ControlTemplate.Triggers>
 									</ControlTemplate>
@@ -136,22 +156,22 @@
 
 				<Border Style="{StaticResource CleanCard}">
 					<StackPanel>
-						<TextBlock Text="Yönetici Modu" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextColorSecondary}"/>
+						<TextBlock Text="Yönetici Modu" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColorSecondary}"/>
 						<StackPanel Orientation="Horizontal" Margin="0,12,0,0" VerticalAlignment="Center">
-							<TextBlock Text="Mevcut oturum:" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="Segoe UI" FontSize="14"/>
-							<TextBlock x:Name="TxtSessionRole" VerticalAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold"/>
+							<TextBlock Text="Mevcut oturum:" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="Segoe UI" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
+							<TextBlock x:Name="TxtSessionRole" VerticalAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
 							<Button x:Name="BtnRelaunchAsAdmin" Content="Yönetici Olarak Yeniden Başlat" Padding="14,8" Style="{StaticResource PrimaryButton}"/>
 							<Button x:Name="BtnRelaunchNormal" Content="Normal Modda Yeniden Başlat" Padding="14,8" Margin="8,0,0,0" Style="{StaticResource SecondaryButton}"/>
 						</StackPanel>
-						<TextBlock Text="Bazı modüller yönetici izni gerektirir. Bu işlem uygulamayı kapatıp yeniden açar." FontSize="11" Foreground="{StaticResource TextColorSecondary}" Margin="0,8,0,0"/>
+						<TextBlock Text="Bazı modüller yönetici izni gerektirir. Bu işlem uygulamayı kapatıp yeniden açar." FontSize="11" Foreground="{DynamicResource TextColorSecondary}" Margin="0,8,0,0"/>
 					</StackPanel>
 				</Border>
 
 				<Border Style="{StaticResource CleanCard}">
 					<StackPanel>
-						<TextBlock Text="Önbellek" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextColorSecondary}"/>
+						<TextBlock Text="Önbellek" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColorSecondary}"/>
 						<StackPanel Orientation="Horizontal" Margin="0,12,0,0">
 							<Button x:Name="BtnClearDashboardCache" Content="Dashboard önbelleğini temizle" Padding="14,8" Margin="0,0,12,0" Style="{StaticResource SecondaryButton}"/>
 							<Button x:Name="BtnOpenSettingsFolder" Content="Ayarlar klasörünü aç" Padding="14,8" Style="{StaticResource SecondaryButton}"/>

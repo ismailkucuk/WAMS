@@ -15,6 +15,7 @@ namespace wam.Pages
 		private class WindowSettings
 		{
 			public bool MinimizeOnClose { get; set; }
+			public bool DarkTheme { get; set; }
 		}
 
 		public SettingsPage()
@@ -24,6 +25,8 @@ namespace wam.Pages
 			BtnOpenSettingsFolder.Click += BtnOpenSettingsFolder_Click;
 			TglMinimizeOnClose.Checked += TglMinimizeOnClose_Changed;
 			TglMinimizeOnClose.Unchecked += TglMinimizeOnClose_Changed;
+			TglDarkTheme.Checked += TglDarkTheme_Changed;
+			TglDarkTheme.Unchecked += TglDarkTheme_Changed;
 			BtnRelaunchAsAdmin.Click += BtnRelaunchAsAdmin_Click;
 			BtnRelaunchNormal.Click += BtnRelaunchNormal_Click;
 		}
@@ -39,33 +42,51 @@ namespace wam.Pages
 					var json = await File.ReadAllTextAsync(path);
 					var s = JsonSerializer.Deserialize<WindowSettings>(json);
 					TglMinimizeOnClose.IsChecked = s?.MinimizeOnClose ?? false;
+					TglDarkTheme.IsChecked = s?.DarkTheme ?? false;
 				}
 				else
 				{
 					TglMinimizeOnClose.IsChecked = false;
+					TglDarkTheme.IsChecked = false;
 				}
+
+				// Tema durumunu senkronize et
+				TglDarkTheme.IsChecked = ThemeService.Instance.CurrentTheme == ThemeMode.Dark;
 
 				// Oturum bilgisi
 				TxtSessionRole.Text = IsRunningAsAdmin() ? "Yönetici" : "Normal Kullanıcı";
 			}
-			catch { TglMinimizeOnClose.IsChecked = false; }
+			catch 
+			{ 
+				TglMinimizeOnClose.IsChecked = false;
+				TglDarkTheme.IsChecked = false;
+			}
 		}
 
 		public void ExportToJson()
 		{
-			var export = new { MinimizeOnClose = TglMinimizeOnClose.IsChecked == true };
+			var export = new { 
+				MinimizeOnClose = TglMinimizeOnClose.IsChecked == true,
+				DarkTheme = TglDarkTheme.IsChecked == true
+			};
 			ExportService.ExportToJson(new[] { export }, GetModuleName());
 		}
 
 		public void ExportToCsv()
 		{
-			var export = new[] { new { Key = "MinimizeOnClose", Value = TglMinimizeOnClose.IsChecked == true } };
+			var export = new[] { 
+				new { Key = "MinimizeOnClose", Value = TglMinimizeOnClose.IsChecked == true },
+				new { Key = "DarkTheme", Value = TglDarkTheme.IsChecked == true }
+			};
 			ExportService.ExportToCsv(export, GetModuleName());
 		}
 
 		public void AutoExport()
 		{
-			var export = new { MinimizeOnClose = TglMinimizeOnClose.IsChecked == true };
+			var export = new { 
+				MinimizeOnClose = TglMinimizeOnClose.IsChecked == true,
+				DarkTheme = TglDarkTheme.IsChecked == true
+			};
 			ExportService.AutoExport(new[] { export }, GetModuleName());
 		}
 
@@ -78,16 +99,40 @@ namespace wam.Pages
 		{
 			try
 			{
-				var path = GetSettingsPath();
-				var ws = new WindowSettings { MinimizeOnClose = TglMinimizeOnClose.IsChecked == true };
-				var json = JsonSerializer.Serialize(ws, new JsonSerializerOptions { WriteIndented = true });
-				await File.WriteAllTextAsync(path, json);
+				await SaveSettingsAsync();
 
 				// Anında uygulansın
 				if (Application.Current?.MainWindow is MainWindow mw)
 				{
-					mw.ApplyMinimizeOnCloseSetting(ws.MinimizeOnClose);
+					mw.ApplyMinimizeOnCloseSetting(TglMinimizeOnClose.IsChecked == true);
 				}
+			}
+			catch { }
+		}
+
+		private async void TglDarkTheme_Changed(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				var isDark = TglDarkTheme.IsChecked == true;
+				await ThemeService.Instance.SetThemeAsync(isDark ? ThemeMode.Dark : ThemeMode.Light);
+				await SaveSettingsAsync();
+			}
+			catch { }
+		}
+
+		private async Task SaveSettingsAsync()
+		{
+			try
+			{
+				var path = GetSettingsPath();
+				var ws = new WindowSettings 
+				{ 
+					MinimizeOnClose = TglMinimizeOnClose.IsChecked == true,
+					DarkTheme = TglDarkTheme.IsChecked == true
+				};
+				var json = JsonSerializer.Serialize(ws, new JsonSerializerOptions { WriteIndented = true });
+				await File.WriteAllTextAsync(path, json);
 			}
 			catch { }
 		}

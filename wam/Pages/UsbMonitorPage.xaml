@@ -6,19 +6,12 @@
              xmlns:controls="clr-namespace:wam.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1000"
-             Background="#F8F9FA">
+             Background="{DynamicResource BackgroundPage}">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#DEE2E6"/>
-        <SolidColorBrush x:Key="ControlHoverColor" Color="#F8F9FA"/>
-        <SolidColorBrush x:Key="SuccessColor" Color="#28a745"/>
-        <SolidColorBrush x:Key="DangerColor" Color="#dc3545"/>
 
         <Style x:Key="InfoCard" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundCard}"/>
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Padding" Value="25"/>
             <Setter Property="Effect">
@@ -54,31 +47,31 @@
         </Style>
 
         <Style x:Key="SuccessButton" TargetType="Button" BasedOn="{StaticResource BaseActionButton}">
-            <Setter Property="Background" Value="{StaticResource SuccessColor}"/>
+            <Setter Property="Background" Value="{DynamicResource SuccessColor}"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
         <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource BaseActionButton}">
-            <Setter Property="Background" Value="{StaticResource DangerColor}"/>
+            <Setter Property="Background" Value="{DynamicResource DangerColor}"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
 
         <Style x:Key="ModernGridViewColumnHeader" TargetType="GridViewColumnHeader">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0,0,0,2"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="Padding" Value="12,10"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
         </Style>
         <Style x:Key="ModernListViewItem" TargetType="ListViewItem">
             <Setter Property="Padding" Value="12,14"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource ControlHoverColor}"/>
+                    <Setter Property="Background" Value="{DynamicResource ControlHoverColor}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>

@@ -6,18 +6,13 @@
              xmlns:controls="clr-namespace:wam.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1000"
-             Background="#F8F9FA">
+             Background="{DynamicResource BackgroundPage}">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#DEE2E6"/>
-        <SolidColorBrush x:Key="ControlBackgroundColor" Color="Transparent"/>
-        <SolidColorBrush x:Key="ControlHoverColor" Color="#F1F1F1"/>
 
         <Style x:Key="InfoCard" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
+            <Setter Property="CornerRadius" Value="12"/>
             <Setter Property="Padding" Value="20"/>
             <Setter Property="Effect">
                 <Setter.Value>
@@ -27,9 +22,9 @@
         </Style>
 
         <Style x:Key="ModernComboBox" TargetType="ComboBox">
-            <Setter Property="Background" Value="{StaticResource ControlBackgroundColor}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="10,8"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -39,10 +34,10 @@
                         <Grid>
                             <ToggleButton Name="ToggleButton" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Grid.Column="2" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"/>
                             <ContentPresenter Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="{TemplateBinding Padding}"/>
-                            <TextBlock Text="▼" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="{StaticResource TextColorSecondary}"/>
+                            <TextBlock Text="▼" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="{DynamicResource TextColorSecondary}"/>
                             <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
                                 <Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                    <Border x:Name="DropDownBorder" Background="White" BorderThickness="1" BorderBrush="{StaticResource BorderColor}" CornerRadius="6">
+                                    <Border x:Name="DropDownBorder" Background="{DynamicResource BackgroundWhite}" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" CornerRadius="6">
                                         <Border.Effect>
                                             <DropShadowEffect ShadowDepth="2" BlurRadius="10" Opacity="0.1" />
                                         </Border.Effect>
@@ -61,14 +56,14 @@
             <Setter Property="Padding" Value="10,8"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource ControlHoverColor}"/>
+                    <Setter Property="Background" Value="{DynamicResource SecondaryButtonHover}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="SortDirectionToggle" TargetType="ToggleButton">
-            <Setter Property="Background" Value="{StaticResource ControlBackgroundColor}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Width" Value="38"/>
             <Setter Property="Height" Value="38"/>
@@ -81,12 +76,12 @@
                                 <!-- Yukarı ok -->
                                 <Path x:Name="ArrowUp"
                               Data="M 1,5 L 4.5,1.5 L 8,5"
-                              Stroke="{StaticResource TextColorSecondary}" StrokeThickness="1.5"
+                              Stroke="{DynamicResource TextColorSecondary}" StrokeThickness="1.5"
                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 <!-- Aşağı ok -->
                                 <Path x:Name="ArrowDown"
                               Data="M 1,1.5 L 4.5,5 L 8,1.5"
-                              Stroke="{StaticResource TextColorSecondary}" StrokeThickness="1.5"
+                              Stroke="{DynamicResource TextColorSecondary}" StrokeThickness="1.5"
                               HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
                             </Grid>
                         </Border>
@@ -100,7 +95,7 @@
                                 <Setter TargetName="ArrowDown" Property="Visibility" Value="Visible"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource ControlHoverColor}"/>
+                                <Setter Property="Background" Value="{DynamicResource SecondaryButtonHover}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -110,7 +105,7 @@
 
 
         <Style x:Key="RefreshButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="FontSize" Value="13"/>
@@ -157,10 +152,10 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="Aktif Süreçler" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{StaticResource TextColorPrimary}"/>
+                    <TextBlock Grid.Column="0" Text="Aktif Süreçler" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{DynamicResource TextColorPrimary}"/>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <TextBlock Text="Sırala:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{StaticResource TextColorSecondary}"/>
+                        <TextBlock Text="Sırala:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{DynamicResource TextColorSecondary}"/>
                         <ComboBox x:Name="SortFieldCombo" Style="{StaticResource ModernComboBox}" Width="120" Margin="0,0,8,0" VerticalAlignment="Center" SelectedIndex="0">
                             <ComboBoxItem Content="Ad" Tag="Name"/>
                             <ComboBoxItem Content="PID" Tag="Id"/>
@@ -173,13 +168,24 @@
                     </StackPanel>
                 </Grid>
 
-                <ListView Grid.Row="1" x:Name="AppActivityGrid" BorderThickness="0" HorizontalContentAlignment="Stretch" Height="650">
+                <ListView Grid.Row="1" x:Name="AppActivityGrid" BorderThickness="0" HorizontalContentAlignment="Stretch" Height="650" Background="Transparent">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListViewItem">
-                                        <ContentPresenter />
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource BackgroundLight}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
@@ -188,7 +194,7 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15">
+                            <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15" Background="{DynamicResource BackgroundWhite}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -196,11 +202,11 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock Grid.Column="0" Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="24" Foreground="{StaticResource AccentColor}" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                                    <TextBlock Grid.Column="0" Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="24" Foreground="{DynamicResource AccentColor}" VerticalAlignment="Center" Margin="0,0,20,0"/>
 
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource TextColorPrimary}"/>
-                                        <TextBlock Text="{Binding WindowTitle, Mode=OneWay}" FontSize="12" Foreground="{StaticResource TextColorSecondary}" Margin="0,2,0,0">
+                                        <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource TextColorPrimary}"/>
+                                        <TextBlock Text="{Binding WindowTitle, Mode=OneWay}" FontSize="12" Foreground="{DynamicResource TextColorSecondary}" Margin="0,2,0,0">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Visibility" Value="Visible"/>
@@ -214,18 +220,18 @@
                                         </TextBlock>
                                     </StackPanel>
 
-                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" TextBlock.FontSize="12" TextBlock.Foreground="{StaticResource TextColorSecondary}">
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" TextBlock.FontSize="12" TextBlock.Foreground="{DynamicResource TextColorSecondary}">
                                         <TextBlock TextAlignment="Right">
                                             <Run Text="PID:"/>
-                                            <Run Text="{Binding Id, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                                            <Run Text="{Binding Id, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
                                         </TextBlock>
                                         <TextBlock TextAlignment="Right" Margin="0,2,0,0">
                                             <Run Text="Bellek:"/>
-                                            <Run Text="{Binding MemoryUsageFormatted, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                                            <Run Text="{Binding MemoryUsageFormatted, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
                                         </TextBlock>
                                         <TextBlock TextAlignment="Right" Margin="0,2,0,0">
                                             <Run Text="CPU:"/>
-                                            <Run Text="{Binding CpuUsageFormatted, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                                            <Run Text="{Binding CpuUsageFormatted, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
                                         </TextBlock>
                                     </StackPanel>
                                 </Grid>

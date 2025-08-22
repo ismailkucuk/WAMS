@@ -7,21 +7,14 @@
              xmlns:controls="clr-namespace:wam.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1200"
-             Background="#F8F9FA">
+             Background="{DynamicResource BackgroundPage}">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#F0F0F0"/>
-        <SolidColorBrush x:Key="RowHoverColor" Color="#F8F9FA"/>
-        <SolidColorBrush x:Key="SuccessColor" Color="#28a745"/>
-        <SolidColorBrush x:Key="DangerColor" Color="#dc3545"/>
-        <SolidColorBrush x:Key="WarningColor" Color="#ffc107"/>
+        <!-- Color resources removed - using DynamicResource references to theme system -->
 
         <Style x:Key="InfoCard" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Padding" Value="25"/>
             <Setter Property="Effect">
@@ -38,8 +31,8 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorSecondary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -53,12 +46,12 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource RowHoverColor}"/>
+                    <Setter Property="Background" Value="{DynamicResource BackgroundLight}"/>
                 </Trigger>
                 <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
                     <Setter Property="Foreground" Value="White"/>
-                    <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -86,7 +79,7 @@
         </Style>
 
         <Style x:Key="DangerActionButton" TargetType="Button" BasedOn="{StaticResource SmallActionButton}">
-            <Setter Property="Background" Value="{StaticResource DangerColor}"/>
+            <Setter Property="Background" Value="{DynamicResource DangerRed}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Visibility" Value="Visible" />
             <Style.Triggers>
@@ -97,7 +90,7 @@
         </Style>
 
         <Style x:Key="SuccessActionButton" TargetType="Button" BasedOn="{StaticResource SmallActionButton}">
-            <Setter Property="Background" Value="{StaticResource SuccessColor}"/>
+            <Setter Property="Background" Value="{DynamicResource SuccessGreen}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Visibility" Value="{Binding IsBlocked, Converter={StaticResource BoolToVisibilityConverter}}"/>
         </Style>
@@ -105,16 +98,28 @@
         <Style x:Key="ConnectionStateStyle" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="TextAlignment" Value="Right"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding State}" Value="Established">
-                    <Setter Property="Foreground" Value="{StaticResource SuccessColor}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource SuccessGreen}"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding State}" Value="Listen">
-                    <Setter Property="Foreground" Value="{StaticResource WarningColor}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource WarningOrange}"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding State}" Value="TimeWait">
-                    <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource TextColorSecondary}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="Normal">
+                    <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="Unknown">
+                    <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="CloseWait">
+                    <Setter Property="Foreground" Value="{DynamicResource TextColorSecondary}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="Closed">
+                    <Setter Property="Foreground" Value="{DynamicResource TextColorSecondary}"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -150,13 +155,24 @@
                     </StackPanel>
                 </Grid>
 
-                <ListView Grid.Row="1" x:Name="ConnectionListView" BorderThickness="0" HorizontalContentAlignment="Stretch">
+                <ListView Grid.Row="1" x:Name="ConnectionListView" BorderThickness="0" HorizontalContentAlignment="Stretch" Background="Transparent">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Background" Value="Transparent"/>
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="ListViewItem">
-                                            <ContentPresenter />
+                                            <Border Background="{TemplateBinding Background}">
+                                                <ContentPresenter />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="{DynamicResource BackgroundLight}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -165,7 +181,7 @@
 
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15">
+                                <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15" Background="{DynamicResource BackgroundWhite}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -174,25 +190,25 @@
 
                                         <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                             <WrapPanel>
-                                                <TextBlock Text="{Binding ProcessName, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource TextColorPrimary}"/>
-                                                <TextBlock Foreground="{StaticResource TextColorSecondary}" Margin="8,0,0,0">
+                                                <TextBlock Text="{Binding ProcessName, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource TextColorPrimary}"/>
+                                                <TextBlock Foreground="{DynamicResource TextColorSecondary}" Margin="8,0,0,0">
                                                     <Run Text="(PID:"/><Run Text="{Binding ProcessId, Mode=OneWay}"/><Run Text=")"/>
                                                 </TextBlock>
                                             </WrapPanel>
                                             <TextBlock Margin="0,5,0,0">
-                                                <Run Text="{Binding LocalAddress}" Foreground="{StaticResource AccentColor}"/><Run Text=":" Foreground="{StaticResource AccentColor}"/><Run Text="{Binding LocalPort}" FontWeight="SemiBold" Foreground="{StaticResource AccentColor}"/>
-                                                <Run Text=" → " Foreground="{StaticResource TextColorSecondary}"/>
-                                                <Run Text="{Binding RemoteAddress}" Foreground="DarkOrange"/><Run Text=":" Foreground="DarkOrange"/><Run Text="{Binding RemotePort}" FontWeight="SemiBold" Foreground="DarkOrange"/>
+                                                <Run Text="{Binding LocalAddress}" Foreground="{DynamicResource AccentColor}"/><Run Text=":" Foreground="{DynamicResource AccentColor}"/><Run Text="{Binding LocalPort}" FontWeight="SemiBold" Foreground="{DynamicResource AccentColor}"/>
+                                                <Run Text=" → " Foreground="{DynamicResource TextColorSecondary}"/>
+                                                <Run Text="{Binding RemoteAddress}" Foreground="{DynamicResource TextColorSecondary}"/><Run Text=":" Foreground="{DynamicResource TextColorSecondary}"/><Run Text="{Binding RemotePort}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorSecondary}"/>
                                             </TextBlock>
-                                            <TextBlock Text="{Binding RemoteDomain}" Opacity="0.7" FontStyle="Italic" FontSize="11" Margin="0,3,0,0"/>
+                                            <TextBlock Text="{Binding RemoteDomain}" Opacity="0.7" FontStyle="Italic" FontSize="11" Margin="0,3,0,0" Foreground="{DynamicResource TextColorSecondary}"/>
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
                                             <TextBlock Text="{Binding State}" Style="{StaticResource ConnectionStateStyle}"/>
-                                            <TextBlock Text="{Binding RiskLabel}" Foreground="Red" FontWeight="Bold" Visibility="{Binding IsRisky, Converter={StaticResource BoolToVisibilityConverter}}" TextAlignment="Right" Margin="0,2,0,0"/>
+                                            <TextBlock Text="{Binding RiskLabel}" Foreground="{DynamicResource DangerRed}" FontWeight="Bold" Visibility="{Binding IsRisky, Converter={StaticResource BoolToVisibilityConverter}}" TextAlignment="Right" Margin="0,2,0,0"/>
 
                                             <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                                <TextBlock Text="Engellendi" Foreground="Red" FontWeight="Bold" Margin="0,0,10,0" VerticalAlignment="Center"
+                                                <TextBlock Text="Engellendi" Foreground="{DynamicResource DangerRed}" FontWeight="Bold" Margin="0,0,10,0" VerticalAlignment="Center"
                                                            Visibility="{Binding IsBlocked, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                                                 <Button Style="{StaticResource DangerActionButton}" Click="BlockPort_Click" ToolTip="Bu porta giden ve gelen tüm trafiği engeller.">

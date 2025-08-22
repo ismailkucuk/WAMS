@@ -6,24 +6,17 @@
         mc:Ignorable="d"
         Title="Windows Activity Monitoring System" Height="768" Width="1366" 
         WindowStartupLocation="CenterScreen"
-        Background="#F8F9FA"
+        Background="{DynamicResource BackgroundPage}"
         Icon="pack://application:,,,/Resources/wams.ico">
 
     <Window.Resources>
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="AccentColorLight" Color="#7BB4F6"/>
-        <SolidColorBrush x:Key="NavPanelColor" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="ContentBackgroundColor" Color="#F8F9FA"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="NavButtonHoverBackground" Color="#F1F5F9"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#DEE2E6"/>
+        <!-- Dynamic color resources will be provided by the theme system -->
 
         <Style x:Key="NavGroupHeader" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorSecondary}"/>
             <Setter Property="Margin" Value="25,20,0,8"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -34,7 +27,7 @@
 
         <Style x:Key="UniqueNavButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
             <Setter Property="Height" Value="42"/>
             <Setter Property="Margin" Value="15,2"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -47,10 +40,10 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Grid x:Name="grid" Background="{TemplateBinding Background}">
-                            <Border x:Name="indicator" Background="{StaticResource AccentColor}" Width="4" HorizontalAlignment="Left" CornerRadius="2" Opacity="0"/>
+                            <Border x:Name="indicator" Background="{DynamicResource AccentColor}" Width="4" HorizontalAlignment="Left" CornerRadius="2" Opacity="0"/>
                             <Border x:Name="border" Padding="15,0">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock x:Name="icon" FontFamily="Segoe MDL2 Assets" Text="{Binding Path=Tag, RelativeSource={RelativeSource TemplatedParent}}" FontSize="18" Foreground="{StaticResource TextColorSecondary}" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="icon" FontFamily="Segoe MDL2 Assets" Text="{Binding Path=Tag, RelativeSource={RelativeSource TemplatedParent}}" FontSize="18" Foreground="{DynamicResource TextColorSecondary}" VerticalAlignment="Center"/>
                                     <TextBlock x:Name="text" Text="{TemplateBinding Content}" Margin="20,0,0,0" FontWeight="SemiBold" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
@@ -58,24 +51,24 @@
                         <ControlTemplate.Triggers>
                             <!-- Active state trigger (highest priority) -->
                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="False">
-                                <Setter TargetName="grid" Property="Background" Value="{StaticResource NavButtonHoverBackground}"/>
+                                <Setter TargetName="grid" Property="Background" Value="{DynamicResource NavButtonHoverBackground}"/>
                                 <Setter TargetName="indicator" Property="Opacity" Value="1"/>
-                                <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
-                                <Setter TargetName="icon" Property="Foreground" Value="{StaticResource AccentColor}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+                                <Setter TargetName="icon" Property="Foreground" Value="{DynamicResource AccentColor}"/>
                                 <Setter TargetName="text" Property="FontWeight" Value="Bold"/>
                             </DataTrigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="grid" Property="Background" Value="{StaticResource NavButtonHoverBackground}"/>
+                                <Setter TargetName="grid" Property="Background" Value="{DynamicResource NavButtonHoverBackground}"/>
                                 <Setter TargetName="indicator" Property="Opacity" Value="1"/>
-                                <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
-                                <Setter TargetName="icon" Property="Foreground" Value="{StaticResource AccentColor}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+                                <Setter TargetName="icon" Property="Foreground" Value="{DynamicResource AccentColor}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="grid" Property="Background" Value="{StaticResource NavButtonHoverBackground}"/>
+                                <Setter TargetName="grid" Property="Background" Value="{DynamicResource NavButtonHoverBackground}"/>
                                 <Setter TargetName="indicator" Property="Opacity" Value="1"/>
-                                <Setter TargetName="indicator" Property="Background" Value="{StaticResource AccentColorLight}"/>
-                                <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
-                                <Setter TargetName="icon" Property="Foreground" Value="{StaticResource AccentColor}"/>
+                                <Setter TargetName="indicator" Property="Background" Value="{DynamicResource AccentColorLight}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+                                <Setter TargetName="icon" Property="Foreground" Value="{DynamicResource AccentColor}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -90,7 +83,7 @@
                     <ControlTemplate TargetType="ProgressBar">
                         <Grid>
                             <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="36"
-                                       Foreground="{StaticResource AccentColor}"
+                                       Foreground="{DynamicResource AccentColor}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"
                                        RenderTransformOrigin="0.5,0.5">
                                 <TextBlock.RenderTransform>
@@ -124,7 +117,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Background="{StaticResource NavPanelColor}">
+        <Border Grid.Column="0" Background="{DynamicResource NavPanelColor}">
             <Border.Effect>
                 <DropShadowEffect ShadowDepth="2" Direction="270" Color="Black" Opacity="0.05" BlurRadius="10" />
             </Border.Effect>
@@ -139,48 +132,48 @@
                        RenderOptions.BitmapScalingMode="HighQuality"/>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,90,0,0">
                     <StackPanel>
-                        <TextBlock Text="GERÇEK ZAMANLI İZLEME" Style="{StaticResource NavGroupHeader}"/>
-                        <Button x:Name="DashboardButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE80F;" Content="Dashboard" Click="Dashboard_Click"/>
-                        <Button x:Name="ActiveAppButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE768;" Content="Aktif Uygulamalar" Click="ActiveAppMonitorMenu_Click"/>
-                        <Button x:Name="ProcessMonitorButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE81C;" Content="Process Monitor" Click="ProcessMonitor_Click"/>
-                        <Button x:Name="NetworkMonitorButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE968;" Content="Network Monitor" Click="NetworkMonitor_Click"/>
-                        <Button x:Name="FileSystemButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE8D5;" Content="Dosya Sistemi" Click="FileSystemMonitor_Click"/>
-                        <Button x:Name="UsbMonitorButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE88E;" Content="USB Cihazları" Click="UsbMonitor_Click" />
+                        <TextBlock Text="GERÇEK ZAMANLI İZLEME" Style="{DynamicResource NavGroupHeader}"/>
+                        <Button x:Name="DashboardButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE80F;" Content="Dashboard" Click="Dashboard_Click"/>
+                        <Button x:Name="ActiveAppButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE768;" Content="Aktif Uygulamalar" Click="ActiveAppMonitorMenu_Click"/>
+                        <Button x:Name="ProcessMonitorButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE81C;" Content="Process Monitor" Click="ProcessMonitor_Click"/>
+                        <Button x:Name="NetworkMonitorButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE968;" Content="Network Monitor" Click="NetworkMonitor_Click"/>
+                        <Button x:Name="FileSystemButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE8D5;" Content="Dosya Sistemi" Click="FileSystemMonitor_Click"/>
+                        <Button x:Name="UsbMonitorButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE88E;" Content="USB Cihazları" Click="UsbMonitor_Click" />
 
-                        <TextBlock Text="SİSTEM ANALİZİ" Style="{StaticResource NavGroupHeader}"/>
-                        <Button x:Name="SystemInfoButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE946;" Content="Sistem Bilgileri" Click="SystemInfo_Click"/>
-                        <Button x:Name="StartupProgramsButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE7E8;" Content="Başlangıç Programları" Click="StartupPrograms_Click"/>
-                        <Button x:Name="InstalledSoftwareButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE737;" Content="Yüklü Yazılımlar" Click="InstalledSoftware_Click"/>
-                        <Button x:Name="EventLogButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE916;" Content="Olay Günlüğü Analizi" Click="EventLogAnalyzer_Click"/>
+                        <TextBlock Text="SİSTEM ANALİZİ" Style="{DynamicResource NavGroupHeader}"/>
+                        <Button x:Name="SystemInfoButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE946;" Content="Sistem Bilgileri" Click="SystemInfo_Click"/>
+                        <Button x:Name="StartupProgramsButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE7E8;" Content="Başlangıç Programları" Click="StartupPrograms_Click"/>
+                        <Button x:Name="InstalledSoftwareButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE737;" Content="Yüklü Yazılımlar" Click="InstalledSoftware_Click"/>
+                        <Button x:Name="EventLogButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE916;" Content="Olay Günlüğü Analizi" Click="EventLogAnalyzer_Click"/>
 
-                        <TextBlock Text="KULLANICI &amp; GÜVENLİK" Style="{StaticResource NavGroupHeader}"/>
-                        <Button x:Name="UserActivityButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE716;" Content="User Activity" Click="UserActivity_Click"/>
-                        <Button x:Name="UserSessionButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE8AF;" Content="Oturum Bilgileri" Click="UserSessionInfo_Click"/>
-                        <Button x:Name="SecurityPolicyButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE72E;" Content="Güvenlik Politikaları" Click="SecurityPolicy_Click"/>
-                        <TextBlock Text="AYARLAR" Style="{StaticResource NavGroupHeader}"/>
-                        <Button x:Name="SettingsButton" Style="{StaticResource UniqueNavButton}" Tag="&#xE713;" Content="Ayarlar" Click="Settings_Click"/>
+                        <TextBlock Text="KULLANICI &amp; GÜVENLİK" Style="{DynamicResource NavGroupHeader}"/>
+                        <Button x:Name="UserActivityButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE716;" Content="User Activity" Click="UserActivity_Click"/>
+                        <Button x:Name="UserSessionButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE8AF;" Content="Oturum Bilgileri" Click="UserSessionInfo_Click"/>
+                        <Button x:Name="SecurityPolicyButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE72E;" Content="Güvenlik Politikaları" Click="SecurityPolicy_Click"/>
+                        <TextBlock Text="AYARLAR" Style="{DynamicResource NavGroupHeader}"/>
+                        <Button x:Name="SettingsButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE713;" Content="Ayarlar" Click="Settings_Click"/>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>
         </Border>
 
-        <Grid Grid.Column="1" Background="#F8F9FA">
+        <Grid Grid.Column="1" Background="{DynamicResource BackgroundPage}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Background="{StaticResource NavPanelColor}" Padding="30,20" BorderThickness="0,0,0,1" BorderBrush="{StaticResource BorderColor}">
-                <TextBlock x:Name="ContentTitle" Text="Dashboard" FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+            <Border Grid.Row="0" Background="{DynamicResource NavPanelColor}" Padding="30,20" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource BorderColor}">
+                <TextBlock x:Name="ContentTitle" Text="Dashboard" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
             </Border>
 
             <Grid Grid.Row="1">
                 <ContentPresenter x:Name="PageHost" />
 
-                <Border x:Name="LoadingOverlay" Background="#A0FFFFFF" Visibility="Collapsed">
+                <Border x:Name="LoadingOverlay" Background="{DynamicResource LoadingOverlayBackground}" Visibility="Collapsed">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <ProgressBar Style="{StaticResource RotatingIconProgressBar}" Width="40" Height="40"/>
-                        <TextBlock Text="Veriler Yükleniyor..." FontSize="16" FontWeight="SemiBold" Margin="0,15,0,0" Foreground="{StaticResource TextColorPrimary}"/>
+                        <ProgressBar Style="{DynamicResource RotatingIconProgressBar}" Width="40" Height="40"/>
+                        <TextBlock Text="Veriler Yükleniyor..." FontSize="16" FontWeight="SemiBold" Margin="0,15,0,0" Foreground="{DynamicResource TextColorPrimary}"/>
                     </StackPanel>
                 </Border>
             </Grid>

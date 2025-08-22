@@ -6,20 +6,12 @@
              xmlns:controls="clr-namespace:wam.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1000"
-             Background="#F8F9FA">
+             Background="{DynamicResource BackgroundPage}">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#EAECEF"/>
-        <SolidColorBrush x:Key="ControlHoverColor" Color="#F8F9FA"/>
-        <SolidColorBrush x:Key="ErrorColor" Color="#dc3545"/>
-        <SolidColorBrush x:Key="WarningColor" Color="#ffc107"/>
-        <SolidColorBrush x:Key="InfoColor" Color="#6C757D"/>
 
         <Style x:Key="InfoCard" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundCard}"/>
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Padding" Value="25"/>
             <Setter Property="Effect">
@@ -36,8 +28,8 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorSecondary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -51,12 +43,12 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource ControlHoverColor}"/>
+                    <Setter Property="Background" Value="{DynamicResource ControlHoverColor}"/>
                 </Trigger>
                 <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
                     <Setter Property="Foreground" Value="White"/>
-                    <Setter Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -72,7 +64,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ControlHoverColor}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ControlHoverColor}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -122,13 +114,13 @@
                             <Border Name="ItemBorder" BorderThickness="4,0,0,1" Padding="6,12,10,12">
                                 <Border.Style>
                                     <Style TargetType="Border">
-                                        <Setter Property="BorderBrush" Value="{StaticResource InfoColor}"/>
+                                        <Setter Property="BorderBrush" Value="{DynamicResource InfoColor}"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding EntryType}" Value="Warning">
-                                                <Setter Property="BorderBrush" Value="{StaticResource WarningColor}"/>
+                                                <Setter Property="BorderBrush" Value="{DynamicResource WarningColor}"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding EntryType}" Value="Error">
-                                                <Setter Property="BorderBrush" Value="{StaticResource ErrorColor}"/>
+                                                <Setter Property="BorderBrush" Value="{DynamicResource ErrorColor}"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -145,15 +137,15 @@
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Text" Value="&#xE946;"/>
-                                                <Setter Property="Foreground" Value="{StaticResource InfoColor}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource InfoColor}"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding EntryType}" Value="Warning">
                                                         <Setter Property="Text" Value="&#xE7BA;"/>
-                                                        <Setter Property="Foreground" Value="{StaticResource WarningColor}"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource WarningColor}"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding EntryType}" Value="Error">
                                                         <Setter Property="Text" Value="&#xE894;"/>
-                                                        <Setter Property="Foreground" Value="{StaticResource ErrorColor}"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource ErrorColor}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -162,10 +154,10 @@
 
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <TextBlock Text="{Binding Source}" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Text="{Binding Message}" Foreground="{StaticResource TextColorSecondary}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" ToolTip="Detayları görmek için tıklayın"/>
+                                        <TextBlock Text="{Binding Message}" Foreground="{DynamicResource TextColorSecondary}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" ToolTip="Detayları görmek için tıklayın"/>
                                     </StackPanel>
 
-                                    <TextBlock Grid.Column="2" Text="{Binding TimeGeneratedFormatted}" Foreground="{StaticResource TextColorSecondary}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding TimeGeneratedFormatted}" Foreground="{DynamicResource TextColorSecondary}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>

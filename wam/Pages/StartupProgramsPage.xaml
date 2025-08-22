@@ -6,17 +6,12 @@
              xmlns:controls="clr-namespace:wam.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1000"
-             Background="#F8F9FA">
+             Background="{DynamicResource BackgroundPage}">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#EAECEF"/>
-        <SolidColorBrush x:Key="ControlHoverColor" Color="#F8F9FA"/>
 
         <Style x:Key="InfoCard" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundCard}"/>
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Padding" Value="25"/>
             <Setter Property="Effect">
@@ -40,7 +35,7 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="30">
 
-            <Border Style="{StaticResource InfoCard}">
+            <Border Style="{DynamicResource InfoCard}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -48,16 +43,16 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Text="Başlangıç Programları (Registry + Klasör)" FontSize="18" FontWeight="SemiBold" 
-                               VerticalAlignment="Center" Foreground="{StaticResource TextColorPrimary}" 
+                               VerticalAlignment="Center" Foreground="{DynamicResource TextColorPrimary}" 
                                Margin="5,0,5,20"/>
 
                     <ListView Grid.Row="1" ItemsSource="{Binding StartupRegistryItems}" 
                               BorderThickness="0" HorizontalContentAlignment="Stretch"
-                              ItemContainerStyle="{StaticResource CustomListViewItem}"
+                              ItemContainerStyle="{DynamicResource CustomListViewItem}"
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15">
+                                <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
@@ -67,16 +62,16 @@
 
                                         <!-- liste içi ikonlar kurumsal görünüme uygun; bırakıldı -->
                                         <TextBlock Grid.Column="0" Text="&#xE753;" FontFamily="Segoe MDL2 Assets" FontSize="24" 
-                                                   Foreground="{StaticResource AccentColor}" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                                                   Foreground="{DynamicResource AccentColor}" VerticalAlignment="Center" Margin="0,0,20,0"/>
 
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource TextColorPrimary}"/>
-                                            <TextBlock Text="{Binding Path, Mode=OneWay}" FontSize="12" FontStyle="Italic" Foreground="{StaticResource TextColorSecondary}" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding Path}"/>
+                                            <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource TextColorPrimary}"/>
+                                            <TextBlock Text="{Binding Path, Mode=OneWay}" FontSize="12" FontStyle="Italic" Foreground="{DynamicResource TextColorSecondary}" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding Path}"/>
                                         </StackPanel>
 
                                         <Border Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"
-                                                Background="{StaticResource ControlHoverColor}" CornerRadius="10" Padding="10,5">
-                                            <TextBlock Text="{Binding Source, Mode=OneWay}" FontWeight="SemiBold" FontSize="11" Foreground="{StaticResource TextColorSecondary}"/>
+                                                Background="{DynamicResource ControlHoverColor}" CornerRadius="10" Padding="10,5">
+                                            <TextBlock Text="{Binding Source, Mode=OneWay}" FontWeight="SemiBold" FontSize="11" Foreground="{DynamicResource TextColorSecondary}"/>
                                         </Border>
                                     </Grid>
                                 </Border>
@@ -86,7 +81,7 @@
                 </Grid>
             </Border>
 
-            <Border Style="{StaticResource InfoCard}" Margin="0,20,0,0">
+            <Border Style="{DynamicResource InfoCard}" Margin="0,20,0,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -94,16 +89,16 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Text="Başlangıçta Çalışan Zamanlanmış Görevler" FontSize="18" FontWeight="SemiBold" 
-                               VerticalAlignment="Center" Foreground="{StaticResource TextColorPrimary}" 
+                               VerticalAlignment="Center" Foreground="{DynamicResource TextColorPrimary}" 
                                Margin="5,0,5,20"/>
 
                     <ListView Grid.Row="1" ItemsSource="{Binding ScheduledTasks}" 
                               BorderThickness="0" HorizontalContentAlignment="Stretch"
-                              ItemContainerStyle="{StaticResource CustomListViewItem}"
+                              ItemContainerStyle="{DynamicResource CustomListViewItem}"
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15">
+                                <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
@@ -112,29 +107,29 @@
                                         </Grid.ColumnDefinitions>
 
                                         <TextBlock Grid.Column="0" Text="&#xE916;" FontFamily="Segoe MDL2 Assets" FontSize="24" 
-                                                   Foreground="{StaticResource AccentColor}" VerticalAlignment="Top" Margin="0,0,20,0"/>
+                                                   Foreground="{DynamicResource AccentColor}" VerticalAlignment="Top" Margin="0,0,20,0"/>
 
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource TextColorPrimary}"/>
-                                            <TextBlock Text="{Binding Action, Mode=OneWay, FallbackValue='Eylem bulunamadı'}" FontSize="11" FontStyle="Italic" Foreground="{StaticResource TextColorSecondary}" Margin="0,3,0,5" TextTrimming="CharacterEllipsis" ToolTip="{Binding Action}"/>
+                                            <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource TextColorPrimary}"/>
+                                            <TextBlock Text="{Binding Action, Mode=OneWay, FallbackValue='Eylem bulunamadı'}" FontSize="11" FontStyle="Italic" Foreground="{DynamicResource TextColorSecondary}" Margin="0,3,0,5" TextTrimming="CharacterEllipsis" ToolTip="{Binding Action}"/>
                                             <TextBlock Opacity="0.8">
-                                                <Run Text="Tetikleyici:" FontSize="12" Foreground="{StaticResource TextColorSecondary}" FontWeight="SemiBold"/>
-                                                <Run Text="{Binding Trigger, Mode=OneWay}" FontSize="12" Foreground="{StaticResource TextColorSecondary}"/>
+                                                <Run Text="Tetikleyici:" FontSize="12" Foreground="{DynamicResource TextColorSecondary}" FontWeight="SemiBold"/>
+                                                <Run Text="{Binding Trigger, Mode=OneWay}" FontSize="12" Foreground="{DynamicResource TextColorSecondary}"/>
                                             </TextBlock>
                                         </StackPanel>
 
-                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" TextBlock.FontSize="12" TextBlock.Foreground="{StaticResource TextColorSecondary}">
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" TextBlock.FontSize="12" TextBlock.Foreground="{DynamicResource TextColorSecondary}">
                                             <TextBlock TextAlignment="Right">
                                                 <Run Text="Son Çalışma:"/>
-                                                <Run Text="{Binding LastRunTime, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                                                <Run Text="{Binding LastRunTime, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
                                             </TextBlock>
                                             <TextBlock TextAlignment="Right" Margin="0,3,0,0">
                                                 <Run Text="Sonraki Çalışma:"/>
-                                                <Run Text="{Binding NextRunTime, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                                                <Run Text="{Binding NextRunTime, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
                                             </TextBlock>
                                             <TextBlock TextAlignment="Right" Margin="0,3,0,0">
                                                 <Run Text="Oluşturan:"/>
-                                                <Run Text="{Binding Author, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                                                <Run Text="{Binding Author, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
                                             </TextBlock>
                                         </StackPanel>
                                     </Grid>

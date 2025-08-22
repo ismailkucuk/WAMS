@@ -8,39 +8,19 @@
              xmlns:converters="clr-namespace:wam.Converters"
              mc:Ignorable="d"
              d:DesignHeight="900" d:DesignWidth="1400"
-             Background="#FAFAFA">
+             Background="{DynamicResource BackgroundPage}">
 
     <UserControl.Resources>
-        <!-- Palette (aligned with SystemInfoPage) -->
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#DEE2E6"/>
-        <SolidColorBrush x:Key="BackgroundWhite" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="BackgroundLight" Color="#F8F9FA"/>
-        <SolidColorBrush x:Key="SuccessGreen" Color="#107C10"/>
-        <SolidColorBrush x:Key="WarningOrange" Color="#FF8C00"/>
-        <SolidColorBrush x:Key="DangerRed" Color="#D13438"/>
-
-        <!-- Backward compatibility aliases for existing XAML references -->
-        <SolidColorBrush x:Key="PrimaryBlue" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="HoverBlue" Color="#3C7FD1"/>
-        <SolidColorBrush x:Key="LightBlue" Color="#EAECEF"/>
-        <SolidColorBrush x:Key="TextPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="TextMuted" Color="#8A8F98"/>
-        <SolidColorBrush x:Key="BorderLight" Color="#DEE2E6"/>
-        <SolidColorBrush x:Key="BorderMedium" Color="#DEE2E6"/>
         
         <!-- InfoCard (match SystemInfoPage) -->
         <Style x:Key="CleanCard" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource BackgroundWhite}"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Padding" Value="25"/>
             <Setter Property="Margin" Value="0,0,0,20"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect ShadowDepth="1" Direction="270" Color="Black" Opacity="0.08" BlurRadius="12"/>
+                    <DropShadowEffect ShadowDepth="1" Direction="270" Color="{DynamicResource ShadowColor}" Opacity="0.08" BlurRadius="12"/>
                 </Setter.Value>
             </Setter>
         </Style>
@@ -50,7 +30,7 @@
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
             <Setter Property="Margin" Value="0,0,0,16"/>
         </Style>
 
@@ -59,35 +39,35 @@
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Normal"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorSecondary}"/>
             <Setter Property="Margin" Value="0,0,0,8"/>
         </Style>
 
         <!-- Minimal Metric Card -->
         <Style x:Key="MetricCard" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource BackgroundWhite}"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
             <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="16"/>
             <Setter Property="Margin" Value="4"/>
             <Setter Property="MinHeight" Value="80"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect ShadowDepth="0" Color="#000000" BlurRadius="8" Opacity="0.04"/>
+                    <DropShadowEffect ShadowDepth="0" Color="{DynamicResource ShadowColor}" BlurRadius="8" Opacity="0.04"/>
                 </Setter.Value>
             </Setter>
         </Style>
 
         <!-- Windows-Style Button -->
         <Style x:Key="WindowsButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource BackgroundWhite}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="12,8"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -102,11 +82,11 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#F1F5F9"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource WindowsButtonHover}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#EAECEF"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource WindowsButtonPressed}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -116,13 +96,13 @@
 
         <!-- Quick Access Button (rounded, subtle hover) -->
         <Style x:Key="QuickAccessButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource BackgroundWhite}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="14,10"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="Template">
@@ -138,11 +118,11 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#F6F8FB"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="#D4E2F6"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource QuickAccessButtonHover}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource QuickAccessButtonHoverBorder}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#EDF2FA"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource QuickAccessButtonPressed}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -152,7 +132,7 @@
 
         <!-- Primary Action Button -->
         <Style x:Key="PrimaryButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="16,8"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
@@ -170,7 +150,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#3C7FD1"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryButtonHover}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -192,8 +172,8 @@
         <Style x:Key="Chip" TargetType="Border">
             <Setter Property="CornerRadius" Value="12"/>
             <Setter Property="Padding" Value="10,6"/>
-            <Setter Property="Background" Value="#F1F5F9"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Background" Value="{DynamicResource ChipBackground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Margin" Value="0,0,8,0"/>
         </Style>
@@ -260,30 +240,30 @@
 
                         <!-- Processes -->
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Processes" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
-                            <TextBlock Text="{Binding ActiveProcessCount}" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource AccentColor}"/>
-                            <TextBlock Text="running" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                            <TextBlock Text="Processes" Foreground="{DynamicResource TextColorSecondary}" FontSize="12"/>
+                            <TextBlock Text="{Binding ActiveProcessCount}" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource AccentColor}"/>
+                            <TextBlock Text="running" Foreground="{DynamicResource TextColorSecondary}" FontSize="12"/>
                         </StackPanel>
 
                         <!-- Security events -->
                         <StackPanel Grid.Column="1">
-                            <TextBlock Text="Security events" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
-                            <TextBlock Text="{Binding SecurityWarningsCount}" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource DangerRed}"/>
-                            <TextBlock Text="last 24h" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                            <TextBlock Text="Security events" Foreground="{DynamicResource TextColorSecondary}" FontSize="12"/>
+                            <TextBlock Text="{Binding SecurityWarningsCount}" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource DangerRed}"/>
+                            <TextBlock Text="last 24h" Foreground="{DynamicResource TextColorSecondary}" FontSize="12"/>
                         </StackPanel>
 
                         <!-- USB devices -->
                         <StackPanel Grid.Column="2">
-                            <TextBlock Text="USB devices" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
-                            <TextBlock Text="{Binding UsbDeviceCount}" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
-                            <TextBlock Text="connected" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                            <TextBlock Text="USB devices" Foreground="{DynamicResource TextColorSecondary}" FontSize="12"/>
+                            <TextBlock Text="{Binding UsbDeviceCount}" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
+                            <TextBlock Text="connected" Foreground="{DynamicResource TextColorSecondary}" FontSize="12"/>
                         </StackPanel>
 
                         <!-- Startup programs -->
                         <StackPanel Grid.Column="3">
-                            <TextBlock Text="Startup programs" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
-                            <TextBlock Text="{Binding StartupProgramCount}" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
-                            <TextBlock Text="entries" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                            <TextBlock Text="Startup programs" Foreground="{DynamicResource TextColorSecondary}" FontSize="12"/>
+                            <TextBlock Text="{Binding StartupProgramCount}" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
+                            <TextBlock Text="entries" Foreground="{DynamicResource TextColorSecondary}" FontSize="12"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -295,7 +275,7 @@
                     <Border Style="{StaticResource CleanCard}">
                         <StackPanel>
                             <TextBlock Text="System Performance" Style="{StaticResource SectionHeader}"/>
-                            <TextBlock FontFamily="Segoe UI" FontSize="13" Foreground="{StaticResource TextColorSecondary}" Margin="0,0,0,16">
+                            <TextBlock FontFamily="Segoe UI" FontSize="13" Foreground="{DynamicResource TextColorSecondary}" Margin="0,0,0,16">
                                 <TextBlock.Text>
                                     <Binding Path="Uptime" StringFormat="Uptime: {0}"/>
                                 </TextBlock.Text>
@@ -312,7 +292,7 @@
                                 <Border Grid.Column="0" Style="{StaticResource MetricCard}">
                                     <StackPanel>
                                         <controls:SemiCircularGauge Title="Processor" Value="{Binding CpuUsage, Mode=OneWay}" PeakValue="{Binding CpuPeak, Mode=OneWay}" ForegroundBrush="{Binding CpuStatusColor}"/>
-                                        <TextBlock FontSize="12" Foreground="{StaticResource TextColorSecondary}" Margin="0,8,0,0" TextTrimming="CharacterEllipsis">
+                                        <TextBlock FontSize="12" Foreground="{DynamicResource TextColorSecondary}" Margin="0,8,0,0" TextTrimming="CharacterEllipsis">
                                             <TextBlock.Text>
                                                 <Binding Path="CpuName"/>
                                             </TextBlock.Text>
@@ -324,7 +304,7 @@
                                 <Border Grid.Column="1" Style="{StaticResource MetricCard}">
                                     <StackPanel>
                                         <controls:SemiCircularGauge Title="Memory" Value="{Binding RamUsagePercent, Mode=OneWay}" PeakValue="{Binding RamPeak, Mode=OneWay}" ForegroundBrush="{Binding RamStatusColor}"/>
-                                        <TextBlock FontSize="12" Foreground="{StaticResource TextColorSecondary}" Margin="0,8,0,0">
+                                        <TextBlock FontSize="12" Foreground="{DynamicResource TextColorSecondary}" Margin="0,8,0,0">
                                             <TextBlock.Text>
                                                 <MultiBinding StringFormat="{}{0:F1} GB in use • {1:F1} GB total">
                                                     <Binding Path="UsedRamGB"/>
@@ -339,7 +319,7 @@
                                 <Border Grid.Column="2" Style="{StaticResource MetricCard}">
                                     <StackPanel>
                                         <controls:SemiCircularGauge Title="GPU" Value="{Binding GpuUsage, Mode=OneWay}" PeakValue="{Binding GpuPeak, Mode=OneWay}" ForegroundBrush="{Binding GpuStatusColor}"/>
-                                        <TextBlock FontSize="12" Foreground="{StaticResource TextColorSecondary}" Margin="0,8,0,0" TextTrimming="CharacterEllipsis">
+                                        <TextBlock FontSize="12" Foreground="{DynamicResource TextColorSecondary}" Margin="0,8,0,0" TextTrimming="CharacterEllipsis">
                                             <TextBlock.Text>
                                                 <Binding Path="GpuName"/>
                                             </TextBlock.Text>
@@ -370,22 +350,22 @@
                                         <TextBlock Text="{Binding ActiveConnections}"
                                                    FontSize="38"
                                                    FontWeight="SemiBold"
-                                                   Foreground="{StaticResource PrimaryBlue}"
+                                                   Foreground="{DynamicResource PrimaryBlue}"
                                                    FontFamily="Segoe UI"/>
-                                        <TextBlock Text="Active connections" FontSize="13" Foreground="{StaticResource TextColorSecondary}" FontFamily="Segoe UI"/>
+                                        <TextBlock Text="Active connections" FontSize="13" Foreground="{DynamicResource TextColorSecondary}" FontFamily="Segoe UI"/>
                                         <Grid Margin="0,6,0,0">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <TextBlock Grid.Row="0" FontSize="12" Foreground="{StaticResource TextColorSecondary}">
+                                            <TextBlock Grid.Row="0" FontSize="12" Foreground="{DynamicResource TextColorSecondary}">
                                                 <TextBlock.Text>
                                                     <MultiBinding StringFormat="{}{0} down">
                                                         <Binding Path="DownMbps" Converter="{StaticResource ThroughputFormatter}"/>
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                             </TextBlock>
-                                            <Polyline Grid.Row="1" Points="{Binding Path=DownHistory, Converter={StaticResource SparklinePointsConverter}, ConverterParameter='160,28'}" Stroke="{StaticResource PrimaryBlue}" StrokeThickness="2" Opacity="0.8"/>
+                                            <Polyline Grid.Row="1" Points="{Binding Path=DownHistory, Converter={StaticResource SparklinePointsConverter}, ConverterParameter='160,28'}" Stroke="{DynamicResource PrimaryBlue}" StrokeThickness="2" Opacity="0.8"/>
                                         </Grid>
                                     </StackPanel>
                                     
@@ -393,22 +373,22 @@
                                         <TextBlock Text="{Binding ListeningPorts}"
                                                    FontSize="38"
                                                    FontWeight="SemiBold"
-                                                   Foreground="{StaticResource SuccessGreen}"
+                                                   Foreground="{DynamicResource SuccessGreen}"
                                                    FontFamily="Segoe UI"/>
-                                        <TextBlock Text="Listening ports" FontSize="13" Foreground="{StaticResource TextColorSecondary}" FontFamily="Segoe UI"/>
+                                        <TextBlock Text="Listening ports" FontSize="13" Foreground="{DynamicResource TextColorSecondary}" FontFamily="Segoe UI"/>
                                         <Grid Margin="0,6,0,0">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <TextBlock Grid.Row="0" FontSize="12" Foreground="{StaticResource TextColorSecondary}">
+                                            <TextBlock Grid.Row="0" FontSize="12" Foreground="{DynamicResource TextColorSecondary}">
                                                 <TextBlock.Text>
                                                     <MultiBinding StringFormat="{}{0} up">
                                                         <Binding Path="UpMbps" Converter="{StaticResource ThroughputFormatter}"/>
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                             </TextBlock>
-                                            <Polyline Grid.Row="1" Points="{Binding Path=UpHistory, Converter={StaticResource SparklinePointsConverter}, ConverterParameter='160,28'}" Stroke="{StaticResource SuccessGreen}" StrokeThickness="2" Opacity="0.8"/>
+                                            <Polyline Grid.Row="1" Points="{Binding Path=UpHistory, Converter={StaticResource SparklinePointsConverter}, ConverterParameter='160,28'}" Stroke="{DynamicResource SuccessGreen}" StrokeThickness="2" Opacity="0.8"/>
                                         </Grid>
                                     </StackPanel>
                                 </Grid>
@@ -437,8 +417,8 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{Binding Name}" FontSize="13" Foreground="{StaticResource TextColorPrimary}"/>
-                                            <TextBlock Grid.Column="1" Text="{Binding StartTime, StringFormat=HH:mm}" FontSize="12" Foreground="{StaticResource TextMuted}"/>
+                                            <TextBlock Text="{Binding Name}" FontSize="13" Foreground="{DynamicResource TextColorPrimary}"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding StartTime, StringFormat=HH:mm}" FontSize="12" Foreground="{DynamicResource TextMuted}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -462,7 +442,7 @@
                                         HorizontalAlignment="Stretch"
                                         HorizontalContentAlignment="Left">
                                     <StackPanel Orientation="Horizontal">
-                                        <Border Background="{StaticResource AccentColor}" Width="4" Height="18" CornerRadius="2" Margin="0,0,12,0"/>
+                                        <Border Background="{DynamicResource AccentColor}" Width="4" Height="18" CornerRadius="2" Margin="0,0,12,0"/>
                                         <TextBlock Text="Process Monitor" 
                                                    FontSize="14" 
                                                    FontFamily="Segoe UI"/>
@@ -475,7 +455,7 @@
                                         HorizontalAlignment="Stretch"
                                         HorizontalContentAlignment="Left">
                                     <StackPanel Orientation="Horizontal">
-                                        <Border Background="{StaticResource SuccessGreen}" Width="4" Height="18" CornerRadius="2" Margin="0,0,12,0"/>
+                                        <Border Background="{DynamicResource SuccessGreen}" Width="4" Height="18" CornerRadius="2" Margin="0,0,12,0"/>
                                         <TextBlock Text="Network Monitor" 
                                                    FontSize="14" 
                                                    FontFamily="Segoe UI"/>
@@ -488,7 +468,7 @@
                                         HorizontalAlignment="Stretch"
                                         HorizontalContentAlignment="Left">
                                     <StackPanel Orientation="Horizontal">
-                                        <Border Background="{StaticResource WarningOrange}" Width="4" Height="18" CornerRadius="2" Margin="0,0,12,0"/>
+                                        <Border Background="{DynamicResource WarningOrange}" Width="4" Height="18" CornerRadius="2" Margin="0,0,12,0"/>
                                         <TextBlock Text="User Activities" 
                                                    FontSize="14" 
                                                    FontFamily="Segoe UI"/>
@@ -500,7 +480,7 @@
                                         HorizontalAlignment="Stretch"
                                         HorizontalContentAlignment="Left">
                                     <StackPanel Orientation="Horizontal">
-                                        <Border Background="{StaticResource DangerRed}" Width="4" Height="18" CornerRadius="2" Margin="0,0,12,0"/>
+                                        <Border Background="{DynamicResource DangerRed}" Width="4" Height="18" CornerRadius="2" Margin="0,0,12,0"/>
                                         <TextBlock Text="USB Monitor" 
                                                    FontSize="14" 
                                                    FontFamily="Segoe UI"/>
@@ -515,7 +495,7 @@
                         <StackPanel>
                             <Grid Margin="0,0,0,16">
                                 <TextBlock Text="Recent Activities" Style="{StaticResource SectionHeader}" Margin="0"/>
-                                <Border Background="{StaticResource BackgroundLight}" 
+                                <Border Background="{DynamicResource BackgroundLight}" 
                                         CornerRadius="2" 
                                         Padding="6,2" 
                                         HorizontalAlignment="Right"
@@ -523,7 +503,7 @@
                                     <TextBlock Text="LIVE" 
                                                FontSize="10" 
                                                FontWeight="SemiBold" 
-                                               Foreground="{StaticResource TextMuted}"
+                                               Foreground="{DynamicResource TextMuted}"
                                                FontFamily="Segoe UI"/>
                                 </Border>
                             </Grid>
@@ -542,16 +522,16 @@
                                 </ListView.ItemContainerStyle>
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <Grid Margin="0,8,0,8">
+                                        <Grid Margin="0,12,0,12">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Ellipse Grid.Column="0" Width="6" Height="6" Fill="{Binding IconColor}" VerticalAlignment="Center" Margin="4,0,12,0"/>
-                                            <TextBlock Grid.Column="1" Text="{Binding Description}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" FontSize="13" FontFamily="Segoe UI" Foreground="{StaticResource TextPrimary}"/>
-                                            <TextBlock Grid.Column="2" Text="{Binding Time, StringFormat='HH:mm'}" Foreground="{StaticResource TextMuted}" VerticalAlignment="Center" FontSize="12" FontFamily="Segoe UI"/>
-                                            <Rectangle Grid.ColumnSpan="3" Height="1" VerticalAlignment="Bottom" Fill="{StaticResource BorderColor}" Opacity="0.6" Margin="0,0,0,0"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Description}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" FontSize="13" FontFamily="Segoe UI" Foreground="{DynamicResource TextPrimary}"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding Time, StringFormat='HH:mm'}" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center" FontSize="12" FontFamily="Segoe UI"/>
+                                            <Rectangle Grid.ColumnSpan="3" Height="1" VerticalAlignment="Bottom" Fill="{DynamicResource BorderColor}" Opacity="0.4" Margin="0,8,0,-6"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
@@ -579,11 +559,11 @@
                                     <StackPanel Grid.Column="1">
                                         <TextBlock Text="{Binding SecurityStatusMessage}" 
                                                    FontSize="13"
-                                                   Foreground="{StaticResource TextPrimary}"
+                                                   Foreground="{DynamicResource TextPrimary}"
                                                    FontFamily="Segoe UI"/>
                                         <TextBlock Text="{Binding LastSecurityEvent}" 
                                                    FontSize="11" 
-                                                   Foreground="{StaticResource TextMuted}"
+                                                   Foreground="{DynamicResource TextMuted}"
                                                    FontFamily="Segoe UI"
                                                    Margin="0,2,0,0"/>
                                     </StackPanel>
@@ -597,19 +577,19 @@
                                     </Grid.ColumnDefinitions>
                                     <Ellipse Grid.Column="0" 
                                              Width="6" Height="6" 
-                                             Fill="{StaticResource SuccessGreen}" 
+                                             Fill="{DynamicResource SuccessGreen}" 
                                              Margin="0,0,12,0" 
                                              VerticalAlignment="Center"/>
                                     <StackPanel Grid.Column="1">
                                                                                  <TextBlock FontSize="13"
-                                                    Foreground="{StaticResource TextPrimary}"
+                                                    Foreground="{DynamicResource TextPrimary}"
                                                     FontFamily="Segoe UI">
                                             <TextBlock.Text>
                                                 <Binding Path="ActiveProcessCount" StringFormat="{}{0} processes running"/>
                                             </TextBlock.Text>
                                          </TextBlock>
                                         <TextBlock FontSize="11" 
-                                                   Foreground="{StaticResource TextMuted}"
+                                                   Foreground="{DynamicResource TextMuted}"
                                                    FontFamily="Segoe UI"
                                                    Margin="0,2,0,0">
                                             <TextBlock.Text>

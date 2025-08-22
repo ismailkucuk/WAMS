@@ -6,21 +6,18 @@
              xmlns:controls="clr-namespace:wam.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1000"
-             Background="#F8F9FA">
+             Background="{DynamicResource BackgroundPage}">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#F0F0F0"/>
+        <!-- Dynamic theme-aware resources -->
 
         <Style x:Key="InfoCard" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Padding" Value="25"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect ShadowDepth="1" Direction="270" Color="Black" Opacity="0.08" BlurRadius="12"/>
+                    <DropShadowEffect ShadowDepth="1" Direction="270" Color="{DynamicResource ShadowColor}" Opacity="0.08" BlurRadius="12"/>
                 </Setter.Value>
             </Setter>
         </Style>
@@ -35,7 +32,7 @@
         <!-- EXPORT CONTROL -->
         <controls:ExportControl Grid.Row="0" x:Name="ExportControl" Margin="0,0,0,20"/>
 
-        <Border Grid.Row="1" Style="{StaticResource InfoCard}">
+        <Border Grid.Row="1" Style="{DynamicResource InfoCard}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -43,20 +40,32 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Text="Süreç Zinciri Analizi" FontSize="18" FontWeight="SemiBold" 
-                           VerticalAlignment="Center" Foreground="{StaticResource TextColorPrimary}" 
+                           VerticalAlignment="Center" Foreground="{DynamicResource TextColorPrimary}" 
                            Margin="5,0,5,20"/>
 
                 <ListView Grid.Row="1" 
                           Height="650"
                           x:Name="ProcessListView" 
                           BorderThickness="0" 
+                          Background="Transparent"
                           HorizontalContentAlignment="Stretch">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListViewItem">
-                                        <ContentPresenter />
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource BackgroundLight}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
@@ -65,7 +74,7 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15">
+                            <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15" Background="{DynamicResource BackgroundWhite}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -74,27 +83,27 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Column="0" Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="24" 
-                                               Foreground="{StaticResource AccentColor}" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                                               Foreground="{DynamicResource AccentColor}" VerticalAlignment="Center" Margin="0,0,20,0"/>
 
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource TextColorPrimary}"/>
+                                        <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource TextColorPrimary}"/>
                                         <TextBlock Opacity="0.8" Margin="0,2,0,0">
-                                            <Run Text="Ana Süreç:" FontSize="12" Foreground="{StaticResource TextColorSecondary}"/>
-                                            <Run Text="{Binding ParentName, Mode=OneWay}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColorSecondary}"/>
+                                            <Run Text="Ana Süreç:" FontSize="12" Foreground="{DynamicResource TextColorSecondary}"/>
+                                            <Run Text="{Binding ParentName, Mode=OneWay}" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextColorSecondary}"/>
                                         </TextBlock>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" TextBlock.FontSize="12">
-                                        <TextBlock TextAlignment="Right" Foreground="{StaticResource TextColorSecondary}">
+                                        <TextBlock TextAlignment="Right" Foreground="{DynamicResource TextColorSecondary}">
                                             <Run Text="PID:"/>
-                                            <Run Text="{Binding Id, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                                            <Run Text="{Binding Id, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
                                             <Run Text=" → "/>
                                             <Run Text="Ana PID:"/>
-                                            <Run Text="{Binding ParentId, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                                            <Run Text="{Binding ParentId, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
                                         </TextBlock>
-                                        <TextBlock TextAlignment="Right" Foreground="{StaticResource TextColorSecondary}" Margin="0,2,0,0">
+                                        <TextBlock TextAlignment="Right" Foreground="{DynamicResource TextColorSecondary}" Margin="0,2,0,0">
                                             <Run Text="Başlama:"/>
-                                            <Run Text="{Binding StartTime, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                                            <Run Text="{Binding StartTime, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
                                         </TextBlock>
                                     </StackPanel>
 

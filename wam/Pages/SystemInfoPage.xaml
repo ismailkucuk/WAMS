@@ -5,34 +5,30 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000"
-             Background="#F8F9FA">
+             Background="{DynamicResource BackgroundPage}">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#DEE2E6"/>
 
         <Style x:Key="InfoCard" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Padding" Value="25"/>
             <Setter Property="Margin" Value="0,0,0,20"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect ShadowDepth="1" Direction="270" Color="Black" Opacity="0.08" BlurRadius="12"/>
+                    <DropShadowEffect ShadowDepth="1" Direction="270" Color="{DynamicResource ShadowColor}" Opacity="0.08" BlurRadius="12"/>
                 </Setter.Value>
             </Setter>
         </Style>
 
         <Style x:Key="LabelText" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorSecondary}"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
         <Style x:Key="ValueText" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -42,7 +38,7 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="30">
 
-            <Border Style="{StaticResource InfoCard}">
+            <Border Style="{DynamicResource InfoCard}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -60,38 +56,38 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Kullanıcı Adı:" Style="{StaticResource LabelText}" Margin="0,0,20,15"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="UserNameText" Style="{StaticResource ValueText}" />
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Kullanıcı Adı:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="UserNameText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Bilgisayar Adı:" Style="{StaticResource LabelText}" Margin="0,0,20,15"/>
-                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="MachineNameText" Style="{StaticResource ValueText}" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Bilgisayar Adı:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="MachineNameText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="IP Adresi:" Style="{StaticResource LabelText}" Margin="0,0,20,15"/>
-                    <TextBlock Grid.Row="2" Grid.Column="1" x:Name="IpAddressText" Style="{StaticResource ValueText}" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="IP Adresi:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" x:Name="IpAddressText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="İşletim Sistemi:" Style="{StaticResource LabelText}" Margin="0,0,20,15"/>
-                    <TextBlock Grid.Row="3" Grid.Column="1" x:Name="OsVersionText" Style="{StaticResource ValueText}" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="İşletim Sistemi:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" x:Name="OsVersionText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Sistem Mimarisi:" Style="{StaticResource LabelText}" Margin="0,0,20,15"/>
-                    <TextBlock Grid.Row="4" Grid.Column="1" x:Name="ArchitectureText" Style="{StaticResource ValueText}" />
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Sistem Mimarisi:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="4" Grid.Column="1" x:Name="ArchitectureText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Toplam RAM:" Style="{StaticResource LabelText}" Margin="0,0,20,15"/>
-                    <TextBlock Grid.Row="5" Grid.Column="1" x:Name="TotalRamText" Style="{StaticResource ValueText}" />
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Toplam RAM:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="5" Grid.Column="1" x:Name="TotalRamText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Kullanılabilir RAM:" Style="{StaticResource LabelText}" Margin="0,0,20,15"/>
-                    <TextBlock Grid.Row="6" Grid.Column="1" x:Name="AvailableRamText" Style="{StaticResource ValueText}" />
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Kullanılabilir RAM:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="6" Grid.Column="1" x:Name="AvailableRamText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="7" Grid.Column="0" Text="Domain:" Style="{StaticResource LabelText}" Margin="0,0,20,15"/>
-                    <TextBlock Grid.Row="7" Grid.Column="1" x:Name="DomainText" Style="{StaticResource ValueText}" />
+                    <TextBlock Grid.Row="7" Grid.Column="0" Text="Domain:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="7" Grid.Column="1" x:Name="DomainText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="8" Grid.Column="0" Text="BIOS Versiyonu:" Style="{StaticResource LabelText}" Margin="0,0,20,0"/>
-                    <TextBlock Grid.Row="8" Grid.Column="1" x:Name="BiosText" Style="{StaticResource ValueText}" />
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="BIOS Versiyonu:" Style="{DynamicResource LabelText}" Margin="0,0,20,0"/>
+                    <TextBlock Grid.Row="8" Grid.Column="1" x:Name="BiosText" Style="{DynamicResource ValueText}" />
                 </Grid>
             </Border>
 
-            <Border Style="{StaticResource InfoCard}">
+            <Border Style="{DynamicResource InfoCard}">
                 <StackPanel>
-                    <TextBlock Text="Disk Kullanımı" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,15"/>
+                    <TextBlock Text="Disk Kullanımı" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}" Margin="0,0,0,15"/>
 
                     <ItemsControl x:Name="DiskUsageItemsControl">
                         <ItemsControl.ItemTemplate>
@@ -108,8 +104,8 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="Bold" Foreground="{StaticResource TextColorPrimary}" FontSize="14"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding UsageText}" Foreground="{StaticResource TextColorSecondary}" FontSize="14" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="Bold" Foreground="{DynamicResource TextColorPrimary}" FontSize="14"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding UsageText}" Foreground="{DynamicResource TextColorSecondary}" FontSize="14" HorizontalAlignment="Right"/>
                                     </Grid>
 
                                     <ProgressBar Grid.Row="1" 
@@ -118,8 +114,8 @@
                                                  BorderThickness="0">
                                         <ProgressBar.Style>
                                             <Style TargetType="ProgressBar">
-                                                <Setter Property="Foreground" Value="{StaticResource AccentColor}"/>
-                                                <Setter Property="Background" Value="#EAECEF"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+                                                <Setter Property="Background" Value="{DynamicResource BackgroundLight}"/>
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="ProgressBar">
