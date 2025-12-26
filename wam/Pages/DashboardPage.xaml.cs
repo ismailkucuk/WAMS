@@ -142,49 +142,11 @@ namespace wam.Pages
             }
         }
 
-        public void ExportToJson()
-        {
-            try
-            {
-                System.Diagnostics.Debug.WriteLine("Dashboard: ExportToJson çağrıldı");
-                // Basit export - şimdilik boş
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Dashboard ExportToJson Error: {ex.Message}");
-            }
-        }
-
-        public void ExportToCsv()
-        {
-            try
-            {
-                System.Diagnostics.Debug.WriteLine("Dashboard: ExportToCsv çağrıldı");
-                // Basit export - şimdilik boş
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Dashboard ExportToCsv Error: {ex.Message}");
-            }
-        }
-
-        public void AutoExport()
-        {
-            try
-            {
-                System.Diagnostics.Debug.WriteLine("Dashboard: AutoExport çağrıldı");
-                // Basit export - şimdilik boş
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Dashboard AutoExport Error: {ex.Message}");
-            }
-        }
-
-        public string GetModuleName()
-        {
-            return "Dashboard";
-        }
+        // ILoadablePage interface requirements (export disabled for Dashboard)
+        public void ExportToJson() { }
+        public void ExportToCsv() { }
+        public void AutoExport() { }
+        public string GetModuleName() => "Dashboard";
 
         // Navigation Event Handlers - Basit versiyonlar
         private async void NavigateToProcessMonitor_Click(object sender, RoutedEventArgs e)

@@ -87,6 +87,10 @@
             <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
+        <Style x:Key="InfoButton" TargetType="Button" BasedOn="{StaticResource BaseActionButton}">
+            <Setter Property="Background" Value="{DynamicResource InfoColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
 
         <Style x:Key="ModernGridViewColumnHeader" TargetType="GridViewColumnHeader">
             <Setter Property="Background" Value="Transparent"/>
@@ -96,64 +100,84 @@
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
         </Style>
         <Style x:Key="ModernListViewItem" TargetType="ListViewItem">
             <Setter Property="Padding" Value="12,14"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
             <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="{DynamicResource ControlHoverColor}"/>
                 </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
             </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="ModernListView" TargetType="ListView">
+            <Setter Property="Background" Value="{DynamicResource BackgroundCard}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
         </Style>
     </UserControl.Resources>
 
-    <Grid Margin="30">
-        <Border Style="{StaticResource InfoCard}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+    <Border Background="{DynamicResource BackgroundPage}" CornerRadius="10" Padding="20">
+        <Grid Margin="30">
+            <Border Style="{StaticResource InfoCard}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="📁 İzlenecek Klasör" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                    <TextBlock Grid.Row="0" Text="{DynamicResource FileSystem_FolderToMonitor}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="{DynamicResource TextColorPrimary}"/>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" x:Name="TxtPath" Style="{StaticResource ModernTextBox}" Margin="0,0,10,0" 
+                    <TextBox Grid.Column="0" x:Name="TxtPath" Style="{StaticResource ModernTextBox}" Margin="0,0,10,0"
                              IsEnabled="{Binding IsNotMonitoring}"/>
-                    <Button Grid.Column="1" Content="Gözat..." Style="{StaticResource SecondaryButton}" Click="BtnBrowse_Click"
+                    <Button Grid.Column="1" Content="{DynamicResource Common_Browse}" Style="{StaticResource SecondaryButton}" Click="BtnBrowse_Click"
                             IsEnabled="{Binding IsNotMonitoring}"/>
                 </Grid>
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,15,0,0">
-                    <Button Content="▶ İzlemeyi Başlat" Style="{StaticResource SuccessButton}" Width="160" Margin="0,0,10,0" Click="BtnStart_Click"
+                    <Button Content="{DynamicResource FileSystem_StartMonitoring}" Style="{StaticResource SuccessButton}" Width="180" Margin="0,0,10,0" Click="BtnStart_Click"
                             IsEnabled="{Binding IsNotMonitoring}"/>
-                    <Button Content="⏹ İzlemeyi Durdur" Style="{StaticResource DangerButton}" Width="160" Click="BtnStop_Click"
+                    <Button Content="{DynamicResource FileSystem_StopMonitoring}" Style="{StaticResource DangerButton}" Width="180" Click="BtnStop_Click"
                             IsEnabled="{Binding IsMonitoring}"/>
 
-                    <Button Content="📋 Logları Dışa Aktar" Style="{StaticResource SecondaryButton}" Margin="20,0,0,0" Click="BtnExport_Click"
+                    <Button Content="{DynamicResource FileSystem_ExportLogs}" Style="{StaticResource InfoButton}" Margin="20,0,0,0" Click="BtnExport_Click"
                             IsEnabled="{Binding HasLogs}"/>
                 </StackPanel>
 
                 <ListView Grid.Row="3" x:Name="LogList" Margin="0,20,0,0"
                           ItemsSource="{Binding Logs}"
-                          ItemContainerStyle="{StaticResource ModernListViewItem}">
+                          Style="{StaticResource ModernListView}"
+                          ItemContainerStyle="{StaticResource ModernListViewItem}"
+                          SizeChanged="LogList_SizeChanged">
                     <ListView.View>
                         <GridView ColumnHeaderContainerStyle="{StaticResource ModernGridViewColumnHeader}">
-                            <GridViewColumn Header="Zaman" Width="150" DisplayMemberBinding="{Binding Time}"/>
-                            <GridViewColumn Header="Olay Türü" Width="150" DisplayMemberBinding="{Binding ChangeType}"/>
-                            <GridViewColumn Header="Dosya Yolu" Width="400" DisplayMemberBinding="{Binding FileName}"/>
+                            <GridViewColumn Header="{DynamicResource FileSystem_Time}" Width="200" DisplayMemberBinding="{Binding Time}"/>
+                            <GridViewColumn Header="{DynamicResource FileSystem_EventType}" Width="200" DisplayMemberBinding="{Binding ChangeType}"/>
+                            <GridViewColumn Header="{DynamicResource FileSystem_FilePath}" Width="500" DisplayMemberBinding="{Binding FileName}"/>
                         </GridView>
                     </ListView.View>
                 </ListView>
-            </Grid>
-        </Border>
-    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
 </UserControl>

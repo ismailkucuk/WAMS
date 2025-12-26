@@ -98,13 +98,14 @@
                     </Grid.ColumnDefinitions>
                     <!-- Filters left-aligned -->
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <RadioButton Content="Tümü" Style="{StaticResource FilterRadioButton}" IsChecked="True" Tag="All" Checked="Filter_Checked"/>
-                        <RadioButton Content="Oturum Açma/Kapatma" Tag="LogonLogoff" Style="{StaticResource FilterRadioButton}" Checked="Filter_Checked"/>
-                        <RadioButton Content="Kritik Olaylar" Tag="Critical" Style="{StaticResource FilterRadioButton}" Checked="Filter_Checked"/>
+                        <RadioButton Content="{DynamicResource UserActivity_All}" Style="{StaticResource FilterRadioButton}" IsChecked="True" Tag="All" Checked="Filter_Checked"/>
+                        <RadioButton Content="{DynamicResource UserActivity_LogonLogoff}" Tag="LogonLogoff" Style="{StaticResource FilterRadioButton}" Checked="Filter_Checked"/>
+                        <RadioButton Content="{DynamicResource UserActivity_Critical}" Tag="Critical" Style="{StaticResource FilterRadioButton}" Checked="Filter_Checked"/>
                     </StackPanel>
                 </Grid>
 
-                <ListView Grid.Row="1" x:Name="ActivityListView" BorderThickness="0" 
+                <ListView Grid.Row="1" x:Name="ActivityListView" BorderThickness="0"
+                          Background="{DynamicResource BackgroundCard}"
                           ItemsSource="{Binding UserActivities}"
                           ItemContainerStyle="{StaticResource CustomListViewItem}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"

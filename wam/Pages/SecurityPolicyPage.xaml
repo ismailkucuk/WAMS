@@ -6,36 +6,28 @@
              xmlns:local="clr-namespace:wam.Pages"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="1200"
-             Background="#F8F9FA">
+             Background="{DynamicResource BackgroundPage}">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#EAECEF"/>
-        <SolidColorBrush x:Key="SuccessColor" Color="#28a745"/>
-        <SolidColorBrush x:Key="WarningColor" Color="#ffc107"/>
-        <SolidColorBrush x:Key="DangerColor" Color="#dc3545"/>
-        
         <Style x:Key="InfoCard" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
             <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Padding" Value="25"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Margin" Value="0,0,0,20"/>
         </Style>
 
         <Style x:Key="PolicyItemBorder" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="16"/>
             <Setter Property="Margin" Value="0,0,0,12"/>
         </Style>
 
         <Style x:Key="EditButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="12,6"/>
@@ -45,18 +37,18 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                CornerRadius="4" 
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
                                 Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" 
+                            <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#3A7BC8"/>
+                                <Setter Property="Background" Value="{DynamicResource PrimaryButtonHover}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#2E6CB0"/>
+                                <Setter Property="Background" Value="{DynamicResource PrimaryButtonHover}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -75,11 +67,11 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0">
-                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14"/>
-                        <TextBlock Text="{Binding Description}" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
+                        <TextBlock Text="{Binding Description}" Foreground="{DynamicResource TextColorSecondary}" FontSize="12"/>
                     </StackPanel>
-                    <TextBlock Grid.Column="1" Text="{Binding StatusText}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                    <Button Grid.Column="2" Content="Düzenle" Style="{StaticResource EditButton}" Tag="{Binding EditKey}" Click="PolicyEdit_Click"/>
+                    <TextBlock Grid.Column="1" Text="{Binding StatusText}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{DynamicResource TextColorPrimary}"/>
+                    <Button Grid.Column="2" Content="{DynamicResource Common_Edit}" Style="{StaticResource EditButton}" Tag="{Binding EditKey}" Click="PolicyEdit_Click"/>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -95,13 +87,13 @@
             <!-- Left: Policies -->
             <StackPanel Grid.Column="0" Margin="0,0,20,0">
                 <Border Style="{StaticResource InfoCard}">
-                    <TextBlock Text="Güvenlik Durumu" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                    <TextBlock Text="{DynamicResource Security_Status}" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
                 </Border>
 
                 <!-- Critical Issues -->
                 <Border Style="{StaticResource InfoCard}">
                     <StackPanel>
-                        <TextBlock Text="Kritik Sorunlar" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource DangerColor}" Margin="0,0,0,10"/>
+                        <TextBlock Text="{DynamicResource Security_CriticalIssues}" FontWeight="SemiBold" FontSize="16" Foreground="{DynamicResource DangerColor}" Margin="0,0,0,10"/>
                         <ItemsControl ItemsSource="{Binding CriticalIssues}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -112,12 +104,12 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Ellipse Width="8" Height="8" Fill="{StaticResource DangerColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <Ellipse Width="8" Height="8" Fill="{DynamicResource DangerColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                             <StackPanel Grid.Column="1">
-                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="{Binding Detail}" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
+                                                <TextBlock Text="{Binding Detail}" Foreground="{DynamicResource TextColorSecondary}" FontSize="12"/>
                                             </StackPanel>
-                                            <Button Grid.Column="2" Content="Düzelt" Style="{StaticResource EditButton}" Tag="{Binding FixKey}" Click="PolicyEdit_Click"/>
+                                            <Button Grid.Column="2" Content="{DynamicResource Security_Fix}" Style="{StaticResource EditButton}" Tag="{Binding FixKey}" Click="PolicyEdit_Click"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -129,7 +121,7 @@
                 <!-- Warnings -->
                 <Border Style="{StaticResource InfoCard}">
                     <StackPanel>
-                        <TextBlock Text="Uyarılar" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource WarningColor}" Margin="0,0,0,10"/>
+                        <TextBlock Text="{DynamicResource Security_Warnings}" FontWeight="SemiBold" FontSize="16" Foreground="{DynamicResource WarningOrange}" Margin="0,0,0,10"/>
                         <ItemsControl ItemsSource="{Binding WarningIssues}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -140,12 +132,12 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Ellipse Width="8" Height="8" Fill="{StaticResource WarningColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <Ellipse Width="8" Height="8" Fill="{DynamicResource WarningOrange}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                             <StackPanel Grid.Column="1">
-                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/>
-                                                <TextBlock Text="{Binding Detail}" Foreground="{StaticResource TextColorSecondary}" FontSize="12"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
+                                                <TextBlock Text="{Binding Detail}" Foreground="{DynamicResource TextColorSecondary}" FontSize="12"/>
                                             </StackPanel>
-                                            <Button Grid.Column="2" Content="Düzelt" Style="{StaticResource EditButton}" Tag="{Binding FixKey}" Click="PolicyEdit_Click"/>
+                                            <Button Grid.Column="2" Content="{DynamicResource Security_Fix}" Style="{StaticResource EditButton}" Tag="{Binding FixKey}" Click="PolicyEdit_Click"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -157,13 +149,13 @@
                 <!-- Passed Checks -->
                 <Border Style="{StaticResource InfoCard}">
                     <StackPanel>
-                        <TextBlock Text="Geçilen Kontroller" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,10"/>
+                        <TextBlock Text="{DynamicResource Security_PassedChecks}" FontWeight="SemiBold" FontSize="16" Foreground="{DynamicResource TextColorPrimary}" Margin="0,0,0,10"/>
                         <ItemsControl ItemsSource="{Binding PassedChecks}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0,4,0,4">
-                                        <Ellipse Width="8" Height="8" Fill="{StaticResource SuccessColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                        <TextBlock Text="{Binding}"/>
+                                        <Ellipse Width="8" Height="8" Fill="{DynamicResource SuccessColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <TextBlock Text="{Binding}" Foreground="{DynamicResource TextColorPrimary}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -175,25 +167,25 @@
             <!-- Right: Score & Recommendations -->
             <Border Grid.Column="1" Style="{StaticResource InfoCard}">
                 <StackPanel>
-                    <TextBlock Text="Güvenlik Skoru" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,20"/>
-                    <Border Background="#F8F9FA" Padding="20" Margin="0,0,0,20">
+                    <TextBlock Text="{DynamicResource Security_Score}" FontWeight="SemiBold" FontSize="16" Foreground="{DynamicResource TextColorPrimary}" Margin="0,0,0,20"/>
+                    <Border Background="{DynamicResource BackgroundLight}" Padding="20" Margin="0,0,0,20">
                         <Border.Effect>
-                            <DropShadowEffect Color="#000000" BlurRadius="8" ShadowDepth="0" Opacity="0.1"/>
+                            <DropShadowEffect Color="{DynamicResource ShadowColor}" BlurRadius="8" ShadowDepth="0" Opacity="0.1"/>
                         </Border.Effect>
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock Text="{Binding SecurityScore}" FontSize="48" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5" Foreground="{Binding SecurityScore, Converter={StaticResource ScoreToBrushConverter}}"/>
-                            <TextBlock Text="/ 100" FontSize="16" Foreground="{StaticResource TextColorSecondary}" HorizontalAlignment="Center"/>
-                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding SecurityScore}" Height="8" Margin="10,10,10,6" Background="{StaticResource BorderColor}" Foreground="{Binding SecurityScore, Converter={StaticResource ScoreToBrushConverter}}"/>
+                            <TextBlock Text="/ 100" FontSize="16" Foreground="{DynamicResource TextColorSecondary}" HorizontalAlignment="Center"/>
+                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding SecurityScore}" Height="8" Margin="10,10,10,6" Background="{DynamicResource BorderColor}" Foreground="{Binding SecurityScore, Converter={StaticResource ScoreToBrushConverter}}"/>
                             <TextBlock Text="{Binding SecurityScoreLabel}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,6,0,0" Foreground="{Binding SecurityScore, Converter={StaticResource ScoreToBrushConverter}}"/>
                         </StackPanel>
                     </Border>
 
                     <StackPanel>
-                        <TextBlock Text="Öneriler" FontWeight="SemiBold" FontSize="14" Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,10"/>
+                        <TextBlock Text="{DynamicResource Security_Recommendations}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextColorPrimary}" Margin="0,0,0,10"/>
                         <ItemsControl ItemsSource="{Binding Recommendations}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding ., StringFormat=• {0}}" FontSize="12" Foreground="{StaticResource TextColorSecondary}" TextWrapping="Wrap" Margin="0,0,0,6"/>
+                                    <TextBlock Text="{Binding ., StringFormat=• {0}}" FontSize="12" Foreground="{DynamicResource TextColorSecondary}" TextWrapping="Wrap" Margin="0,0,0,6"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

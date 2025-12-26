@@ -43,7 +43,10 @@ namespace wam
             
             // Initialize theme service
             _ = ThemeService.Instance;
-            
+
+            // Initialize localization service
+            _ = LocalizationService.Instance;
+
             base.OnStartup(e);
         }
 

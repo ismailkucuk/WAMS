@@ -56,38 +56,38 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Kullanıcı Adı:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SystemInfo_Username}" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
                     <TextBlock Grid.Row="0" Grid.Column="1" x:Name="UserNameText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Bilgisayar Adı:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SystemInfo_ComputerName}" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
                     <TextBlock Grid.Row="1" Grid.Column="1" x:Name="MachineNameText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="IP Adresi:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SystemInfo_IpAddress}" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
                     <TextBlock Grid.Row="2" Grid.Column="1" x:Name="IpAddressText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="İşletim Sistemi:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource SystemInfo_OS}" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
                     <TextBlock Grid.Row="3" Grid.Column="1" x:Name="OsVersionText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Sistem Mimarisi:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="{DynamicResource SystemInfo_Architecture}" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
                     <TextBlock Grid.Row="4" Grid.Column="1" x:Name="ArchitectureText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Toplam RAM:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="{DynamicResource SystemInfo_TotalRam}" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
                     <TextBlock Grid.Row="5" Grid.Column="1" x:Name="TotalRamText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Kullanılabilir RAM:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="{DynamicResource SystemInfo_AvailableRam}" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
                     <TextBlock Grid.Row="6" Grid.Column="1" x:Name="AvailableRamText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="7" Grid.Column="0" Text="Domain:" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
+                    <TextBlock Grid.Row="7" Grid.Column="0" Text="{DynamicResource SystemInfo_Domain}" Style="{DynamicResource LabelText}" Margin="0,0,20,15"/>
                     <TextBlock Grid.Row="7" Grid.Column="1" x:Name="DomainText" Style="{DynamicResource ValueText}" />
 
-                    <TextBlock Grid.Row="8" Grid.Column="0" Text="BIOS Versiyonu:" Style="{DynamicResource LabelText}" Margin="0,0,20,0"/>
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="{DynamicResource SystemInfo_BiosVersion}" Style="{DynamicResource LabelText}" Margin="0,0,20,0"/>
                     <TextBlock Grid.Row="8" Grid.Column="1" x:Name="BiosText" Style="{DynamicResource ValueText}" />
                 </Grid>
             </Border>
 
             <Border Style="{DynamicResource InfoCard}">
                 <StackPanel>
-                    <TextBlock Text="Disk Kullanımı" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}" Margin="0,0,0,15"/>
+                    <TextBlock Text="{DynamicResource SystemInfo_DiskUsage}" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}" Margin="0,0,0,15"/>
 
                     <ItemsControl x:Name="DiskUsageItemsControl">
                         <ItemsControl.ItemTemplate>

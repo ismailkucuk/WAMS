@@ -1,18 +1,13 @@
 <Window x:Class="wam.Dialogs.AdminRequiredDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Yönetici Yetkisi Gerekli" Width="520" WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize" ShowInTaskbar="False" Background="#F8F9FA"
+        Title="{DynamicResource Dialog_AdminRequired_Title}" Width="520" WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize" ShowInTaskbar="False" Background="{DynamicResource BackgroundPage}"
         SizeToContent="Height"
         Icon="pack://application:,,,/Resources/wams.ico">
     <Window.Resources>
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="AccentHover" Color="#3C7FD1"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#EAECEF"/>
-        <SolidColorBrush x:Key="TextPrimary" Color="#212529"/>
-
         <Style x:Key="DialogPrimaryButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="12,8"/>
@@ -27,7 +22,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="{StaticResource AccentHover}"/>
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource PrimaryButtonHover}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="bd" Property="Opacity" Value="0.9"/>
@@ -39,9 +34,9 @@
         </Style>
 
         <Style x:Key="DialogSecondaryButton" TargetType="Button">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="12,8"/>
             <Setter Property="FontSize" Value="14"/>
@@ -54,11 +49,11 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#F6F8FB"/>
-                                <Setter TargetName="bd" Property="BorderBrush" Value="#D4E2F6"/>
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource SecondaryButtonHover}"/>
+                                <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#EDF2FA"/>
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource SecondaryButtonPressed}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -66,21 +61,19 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid Background="#F8F9FA">
-        <Border Background="White" CornerRadius="10" Padding="24" BorderBrush="#EAECEF" BorderThickness="1" Margin="16">
+    <Grid Background="{DynamicResource BackgroundPage}">
+        <Border Background="{DynamicResource BackgroundWhite}" CornerRadius="10" Padding="24" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="16">
             <Border.Effect>
-                <DropShadowEffect ShadowDepth="0" Color="#000000" Opacity="0.10" BlurRadius="18"/>
+                <DropShadowEffect ShadowDepth="0" Color="{DynamicResource ShadowColor}" Opacity="0.10" BlurRadius="18"/>
             </Border.Effect>
             <StackPanel>
-                <TextBlock Text="Bu işlem yönetici yetkisi gerektiriyor." FontSize="16" FontWeight="SemiBold" Foreground="#212529"/>
-                <TextBlock Text="Ayarlar sayfasına giderek uygulamayı yönetici olarak yeniden başlatabilirsiniz." Margin="0,8,0,0" Foreground="#6C757D"/>
+                <TextBlock Text="{DynamicResource Dialog_AdminRequired_Message}" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
+                <TextBlock Text="{DynamicResource Dialog_AdminRequired_Info}" Margin="0,8,0,0" Foreground="{DynamicResource TextColorSecondary}"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
-                    <Button Content="Vazgeç" Width="100" Margin="0,0,8,0" IsCancel="True" Style="{StaticResource DialogSecondaryButton}"/>
-                    <Button Content="Ayarlar'a Git" Width="130" IsDefault="True" Click="GoSettings_Click" Style="{StaticResource DialogPrimaryButton}"/>
+                    <Button Content="{DynamicResource Common_Cancel}" Width="100" Margin="0,0,8,0" IsCancel="True" Style="{StaticResource DialogSecondaryButton}"/>
+                    <Button Content="{DynamicResource Dialog_AdminRequired_GoSettings}" Width="130" IsDefault="True" Click="GoSettings_Click" Style="{StaticResource DialogPrimaryButton}"/>
                 </StackPanel>
             </StackPanel>
         </Border>
     </Grid>
 </Window>
-
-

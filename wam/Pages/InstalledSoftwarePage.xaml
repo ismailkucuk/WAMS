@@ -6,19 +6,12 @@
              xmlns:controls="clr-namespace:wam.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1000"
-             Background="#F8F9FA">
+             Background="{DynamicResource BackgroundPage}">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#DEE2E6"/>
-        <SolidColorBrush x:Key="ControlBackgroundColor" Color="Transparent"/>
-        <SolidColorBrush x:Key="ControlHoverColor" Color="#F1F1F1"/>
-        <SolidColorBrush x:Key="DangerColor" Color="#dc3545"/>
 
         <Style x:Key="InfoCard" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundCard}"/>
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Padding" Value="25"/>
             <Setter Property="Effect">
@@ -29,9 +22,9 @@
         </Style>
 
         <Style x:Key="ModernComboBox" TargetType="ComboBox">
-            <Setter Property="Background" Value="{StaticResource ControlBackgroundColor}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorPrimary}"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundInput}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="10,8"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -41,10 +34,10 @@
                         <Grid>
                             <ToggleButton Name="ToggleButton" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Grid.Column="2" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"/>
                             <ContentPresenter Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="{TemplateBinding Padding}"/>
-                            <TextBlock Text="▼" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="{StaticResource TextColorSecondary}" FontSize="8"/>
+                            <TextBlock Text="▼" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="{DynamicResource TextColorSecondary}" FontSize="8"/>
                             <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
                                 <Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                    <Border Background="White" BorderThickness="1" BorderBrush="{StaticResource BorderColor}" CornerRadius="6">
+                                    <Border Background="{DynamicResource BackgroundCard}" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}" CornerRadius="6">
                                         <Border.Effect>
                                             <DropShadowEffect ShadowDepth="2" BlurRadius="10" Opacity="0.1" />
                                         </Border.Effect>
@@ -61,16 +54,17 @@
         </Style>
         <Style TargetType="ComboBoxItem">
             <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource ControlHoverColor}"/>
+                    <Setter Property="Background" Value="{DynamicResource ControlHoverColor}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="SortDirectionToggle" TargetType="ToggleButton">
-            <Setter Property="Background" Value="{StaticResource ControlBackgroundColor}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundInput}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Width" Value="38"/>
             <Setter Property="Height" Value="38"/>
@@ -79,7 +73,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
                         <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="6" BorderThickness="1">
-                            <Path x:Name="Arrow" Data="M 1,5 L 4.5,1.5 L 8,5" Stroke="{StaticResource TextColorSecondary}" StrokeThickness="1.5"
+                            <Path x:Name="Arrow" Data="M 1,5 L 4.5,1.5 L 8,5" Stroke="{DynamicResource TextColorSecondary}" StrokeThickness="1.5"
                                   HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
                         </Border>
                     </ControlTemplate>
@@ -87,14 +81,14 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource ControlHoverColor}"/>
+                    <Setter Property="Background" Value="{DynamicResource ControlHoverColor}"/>
                 </Trigger>
                 <Trigger Property="IsChecked" Value="True">
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ToggleButton">
                                 <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="6" BorderThickness="1">
-                                    <Path x:Name="Arrow" Data="M 1,1.5 L 4.5,5 L 8,1.5" Stroke="{StaticResource TextColorSecondary}" StrokeThickness="1.5"
+                                    <Path x:Name="Arrow" Data="M 1,1.5 L 4.5,5 L 8,1.5" Stroke="{DynamicResource TextColorSecondary}" StrokeThickness="1.5"
                                           HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
                                 </Border>
                             </ControlTemplate>
@@ -105,7 +99,7 @@
         </Style>
 
         <Style x:Key="DangerActionButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource DangerColor}"/>
+            <Setter Property="Background" Value="{DynamicResource DangerColor}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Padding" Value="10,5"/>
             <Setter Property="FontSize" Value="12"/>
@@ -132,13 +126,33 @@
         </Style>
 
         <Style x:Key="CustomListViewItem" TargetType="ListViewItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListViewItem">
-                        <ContentPresenter />
+                        <Border x:Name="ItemBorder" Background="{TemplateBinding Background}">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource ControlHoverColor}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource AccentColor}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+        
+        <Style x:Key="ModernListView" TargetType="ListView">
+            <Setter Property="Background" Value="{DynamicResource BackgroundCard}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
         </Style>
     </UserControl.Resources>
 
@@ -165,13 +179,13 @@
                     </Grid.ColumnDefinitions>
                     <!-- Sort controls left-aligned -->
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <TextBlock Text="Sırala:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{StaticResource TextColorSecondary}"/>
+                        <TextBlock Text="{DynamicResource Software_SortBy}" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{DynamicResource TextColorSecondary}"/>
                         <ComboBox Style="{StaticResource ModernComboBox}" Width="120" Margin="0,0,8,0" VerticalAlignment="Center"
                                   SelectedValue="{Binding SortField}" SelectedValuePath="Tag"
                                   SelectionChanged="Sort_SelectionChanged">
-                            <ComboBoxItem Content="İsim" Tag="Name" IsSelected="True"/>
-                            <ComboBoxItem Content="Yayıncı" Tag="Publisher"/>
-                            <ComboBoxItem Content="Boyut" Tag="Size"/>
+                            <ComboBoxItem Content="{DynamicResource Software_Name}" Tag="Name" IsSelected="True"/>
+                            <ComboBoxItem Content="{DynamicResource Software_Publisher}" Tag="Publisher"/>
+                            <ComboBoxItem Content="{DynamicResource Software_Size}" Tag="Size"/>
                         </ComboBox>
                         <ToggleButton x:Name="SortDirectionButton" Style="{StaticResource SortDirectionToggle}"
                                       IsChecked="{Binding SortDescending, Mode=TwoWay}"
@@ -179,13 +193,15 @@
                     </StackPanel>
                 </Grid>
 
-                <ListView Grid.Row="1" x:Name="SoftwareListView" BorderThickness="0" HorizontalContentAlignment="Stretch"
+                <ListView Grid.Row="1" x:Name="SoftwareListView" 
+                          Style="{StaticResource ModernListView}"
+                          BorderThickness="0" HorizontalContentAlignment="Stretch"
                           ItemsSource="{Binding SoftwareList}"
                           ItemContainerStyle="{StaticResource CustomListViewItem}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15">
+                            <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="10,15">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -194,29 +210,29 @@
                                     </Grid.ColumnDefinitions>
 
                                     <!-- Liste ikonları kurumsal ve işlevsel; geri getirildi -->
-                                    <TextBlock Grid.Column="0" Text="&#xE737;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{StaticResource AccentColor}" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                                    <TextBlock Grid.Column="0" Text="&#xE737;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{DynamicResource AccentColor}" VerticalAlignment="Center" Margin="0,0,20,0"/>
 
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource TextColorPrimary}" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Text="{Binding Publisher, Mode=OneWay}" FontSize="12" Foreground="{StaticResource TextColorSecondary}" Margin="0,3,0,0"/>
+                                        <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource TextColorPrimary}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Publisher, Mode=OneWay}" FontSize="12" Foreground="{DynamicResource TextColorSecondary}" Margin="0,3,0,0"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                        <TextBlock TextAlignment="Right" Foreground="{StaticResource TextColorSecondary}">
-                        <Run Text="Sürüm:"/>
-                        <Run Text="{Binding Version, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
-                        <Run Text=" | "/>
-                        <Run Text="Boyut:"/>
-                        <Run Text="{Binding FormattedSize, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource TextColorPrimary}"/>
+                                        <TextBlock TextAlignment="Right" Foreground="{DynamicResource TextColorSecondary}">
+                                            <Run Text="{DynamicResource Software_Version}"/>
+                                            <Run Text="{Binding Version, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
+                                            <Run Text=" | "/>
+                                            <Run Text="{DynamicResource Software_Size}"/>
+                                            <Run Text="{Binding FormattedSize, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
                                         </TextBlock>
 
                                         <Button Style="{StaticResource DangerActionButton}" Margin="0,8,0,0" Padding="10,5" HorizontalAlignment="Right"
-                            Command="{Binding DataContext.UninstallCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                            CommandParameter="{Binding}"
-                            IsEnabled="{Binding CanUninstall, Mode=OneWay}">
+                                                Command="{Binding DataContext.UninstallCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                CommandParameter="{Binding}"
+                                                IsEnabled="{Binding CanUninstall, Mode=OneWay}">
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                                <TextBlock Text="Kaldır" VerticalAlignment="Center"/>
+                                                <TextBlock Text="{DynamicResource Software_Uninstall}" VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </Button>
                                     </StackPanel>

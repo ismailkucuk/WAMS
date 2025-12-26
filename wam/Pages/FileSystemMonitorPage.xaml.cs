@@ -122,6 +122,21 @@ namespace wam.Pages
         {
             _viewModel.ExportLogs();
         }
+
+        // Sütun genişliklerini dinamik olarak ayarlama
+        private void LogList_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var listView = sender as ListView;
+            if (listView?.View is GridView gridView)
+            {
+                var totalWidth = listView.ActualWidth - 30; // ScrollBar için yer ayır
+                
+                // %25, %25, %50 oranlarında böl
+                gridView.Columns[0].Width = totalWidth * 0.25; // Zaman
+                gridView.Columns[1].Width = totalWidth * 0.25; // Olay Türü  
+                gridView.Columns[2].Width = totalWidth * 0.50; // Dosya Yolu
+            }
+        }
     }
 
     public class FileChangeEntry

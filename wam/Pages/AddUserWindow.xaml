@@ -1,43 +1,37 @@
-﻿<Window x:Class="wam.Pages.AddUserWindow"
+<Window x:Class="wam.Pages.AddUserWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Yeni Kullanıcı Ekle" Height="350" Width="450"
+        Title="{DynamicResource AddUser_Title}" Height="350" Width="450"
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
-        Background="White">
+        Background="{DynamicResource BackgroundPage}">
 
     <Window.Resources>
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#EAECEF"/>
-        <SolidColorBrush x:Key="ControlHoverColor" Color="#F8F9FA"/>
-        <SolidColorBrush x:Key="SuccessColor" Color="#28a745"/>
-        <SolidColorBrush x:Key="DangerColor" Color="#dc3545"/>
-
         <!-- Modern TextBox Style -->
         <Style x:Key="ModernTextBox" TargetType="TextBox">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundInput}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="12,10"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Height" Value="40"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource TextColorPrimary}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}" 
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="6">
                             <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
                                 <Setter TargetName="border" Property="BorderThickness" Value="2"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -47,28 +41,30 @@
 
         <!-- Modern PasswordBox Style -->
         <Style x:Key="ModernPasswordBox" TargetType="PasswordBox">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundInput}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="12,10"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Height" Value="40"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource TextColorPrimary}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="PasswordBox">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}" 
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="6">
                             <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
                                 <Setter TargetName="border" Property="BorderThickness" Value="2"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AccentColor}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -78,7 +74,7 @@
 
         <!-- Primary Button Style -->
         <Style x:Key="PrimaryButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="24,12"/>
@@ -88,16 +84,16 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
                                 CornerRadius="6" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#3A7BC8"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryButtonHover}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#2E5A96"/>
+                                <Setter TargetName="border" Property="Opacity" Value="0.9"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -108,8 +104,8 @@
         <!-- Secondary Button Style -->
         <Style x:Key="SecondaryButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorSecondary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="24,12"/>
             <Setter Property="FontSize" Value="14"/>
@@ -118,7 +114,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="6" Padding="{TemplateBinding Padding}">
@@ -126,7 +122,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#E9ECEF"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource SecondaryButtonHover}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -137,8 +133,8 @@
 
     <StackPanel Margin="24">
         <!-- Başlık -->
-        <TextBlock Text="Yeni Kullanıcı Ekle" FontSize="18" FontWeight="SemiBold" 
-                   Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,20"/>
+        <TextBlock Text="{DynamicResource AddUser_Title}" FontSize="18" FontWeight="SemiBold"
+                   Foreground="{DynamicResource TextColorPrimary}" Margin="0,0,0,20"/>
 
         <!-- Form -->
         <Grid>
@@ -151,23 +147,23 @@
 
             <!-- Kullanıcı Adı -->
             <StackPanel Grid.Row="0" Margin="0,0,0,16">
-                <TextBlock Text="Kullanıcı Adı:" FontWeight="SemiBold" 
-                           Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,6"/>
+                <TextBlock Text="{DynamicResource AddUser_Username}" FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextColorPrimary}" Margin="0,0,0,6"/>
                 <TextBox x:Name="UserNameBox" Style="{StaticResource ModernTextBox}"/>
             </StackPanel>
 
             <!-- Parola -->
             <StackPanel Grid.Row="1" Margin="0,0,0,20">
-                <TextBlock Text="Parola:" FontWeight="SemiBold" 
-                           Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,6"/>
+                <TextBlock Text="{DynamicResource AddUser_Password}" FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextColorPrimary}" Margin="0,0,0,6"/>
                 <PasswordBox x:Name="PasswordBox" Style="{StaticResource ModernPasswordBox}"/>
             </StackPanel>
 
             <!-- Butonlar -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                <Button Style="{StaticResource SecondaryButton}" Content="İptal" 
+                <Button Style="{StaticResource SecondaryButton}" Content="{DynamicResource Common_Cancel}"
                         Width="80" Margin="0,0,10,0" Click="Cancel_Click"/>
-                <Button Style="{StaticResource PrimaryButton}" Content="Ekle" 
+                <Button Style="{StaticResource PrimaryButton}" Content="{DynamicResource AddUser_Add}"
                         Width="80" Click="Add_Click"/>
             </StackPanel>
         </Grid>

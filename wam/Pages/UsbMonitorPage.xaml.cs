@@ -101,6 +101,21 @@ namespace wam.Pages
         {
             _viewModel.DisablePorts();
         }
+
+        // Sütun genişliklerini dinamik olarak ayarlama
+        private void UsbLogList_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var listView = sender as ListView;
+            if (listView?.View is GridView gridView)
+            {
+                var totalWidth = listView.ActualWidth - 30; // ScrollBar için yer ayır
+                
+                // %20, %20, %60 oranlarında böl
+                gridView.Columns[0].Width = totalWidth * 0.20; // Zaman
+                gridView.Columns[1].Width = totalWidth * 0.20; // Olay  
+                gridView.Columns[2].Width = totalWidth * 0.60; // Detaylar
+            }
+        }
     }
 
     public class UsbEventEntry

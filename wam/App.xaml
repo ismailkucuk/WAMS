@@ -8,6 +8,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <!-- Default Light Theme - will be replaced by ThemeService -->
                 <ResourceDictionary Source="pack://application:,,,/Themes/LightTheme.xaml"/>
+                <!-- Default Turkish Language - will be replaced by LocalizationService -->
+                <ResourceDictionary Source="pack://application:,,,/Resources/Strings.tr-TR.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
             <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>

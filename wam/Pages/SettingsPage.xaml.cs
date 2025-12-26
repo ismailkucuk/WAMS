@@ -16,6 +16,7 @@ namespace wam.Pages
 		{
 			public bool MinimizeOnClose { get; set; }
 			public bool DarkTheme { get; set; }
+			public string Language { get; set; } = "tr-TR";
 		}
 
 		public SettingsPage()
@@ -29,6 +30,23 @@ namespace wam.Pages
 			TglDarkTheme.Unchecked += TglDarkTheme_Changed;
 			BtnRelaunchAsAdmin.Click += BtnRelaunchAsAdmin_Click;
 			BtnRelaunchNormal.Click += BtnRelaunchNormal_Click;
+
+			// Dil seçimi için ComboBox başlatma
+			InitializeLanguageComboBox();
+		}
+
+		private void InitializeLanguageComboBox()
+		{
+			// Mevcut dile göre ComboBox'ı seç
+			var currentLang = LocalizationService.Instance.CurrentLanguage;
+			foreach (ComboBoxItem item in CmbLanguage.Items)
+			{
+				if (item.Tag?.ToString() == currentLang)
+				{
+					CmbLanguage.SelectedItem = item;
+					break;
+				}
+			}
 		}
 
 		public async Task LoadDataAsync()
@@ -54,7 +72,9 @@ namespace wam.Pages
 				TglDarkTheme.IsChecked = ThemeService.Instance.CurrentTheme == ThemeMode.Dark;
 
 				// Oturum bilgisi
-				TxtSessionRole.Text = IsRunningAsAdmin() ? "Yönetici" : "Normal Kullanıcı";
+				TxtSessionRole.Text = IsRunningAsAdmin()
+					? LocalizationService.Instance.GetString("Settings_Administrator", "Administrator")
+					: LocalizationService.Instance.GetString("Settings_NormalUser", "Normal User");
 			}
 			catch 
 			{ 
@@ -65,27 +85,30 @@ namespace wam.Pages
 
 		public void ExportToJson()
 		{
-			var export = new { 
+			var export = new {
 				MinimizeOnClose = TglMinimizeOnClose.IsChecked == true,
-				DarkTheme = TglDarkTheme.IsChecked == true
+				DarkTheme = TglDarkTheme.IsChecked == true,
+				Language = LocalizationService.Instance.CurrentLanguage
 			};
 			ExportService.ExportToJson(new[] { export }, GetModuleName());
 		}
 
 		public void ExportToCsv()
 		{
-			var export = new[] { 
-				new { Key = "MinimizeOnClose", Value = TglMinimizeOnClose.IsChecked == true },
-				new { Key = "DarkTheme", Value = TglDarkTheme.IsChecked == true }
+			var export = new[] {
+				new { Key = "MinimizeOnClose", Value = (TglMinimizeOnClose.IsChecked == true).ToString() },
+				new { Key = "DarkTheme", Value = (TglDarkTheme.IsChecked == true).ToString() },
+				new { Key = "Language", Value = LocalizationService.Instance.CurrentLanguage }
 			};
 			ExportService.ExportToCsv(export, GetModuleName());
 		}
 
 		public void AutoExport()
 		{
-			var export = new { 
+			var export = new {
 				MinimizeOnClose = TglMinimizeOnClose.IsChecked == true,
-				DarkTheme = TglDarkTheme.IsChecked == true
+				DarkTheme = TglDarkTheme.IsChecked == true,
+				Language = LocalizationService.Instance.CurrentLanguage
 			};
 			ExportService.AutoExport(new[] { export }, GetModuleName());
 		}
@@ -121,15 +144,29 @@ namespace wam.Pages
 			catch { }
 		}
 
+		private async void CmbLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			try
+			{
+				if (CmbLanguage.SelectedItem is ComboBoxItem selected && selected.Tag is string langCode)
+				{
+					await LocalizationService.Instance.SetLanguageAsync(langCode);
+					await SaveSettingsAsync();
+				}
+			}
+			catch { }
+		}
+
 		private async Task SaveSettingsAsync()
 		{
 			try
 			{
 				var path = GetSettingsPath();
-				var ws = new WindowSettings 
-				{ 
+				var ws = new WindowSettings
+				{
 					MinimizeOnClose = TglMinimizeOnClose.IsChecked == true,
-					DarkTheme = TglDarkTheme.IsChecked == true
+					DarkTheme = TglDarkTheme.IsChecked == true,
+					Language = LocalizationService.Instance.CurrentLanguage
 				};
 				var json = JsonSerializer.Serialize(ws, new JsonSerializerOptions { WriteIndented = true });
 				await File.WriteAllTextAsync(path, json);

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using wam.Pages;
+using wam.Services;
 using Forms = System.Windows.Forms;
 using System.IO;
 using System.Text.Json;
@@ -23,7 +24,7 @@ namespace wam
             InitializeComponent();
             // Açılışta Dashboard'u otomatik olarak yükle
             Loaded += MainWindow_Loaded;
-            ContentTitle.Text = "Dashboard";
+            ContentTitle.Text = LocalizationService.Instance.GetString("PageTitle_Dashboard", "Dashboard");
             InitializeTray();
             LoadWindowSettings();
             // Geliştirici deneyimi: VS altında çalışırken kapatınca gerçekten kapansın
@@ -38,7 +39,7 @@ namespace wam
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // Uygulama tamamen yüklendikten sonra Dashboard'u göster
-            await NavigateToPage<DashboardPage>("Dashboard");
+            await NavigateToPage<DashboardPage>();
             SetActiveButton(DashboardButton);
         }
 
@@ -56,7 +57,7 @@ namespace wam
         }
 
         // BÜTÜN SAYFA GEÇİŞ MANTIĞINI YÖNETEN MERKEZİ VE SAĞLAM METOT
-        public async Task NavigateToPage<T>(string title) where T : UserControl, new()
+        public async Task NavigateToPage<T>(string title = null) where T : UserControl, new()
         {
             // Önceki sayfadaki olay aboneliğini kaldır
             if (PageHost.Content is EventLogAnalyzerPage oldEventPage) { oldEventPage.LoadingStateChanged -= OnPageLoadingStateChanged; }
@@ -68,7 +69,11 @@ namespace wam
 
             // 1. Yükleme ekranını göster
             LoadingOverlay.Visibility = Visibility.Visible;
-            ContentTitle.Text = title;
+            // Lokalize edilmiş başlık al
+            var titleKey = GetPageTitleKey(typeof(T));
+            ContentTitle.Text = titleKey != null
+                ? LocalizationService.Instance.GetString(titleKey, title ?? "Dashboard")
+                : title ?? "Dashboard";
             await Task.Delay(50); // Arayüzün yükleme ekranını çizmesine izin ver
 
             try
@@ -130,6 +135,25 @@ namespace wam
             return null;
         }
 
+        private string GetPageTitleKey(Type pageType)
+        {
+            if (pageType == typeof(DashboardPage)) return "PageTitle_Dashboard";
+            if (pageType == typeof(ActiveAppMonitorPage)) return "PageTitle_ActiveApps";
+            if (pageType == typeof(ProcessMonitorPage)) return "PageTitle_ProcessMonitor";
+            if (pageType == typeof(NetworkMonitorPage)) return "PageTitle_NetworkMonitor";
+            if (pageType == typeof(FileSystemMonitorPage)) return "PageTitle_FileSystem";
+            if (pageType == typeof(UsbMonitorPage)) return "PageTitle_UsbMonitor";
+            if (pageType == typeof(SystemInfoPage)) return "PageTitle_SystemInfo";
+            if (pageType == typeof(StartupProgramsPage)) return "PageTitle_StartupPrograms";
+            if (pageType == typeof(InstalledSoftwarePage)) return "PageTitle_InstalledSoftware";
+            if (pageType == typeof(EventLogAnalyzerPage)) return "PageTitle_EventLog";
+            if (pageType == typeof(UserActivityPage)) return "PageTitle_UserActivity";
+            if (pageType == typeof(UserSessionInfoPage)) return "PageTitle_UserSession";
+            if (pageType == typeof(SecurityPolicyPage)) return "PageTitle_SecurityPolicy";
+            if (pageType == typeof(SettingsPage)) return "PageTitle_Settings";
+            return null;
+        }
+
         // Sayfalardan gelen "Yükleniyor..." sinyallerini işleyen metot
         private void OnPageLoadingStateChanged(bool isLoading, string message)
         {
@@ -153,84 +177,85 @@ namespace wam
         private async void Dashboard_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(DashboardButton);
-            await NavigateToPage<DashboardPage>("Dashboard");
+            await NavigateToPage<DashboardPage>();
         }
 
         private async void SystemInfo_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(SystemInfoButton);
-            await NavigateToPage<SystemInfoPage>("Sistem Bilgileri");
+            await NavigateToPage<SystemInfoPage>();
         }
 
         private async void ProcessMonitor_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(ProcessMonitorButton);
-            await NavigateToPage<ProcessMonitorPage>("Süreç Monitörü");
+            await NavigateToPage<ProcessMonitorPage>();
         }
 
         private async void ActiveAppMonitorMenu_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(ActiveAppButton);
-            await NavigateToPage<ActiveAppMonitorPage>("Aktif Uygulama Takibi");
+            await NavigateToPage<ActiveAppMonitorPage>();
         }
 
         private async void UserActivity_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(UserActivityButton);
-            await NavigateToPage<UserActivityPage>("Kullanıcı Aktiviteleri");
+            await NavigateToPage<UserActivityPage>();
         }
 
         private async void StartupPrograms_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(StartupProgramsButton);
-            await NavigateToPage<StartupProgramsPage>("Başlangıç Programları");
+            await NavigateToPage<StartupProgramsPage>();
         }
 
         private async void NetworkMonitor_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(NetworkMonitorButton);
-            await NavigateToPage<NetworkMonitorPage>("Ağ Monitörü");
+            await NavigateToPage<NetworkMonitorPage>();
         }
 
         private async void FileSystemMonitor_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(FileSystemButton);
-            await NavigateToPage<FileSystemMonitorPage>("Dosya Sistemi Monitörü");
+            await NavigateToPage<FileSystemMonitorPage>();
         }
 
         private async void UsbMonitor_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(UsbMonitorButton);
-            await NavigateToPage<UsbMonitorPage>("USB Monitörü");
+            await NavigateToPage<UsbMonitorPage>();
         }
 
         private async void InstalledSoftware_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(InstalledSoftwareButton);
-            await NavigateToPage<InstalledSoftwarePage>("Yüklü Yazılımlar");
+            await NavigateToPage<InstalledSoftwarePage>();
         }
 
         private async void UserSessionInfo_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(UserSessionButton);
-            await NavigateToPage<UserSessionInfoPage>("Kullanıcı Oturum Bilgileri");
+            await NavigateToPage<UserSessionInfoPage>();
         }
+
         private async void SecurityPolicy_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(SecurityPolicyButton);
-            await NavigateToPage<SecurityPolicyPage>("Güvenlik Politikaları");
+            await NavigateToPage<SecurityPolicyPage>();
         }
 
         private async void EventLogAnalyzer_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(EventLogButton);
-            await NavigateToPage<EventLogAnalyzerPage>("Olay Günlüğü Analizi");
+            await NavigateToPage<EventLogAnalyzerPage>();
         }
 
         private async void Settings_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(SettingsButton);
-            await NavigateToPage<SettingsPage>("Ayarlar");
+            await NavigateToPage<SettingsPage>();
         }
     }
 

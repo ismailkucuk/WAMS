@@ -96,15 +96,15 @@
 			<!-- Export kaldırıldı -->
 
 			<StackPanel Grid.Row="1">
-				<TextBlock Text="Uygulama Ayarları" Style="{StaticResource SectionHeader}"/>
+				<TextBlock Text="{DynamicResource Settings_Title}" Style="{StaticResource SectionHeader}"/>
 
 				<Border Style="{StaticResource CleanCard}">
 					<StackPanel>
-						<TextBlock Text="Genel" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColorSecondary}"/>
-						
+						<TextBlock Text="{DynamicResource Settings_General}" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColorSecondary}"/>
+
 						<!-- Tema Seçimi -->
 						<StackPanel Orientation="Horizontal" Margin="0,12,0,0" VerticalAlignment="Center">
-							<TextBlock Text="Karanlık Tema" VerticalAlignment="Center" Margin="0,0,12,0" FontFamily="Segoe UI" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
+							<TextBlock Text="{DynamicResource Settings_DarkTheme}" VerticalAlignment="Center" Margin="0,0,12,0" FontFamily="Segoe UI" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
 							<ToggleButton x:Name="TglDarkTheme" Width="54" Height="28" Cursor="Hand">
 								<ToggleButton.Template>
 									<ControlTemplate TargetType="ToggleButton">
@@ -126,10 +126,22 @@
 								</ToggleButton.Template>
 							</ToggleButton>
 						</StackPanel>
-						
+
+						<!-- Dil Seçimi -->
+						<StackPanel Orientation="Horizontal" Margin="0,12,0,0" VerticalAlignment="Center">
+							<TextBlock Text="{DynamicResource Settings_Language}" VerticalAlignment="Center" Margin="0,0,12,0" FontFamily="Segoe UI" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
+							<ComboBox x:Name="CmbLanguage" Width="180" Height="32" SelectionChanged="CmbLanguage_SelectionChanged"
+									  Background="{DynamicResource BackgroundWhite}"
+									  Foreground="{DynamicResource TextColorPrimary}"
+									  BorderBrush="{DynamicResource BorderColor}">
+								<ComboBoxItem Content="Türkçe" Tag="tr-TR"/>
+								<ComboBoxItem Content="English" Tag="en-US"/>
+							</ComboBox>
+						</StackPanel>
+
 						<!-- Minimize on Close -->
 						<StackPanel Orientation="Horizontal" Margin="0,12,0,0" VerticalAlignment="Center">
-							<TextBlock Text="Kapatırken simge durumuna küçült" VerticalAlignment="Center" Margin="0,0,12,0" FontFamily="Segoe UI" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
+							<TextBlock Text="{DynamicResource Settings_MinimizeOnClose}" VerticalAlignment="Center" Margin="0,0,12,0" FontFamily="Segoe UI" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
 							<ToggleButton x:Name="TglMinimizeOnClose" Width="54" Height="28" Cursor="Hand">
 								<ToggleButton.Template>
 									<ControlTemplate TargetType="ToggleButton">
@@ -156,25 +168,25 @@
 
 				<Border Style="{StaticResource CleanCard}">
 					<StackPanel>
-						<TextBlock Text="Yönetici Modu" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColorSecondary}"/>
+						<TextBlock Text="{DynamicResource Settings_AdminMode}" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColorSecondary}"/>
 						<StackPanel Orientation="Horizontal" Margin="0,12,0,0" VerticalAlignment="Center">
-							<TextBlock Text="Mevcut oturum:" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="Segoe UI" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
+							<TextBlock Text="{DynamicResource Settings_CurrentSession}" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="Segoe UI" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
 							<TextBlock x:Name="TxtSessionRole" VerticalAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-							<Button x:Name="BtnRelaunchAsAdmin" Content="Yönetici Olarak Yeniden Başlat" Padding="14,8" Style="{StaticResource PrimaryButton}"/>
-							<Button x:Name="BtnRelaunchNormal" Content="Normal Modda Yeniden Başlat" Padding="14,8" Margin="8,0,0,0" Style="{StaticResource SecondaryButton}"/>
+							<Button x:Name="BtnRelaunchAsAdmin" Content="{DynamicResource Settings_RestartAsAdmin}" Padding="14,8" Style="{StaticResource PrimaryButton}"/>
+							<Button x:Name="BtnRelaunchNormal" Content="{DynamicResource Settings_RestartNormal}" Padding="14,8" Margin="8,0,0,0" Style="{StaticResource SecondaryButton}"/>
 						</StackPanel>
-						<TextBlock Text="Bazı modüller yönetici izni gerektirir. Bu işlem uygulamayı kapatıp yeniden açar." FontSize="11" Foreground="{DynamicResource TextColorSecondary}" Margin="0,8,0,0"/>
+						<TextBlock Text="{DynamicResource Settings_AdminModeInfo}" FontSize="11" Foreground="{DynamicResource TextColorSecondary}" Margin="0,8,0,0"/>
 					</StackPanel>
 				</Border>
 
 				<Border Style="{StaticResource CleanCard}">
 					<StackPanel>
-						<TextBlock Text="Önbellek" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColorSecondary}"/>
+						<TextBlock Text="{DynamicResource Settings_Cache}" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColorSecondary}"/>
 						<StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-							<Button x:Name="BtnClearDashboardCache" Content="Dashboard önbelleğini temizle" Padding="14,8" Margin="0,0,12,0" Style="{StaticResource SecondaryButton}"/>
-							<Button x:Name="BtnOpenSettingsFolder" Content="Ayarlar klasörünü aç" Padding="14,8" Style="{StaticResource SecondaryButton}"/>
+							<Button x:Name="BtnClearDashboardCache" Content="{DynamicResource Settings_ClearCache}" Padding="14,8" Margin="0,0,12,0" Style="{StaticResource SecondaryButton}"/>
+							<Button x:Name="BtnOpenSettingsFolder" Content="{DynamicResource Settings_OpenSettingsFolder}" Padding="14,8" Style="{StaticResource SecondaryButton}"/>
 						</StackPanel>
 					</StackPanel>
 				</Border>

@@ -98,13 +98,14 @@
                     </Grid.ColumnDefinitions>
                     <!-- Filters left-aligned -->
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <RadioButton Content="Uygulama" Style="{StaticResource FilterRadioButton}" IsChecked="True" Tag="Application" Checked="LogType_Checked"/>
-                        <RadioButton Content="Sistem" Tag="System" Style="{StaticResource FilterRadioButton}" Checked="LogType_Checked"/>
-                        <RadioButton Content="Güvenlik" Tag="Security" Style="{StaticResource FilterRadioButton}" Checked="LogType_Checked"/>
+                        <RadioButton Content="{DynamicResource EventLog_Application}" Style="{StaticResource FilterRadioButton}" IsChecked="True" Tag="Application" Checked="LogType_Checked"/>
+                        <RadioButton Content="{DynamicResource EventLog_System}" Tag="System" Style="{StaticResource FilterRadioButton}" Checked="LogType_Checked"/>
+                        <RadioButton Content="{DynamicResource EventLog_Security}" Tag="Security" Style="{StaticResource FilterRadioButton}" Checked="LogType_Checked"/>
                     </StackPanel>
                 </Grid>
 
                 <ListView Grid.Row="1" x:Name="EventLogListView" BorderThickness="0" HorizontalContentAlignment="Stretch"
+                          Background="{DynamicResource BackgroundCard}"
                           ItemsSource="{Binding EventLogEntries}"
                           ItemContainerStyle="{StaticResource CustomListViewItem}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"

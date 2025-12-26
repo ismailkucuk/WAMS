@@ -7,30 +7,21 @@
             xmlns:controls="clr-namespace:wam.Controls"
             mc:Ignorable="d"
             d:DesignHeight="700" d:DesignWidth="1200"
-            Background="#F8F9FA">
+            Background="{DynamicResource BackgroundPage}">
 
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="AccentColor" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="TextColorPrimary" Color="#212529"/>
-        <SolidColorBrush x:Key="TextColorSecondary" Color="#6C757D"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#EAECEF"/>
-        <SolidColorBrush x:Key="ControlHoverColor" Color="#F8F9FA"/>
-        <SolidColorBrush x:Key="SuccessColor" Color="#28a745"/>
-        <SolidColorBrush x:Key="DangerColor" Color="#dc3545"/>
-        <SolidColorBrush x:Key="DisabledColor" Color="#adb5bd"/>
-
         <Style x:Key="InfoCard" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundWhite}"/>
             <Setter Property="Padding" Value="25"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
 
         <Style x:Key="ManagementButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource TextColorSecondary}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColorSecondary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="10,8"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -45,7 +36,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#E9ECEF"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource ControlHoverColor}"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.5"/>
@@ -58,9 +49,9 @@
 
         <!-- Silme butonu için özel stil -->
         <Style x:Key="DangerManagementButton" TargetType="Button" BasedOn="{StaticResource ManagementButton}">
-            <Setter Property="Background" Value="#FFF5F5"/>
-            <Setter Property="BorderBrush" Value="#FED7D7"/>
-            <Setter Property="Foreground" Value="#C53030"/>
+            <Setter Property="Background" Value="{DynamicResource DangerButtonBackground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource DangerButtonBorder}"/>
+            <Setter Property="Foreground" Value="{DynamicResource DangerButtonForeground}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -69,8 +60,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#FED7D7"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="#FC8181"/>
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource DangerButtonHover}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource DangerButtonHoverBorder}"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.5"/>
@@ -86,17 +77,17 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Padding" Value="10,8"/>
             <Setter Property="Margin" Value="0,0,0,6"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
             <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="2" ShadowDepth="0" Color="#000000" Opacity="0.04"/>
+                    <DropShadowEffect BlurRadius="2" ShadowDepth="0" Color="{DynamicResource ShadowColor}" Opacity="0.04"/>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#F3F5F8"/>
+                    <Setter Property="Background" Value="{DynamicResource ControlHoverColor}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -129,18 +120,18 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border Grid.Column="0" Width="64" Height="64" CornerRadius="32" Background="{StaticResource AccentColor}">
+                    <Border Grid.Column="0" Width="64" Height="64" CornerRadius="32" Background="{DynamicResource AccentColor}">
                         <TextBlock Text="{Binding CurrentUser.Initial}" FontSize="32" FontWeight="Light" Foreground="White"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0">
-                        <TextBlock Text="{Binding CurrentUser.Name}" FontWeight="Bold" FontSize="18" Foreground="{StaticResource TextColorPrimary}"/>
-                        <TextBlock Margin="0,3,0,0">
-                            <Run Text="Rol:" Foreground="{StaticResource TextColorSecondary}"/>
+                        <TextBlock Text="{Binding CurrentUser.Name}" FontWeight="Bold" FontSize="18" Foreground="{DynamicResource TextColorPrimary}"/>
+                        <TextBlock Margin="0,3,0,0" Foreground="{DynamicResource TextColorPrimary}">
+                            <Run Text="{DynamicResource User_Role}" Foreground="{DynamicResource TextColorSecondary}"/>
                             <Run Text="{Binding CurrentUser.Role}" FontWeight="SemiBold"/>
                         </TextBlock>
-                        <TextBlock Margin="0,3,0,0">
-                            <Run Text="Son Giriş:" Foreground="{StaticResource TextColorSecondary}"/>
+                        <TextBlock Margin="0,3,0,0" Foreground="{DynamicResource TextColorPrimary}">
+                            <Run Text="{DynamicResource User_LastLogin}" Foreground="{DynamicResource TextColorSecondary}"/>
                             <Run Text="{Binding CurrentUser.LastLogon}" FontWeight="SemiBold"/>
                         </TextBlock>
                     </StackPanel>
@@ -157,12 +148,12 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         
-                        <TextBlock Grid.Column="0" Text="👥 Tüm Yerel Kullanıcılar" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                        
-                        <Button Grid.Column="1" 
-                                Content="➕ Yeni Kullanıcı Ekle"
+                        <TextBlock Grid.Column="0" Text="{DynamicResource User_AllLocalUsers}" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{DynamicResource TextColorPrimary}"/>
+
+                        <Button Grid.Column="1"
+                                Content="{DynamicResource User_AddNew}"
                                 Click="AddUserButton_Click"
-                                Background="{StaticResource AccentColor}"
+                                Background="{DynamicResource AccentColor}"
                                 Foreground="White"
                                 BorderThickness="0"
                                 Padding="12,8"
@@ -173,18 +164,18 @@
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="Button">
-                                                <Border x:Name="border" 
-                                                        Background="{TemplateBinding Background}" 
-                                                        CornerRadius="6" 
+                                                <Border x:Name="border"
+                                                        Background="{TemplateBinding Background}"
+                                                        CornerRadius="6"
                                                         Padding="{TemplateBinding Padding}">
                                                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="border" Property="Background" Value="#3A7BC8"/>
+                                                        <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryButtonHover}"/>
                                                     </Trigger>
                                                     <Trigger Property="IsPressed" Value="True">
-                                                        <Setter TargetName="border" Property="Background" Value="#2E5A96"/>
+                                                        <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryButtonHover}"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -195,16 +186,14 @@
                         </Button>
                     </Grid>
                     
-                    <ListView x:Name="UsersListView" 
-                  ItemsSource="{Binding AllLocalUsers}" 
-                  BorderThickness="0"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  SelectedItem="{Binding SelectedUser, Mode=TwoWay}"
-                  HorizontalContentAlignment="Stretch">
+                    <ListView x:Name="UsersListView"
+                              ItemsSource="{Binding AllLocalUsers}"
+                              BorderThickness="0"
+                              Background="{DynamicResource BackgroundWhite}"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              SelectedItem="{Binding SelectedUser, Mode=TwoWay}"
+                              HorizontalContentAlignment="Stretch">
                         <ListView.Resources>
-                            <SolidColorBrush x:Key="HoverBackgroundColor" Color="#F2F2F2"/>
-                            <SolidColorBrush x:Key="SelectedBackgroundColor" Color="#E0E0E0"/>
-
                             <Style x:Key="UserListItemBorderStyle" TargetType="Border">
                                 <Setter Property="Padding" Value="12,10"/>
                                 <Setter Property="CornerRadius" Value="4"/>
@@ -212,7 +201,7 @@
                                 <Setter Property="Cursor" Value="Hand"/>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource HoverBackgroundColor}"/>
+                                        <Setter Property="Background" Value="{DynamicResource ListItemHover}"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -233,7 +222,7 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsSelected" Value="True">
-                                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource SelectedBackgroundColor}"/>
+                                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ListItemSelected}"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -244,30 +233,32 @@
 
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
+                                <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="8,10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                    <Ellipse Width="12" Height="12"
-                                 VerticalAlignment="Center"
-                                 Fill="{Binding Status, Converter={StaticResource UserStatusToBrushConverter}}"/>
+                                        <Ellipse Width="12" Height="12"
+                                                 VerticalAlignment="Center"
+                                                 Fill="{Binding Status, Converter={StaticResource UserStatusToBrushConverter}}"/>
 
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0,10,0">
-                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"/>
-                                        <TextBlock Text="{Binding FullName}" Foreground="{StaticResource TextColorSecondary}" FontSize="11" Margin="0,2,0,0"/>
-                                    </StackPanel>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0,10,0">
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13" Foreground="{DynamicResource TextColorPrimary}"/>
+                                            <TextBlock Text="{Binding FullName}" Foreground="{DynamicResource TextColorSecondary}" FontSize="11" Margin="0,2,0,0"/>
+                                        </StackPanel>
 
-                                    <TextBlock Grid.Column="2"
-                                   Text="{Binding RoleIcon}"
-                                   FontFamily="Segoe MDL2 Assets" 
-                                   FontSize="16"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Right"
-                                   Foreground="{Binding IsAdmin, Converter={StaticResource AdminStatusToBrushConverter}}"/>
-                                </Grid>
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding RoleIcon}"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="16"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Right"
+                                                   Foreground="{Binding IsAdmin, Converter={StaticResource AdminStatusToBrushConverter}}"/>
+                                    </Grid>
+                                </Border>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
@@ -292,33 +283,33 @@
                 <!-- Kullanıcı Bilgi Kartı -->
                 <DockPanel Margin="0,0,0,20">
                                         <StackPanel>
-                        <TextBlock Text="{Binding Name, FallbackValue='Lütfen bir kullanıcı seçin'}" 
-                                   FontWeight="Bold" FontSize="18" Foreground="{StaticResource TextColorPrimary}" Margin="0,0,0,8"/>
-                        <TextBlock Text="{Binding Sid}" Foreground="{StaticResource TextColorSecondary}" FontSize="11" 
+                        <TextBlock Text="{Binding Name, FallbackValue='Lütfen bir kullanıcı seçin'}"
+                                   FontWeight="Bold" FontSize="18" Foreground="{DynamicResource TextColorPrimary}" Margin="0,0,0,8"/>
+                        <TextBlock Text="{Binding Sid}" Foreground="{DynamicResource TextColorSecondary}" FontSize="11"
                                    FontFamily="Consolas" TextWrapping="Wrap" Margin="0,0,0,12"/>
-                        
+
                         <!-- Durum -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="Durum: " FontWeight="SemiBold" FontSize="14" Foreground="{StaticResource TextColorSecondary}"/>
+                            <TextBlock Text="{DynamicResource User_Status}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextColorSecondary}"/>
                             <Ellipse Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,8,0"
                                      Fill="{Binding Status, Converter={StaticResource UserStatusToBrushConverter}}"/>
-                            <TextBlock Text="{Binding Status}" FontWeight="SemiBold" FontSize="14"/>
+                            <TextBlock Text="{Binding Status}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
                         </StackPanel>
-                        
+
                         <!-- Rol -->
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Rol: " FontWeight="SemiBold" FontSize="14" Foreground="{StaticResource TextColorSecondary}"/>
+                            <TextBlock Text="{DynamicResource User_Role}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextColorSecondary}"/>
                             <TextBlock Text="{Binding RoleIcon}" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,6,0"
                                        Foreground="{Binding IsAdmin, Converter={StaticResource AdminStatusToBrushConverter}}"/>
-                            <TextBlock Text="{Binding IsAdmin, ConverterParameter='Yönetici;Standart', Converter={x:Static local:BoolToTextConverter.Instance}}" FontWeight="SemiBold" FontSize="14"/>
+                            <TextBlock Text="{Binding IsAdmin, ConverterParameter='Yönetici;Standart', Converter={x:Static local:BoolToTextConverter.Instance}}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
                         </StackPanel>
                     </StackPanel>
                 </DockPanel>
 
                 <!-- Gruplar -->
                 <StackPanel Margin="0,0,0,20">
-                    <TextBlock Text="Grup Üyelikleri" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10" 
-                               Foreground="{StaticResource TextColorPrimary}"/>
+                    <TextBlock Text="{DynamicResource User_GroupMemberships}" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"
+                               Foreground="{DynamicResource TextColorPrimary}"/>
                     <ItemsControl ItemsSource="{Binding Groups}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -327,9 +318,9 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Background="{StaticResource ControlHoverColor}" BorderBrush="{StaticResource BorderColor}"
+                                <Border Background="{DynamicResource ControlHoverColor}" BorderBrush="{DynamicResource BorderColor}"
                                         BorderThickness="1" Padding="10,6" Margin="0,0,8,8">
-                                    <TextBlock Text="{Binding}" FontSize="12" Foreground="{StaticResource TextColorSecondary}"/>
+                                    <TextBlock Text="{Binding}" FontSize="12" Foreground="{DynamicResource TextColorSecondary}"/>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -338,23 +329,23 @@
 
                 <!-- Yönetim İşlemleri -->
                 <StackPanel>
-                    <TextBlock Text="Yönetim İşlemleri" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,12" 
-                               Foreground="{StaticResource TextColorPrimary}"/>
-                    
-                    <Button Style="{StaticResource ManagementButton}" Content="🔑 Parola Sıfırla" FontSize="13"
-                            Command="{Binding DataContext.ResetPasswordCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                    <TextBlock Text="{DynamicResource User_ManagementOps}" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,12"
+                               Foreground="{DynamicResource TextColorPrimary}"/>
+
+                    <Button Style="{StaticResource ManagementButton}" Content="{DynamicResource User_ResetPassword}" FontSize="13"
+                            Command="{Binding DataContext.ResetPasswordCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             CommandParameter="{Binding}"/>
-                    
-                    <Button Style="{StaticResource ManagementButton}" Content="🔄 Hesabı Etkinleştir/Pasifleştir" FontSize="13"
-                            Command="{Binding DataContext.ToggleAccountStateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+
+                    <Button Style="{StaticResource ManagementButton}" Content="{DynamicResource User_ToggleAccount}" FontSize="13"
+                            Command="{Binding DataContext.ToggleAccountStateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             CommandParameter="{Binding}"/>
-                    
-                    <Button Style="{StaticResource ManagementButton}" Content="🛡️ Yönetici Yap/Al" FontSize="13"
-                            Command="{Binding DataContext.ToggleAdminRoleCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+
+                    <Button Style="{StaticResource ManagementButton}" Content="{DynamicResource User_ToggleAdmin}" FontSize="13"
+                            Command="{Binding DataContext.ToggleAdminRoleCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             CommandParameter="{Binding}"/>
-                    
-                    <Button Style="{StaticResource DangerManagementButton}" Content="🗑️ Kullanıcıyı Sil" FontSize="13"
-                            Command="{Binding DataContext.DeleteUserCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+
+                    <Button Style="{StaticResource DangerManagementButton}" Content="{DynamicResource User_DeleteUser}" FontSize="13"
+                            Command="{Binding DataContext.DeleteUserCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             CommandParameter="{Binding}"/>
                 </StackPanel>
             </StackPanel>
