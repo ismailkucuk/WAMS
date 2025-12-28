@@ -13,11 +13,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\wams_logo.png" />
     <Resource Include="Resources\wams.ico" />
+    <Resource Include="Resources\logo_normal.png" />
+    <Resource Include="Resources\logo_winter.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="local_config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autoupdater.NET.Official" Version="1.9.2" />
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
     <PackageReference Include="Microsoft.ML" Version="4.0.2" />

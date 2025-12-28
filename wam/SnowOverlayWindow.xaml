@@ -1,0 +1,27 @@
+<Window x:Class="wam.SnowOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SnowOverlay"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Topmost="False"
+        ResizeMode="NoResize"
+        ShowActivated="False">
+
+    <!--
+    This window is a transparent overlay that renders snow over the entire application.
+    - WindowStyle="None": Removes borders and title bar
+    - AllowsTransparency="True": Enables per-pixel transparency
+    - Background="Transparent": Makes the window fully transparent except for rendered content
+    - ShowInTaskbar="False": Hides from taskbar (owned window behavior)
+    - Topmost="False": Stays with owner, not always on top of everything
+    - ShowActivated="False": Doesn't steal focus when shown
+    - ResizeMode="NoResize": Prevents user resizing
+    -->
+
+    <Canvas x:Name="SnowCanvas"
+            ClipToBounds="True"
+            IsHitTestVisible="False"/>
+</Window>

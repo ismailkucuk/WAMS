@@ -117,20 +117,21 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Background="{DynamicResource NavPanelColor}">
+        <Border x:Name="SidebarPanel" Grid.Column="0" Background="{DynamicResource NavPanelColor}">
             <Border.Effect>
                 <DropShadowEffect ShadowDepth="2" Direction="270" Color="Black" Opacity="0.05" BlurRadius="10" />
             </Border.Effect>
             <Grid>
-                <Image Source="Resources/wams_logo.png" 
-                       Width="165" 
-                       Height="70" 
-                       HorizontalAlignment="Left" 
-                       VerticalAlignment="Top" 
-                       Margin="25,20,0,0"
+                <Image x:Name="AppLogo"
+                       Source="Resources/logo_normal.png"
+                       Width="220"
+                       Height="80"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Margin="25,18,0,0"
                        Stretch="Uniform"
                        RenderOptions.BitmapScalingMode="HighQuality"/>
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,90,0,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,100,0,0">
                     <StackPanel>
                         <TextBlock Text="{DynamicResource Nav_RealTimeMonitoring}" Style="{DynamicResource NavGroupHeader}"/>
                         <Button x:Name="DashboardButton" Style="{DynamicResource UniqueNavButton}" Tag="&#xE80F;" Content="{DynamicResource Nav_Dashboard}" Click="Dashboard_Click"/>
@@ -163,7 +164,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Background="{DynamicResource NavPanelColor}" Padding="30,20" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource BorderColor}">
+            <Border x:Name="TitleBar" Grid.Row="0" Background="{DynamicResource NavPanelColor}" Padding="30,20" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource BorderColor}">
                 <TextBlock x:Name="ContentTitle" Text="Dashboard" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
             </Border>
 

@@ -38,6 +38,10 @@
     <sys:String x:Key="Settings_Cache">Önbellek</sys:String>
     <sys:String x:Key="Settings_ClearCache">Dashboard önbelleğini temizle</sys:String>
     <sys:String x:Key="Settings_OpenSettingsFolder">Ayarlar klasörünü aç</sys:String>
+    <sys:String x:Key="Settings_Updates">Güncellemeler</sys:String>
+    <sys:String x:Key="Settings_CurrentVersion">Mevcut Sürüm:</sys:String>
+    <sys:String x:Key="Settings_CheckForUpdates">Güncellemeleri Kontrol Et</sys:String>
+    <sys:String x:Key="Settings_UpdatesInfo">Güncellemeleri kontrol etmek için internet bağlantısı gereklidir.</sys:String>
 
     <!-- Common -->
     <sys:String x:Key="Common_Error">Hata</sys:String>

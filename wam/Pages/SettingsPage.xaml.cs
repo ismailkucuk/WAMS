@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,9 +31,29 @@ namespace wam.Pages
 			TglDarkTheme.Unchecked += TglDarkTheme_Changed;
 			BtnRelaunchAsAdmin.Click += BtnRelaunchAsAdmin_Click;
 			BtnRelaunchNormal.Click += BtnRelaunchNormal_Click;
+			BtnCheckForUpdates.Click += BtnCheckForUpdates_Click;
 
 			// Dil seçimi için ComboBox başlatma
 			InitializeLanguageComboBox();
+
+			// Display current version
+			DisplayCurrentVersion();
+		}
+
+		/// <summary>
+		/// Displays the current application version in the UI.
+		/// </summary>
+		private void DisplayCurrentVersion()
+		{
+			try
+			{
+				var version = Assembly.GetExecutingAssembly().GetName().Version;
+				TxtCurrentVersion.Text = version != null ? $"v{version.Major}.{version.Minor}.{version.Build}" : "v1.0.0";
+			}
+			catch
+			{
+				TxtCurrentVersion.Text = "v1.0.0";
+			}
 		}
 
 		private void InitializeLanguageComboBox()
@@ -271,6 +292,28 @@ namespace wam.Pages
 			catch (Exception ex)
 			{
 				MessageBox.Show($"Normal modda başlatılamadı: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+		}
+
+		/// <summary>
+		/// Handles the Check for Updates button click.
+		/// </summary>
+		private void BtnCheckForUpdates_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				if (Application.Current?.MainWindow is MainWindow mw)
+				{
+					mw.CheckForUpdatesManually();
+				}
+			}
+			catch (Exception ex)
+			{
+				var message = LocalizationService.Instance.CurrentLanguage == "tr-TR"
+					? $"Güncelleme kontrolü başlatılamadı:\n{ex.Message}"
+					: $"Could not start update check:\n{ex.Message}";
+
+				MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 		}
 	}

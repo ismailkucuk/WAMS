@@ -221,12 +221,28 @@
                 <!-- KPI BAND -->
                 <Border Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource CleanCard}">
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Version Label (top-right corner) -->
+                        <TextBlock x:Name="TxtVersionLabel"
+                                   Grid.Row="0"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Top"
+                                   FontSize="11"
+                                   FontFamily="Segoe UI"
+                                   Foreground="{DynamicResource TextColorSecondary}"
+                                   Margin="0,0,0,8"/>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
                         <!-- Processes -->
                         <StackPanel Grid.Column="0">
@@ -255,6 +271,7 @@
                             <TextBlock Text="{Binding StartupProgramCount}" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource TextColorPrimary}"/>
                             <TextBlock Text="entries" Foreground="{DynamicResource TextColorSecondary}" FontSize="12"/>
                         </StackPanel>
+                        </Grid>
                     </Grid>
                 </Border>
 

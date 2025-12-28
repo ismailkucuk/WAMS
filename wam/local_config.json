@@ -1,0 +1,9 @@
+{
+  "snow_effect": true,
+  "message": "Happy Holidays from WAMS!",
+  "snowflake_count": 75,
+  "min_speed": 1.0,
+  "max_speed": 4.0,
+  "min_size": 3.0,
+  "max_size": 8.0
+}

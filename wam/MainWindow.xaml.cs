@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using wam.Pages;
 using wam.Services;
+using wam.Helpers;
 using Forms = System.Windows.Forms;
 using System.IO;
 using System.Text.Json;
 using System.Windows.Input;
+using AutoUpdaterDotNET;
 
 namespace wam
 {
@@ -18,6 +22,10 @@ namespace wam
         private bool _minimizeOnClose = false;
         private bool _forceClose = false;
         private bool _rememberChoice = false;
+        private SnowOverlayWindow? _snowOverlay;
+
+        // AutoUpdater URL - change this to your actual update.xml URL
+        private const string UpdateUrl = "https://raw.githubusercontent.com/KULLANICI_ADIN/REPO_ADIN/main/update.xml";
 
         public MainWindow()
         {
@@ -27,20 +35,190 @@ namespace wam
             ContentTitle.Text = LocalizationService.Instance.GetString("PageTitle_Dashboard", "Dashboard");
             InitializeTray();
             LoadWindowSettings();
+
+            // AutoUpdater configuration
+            ConfigureAutoUpdater();
+
             // Geliştirici deneyimi: VS altında çalışırken kapatınca gerçekten kapansın
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 _minimizeOnClose = false;
             }
             Closing += MainWindow_Closing;
-            Application.Current.Exit += (_, __) => { try { _trayIcon.Visible = false; _trayIcon.Dispose(); } catch { } };
+            Application.Current.Exit += (_, __) => {
+                try { DisposeSnowOverlay(); } catch { }
+                try { _trayIcon.Visible = false; _trayIcon.Dispose(); } catch { }
+            };
+        }
+
+        /// <summary>
+        /// Configures and starts AutoUpdater to check for updates on startup.
+        /// </summary>
+        private void ConfigureAutoUpdater()
+        {
+            try
+            {
+                // AutoUpdater settings
+                AutoUpdater.ShowSkipButton = false;
+                AutoUpdater.RunUpdateAsAdmin = true;
+                AutoUpdater.Synchronous = false;
+                AutoUpdater.ReportErrors = false; // Don't show error dialogs on startup check
+
+                // Start update check
+                AutoUpdater.Start(UpdateUrl);
+
+                System.Diagnostics.Debug.WriteLine("AutoUpdater: Startup check initiated.");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"AutoUpdater configuration error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Manually checks for updates and shows a message if no update is available.
+        /// Call this from a "Check for Updates" button.
+        /// </summary>
+        public void CheckForUpdatesManually()
+        {
+            try
+            {
+                AutoUpdater.ReportErrors = true; // Show errors during manual check
+                AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
+                AutoUpdater.Start(UpdateUrl);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Güncelleme kontrolü sırasında hata oluştu:\n{ex.Message}",
+                    "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
+        {
+            try
+            {
+                // Unsubscribe to prevent multiple calls
+                AutoUpdater.CheckForUpdateEvent -= AutoUpdaterOnCheckForUpdateEvent;
+
+                if (args.Error == null)
+                {
+                    if (!args.IsUpdateAvailable)
+                    {
+                        var message = LocalizationService.Instance.CurrentLanguage == "tr-TR"
+                            ? "En güncel sürümü kullanıyorsunuz."
+                            : "You are using the latest version.";
+                        var title = LocalizationService.Instance.CurrentLanguage == "tr-TR"
+                            ? "Güncelleme Yok"
+                            : "No Update Available";
+
+                        MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    // If update is available, AutoUpdater will show its built-in dialog
+                }
+                else
+                {
+                    var message = LocalizationService.Instance.CurrentLanguage == "tr-TR"
+                        ? $"Güncelleme kontrol edilemedi:\n{args.Error.Message}"
+                        : $"Could not check for updates:\n{args.Error.Message}";
+
+                    MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"AutoUpdater event handler error: {ex.Message}");
+            }
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            // Initialize snow effect overlay based on config
+            InitializeSnowOverlay();
+
             // Uygulama tamamen yüklendikten sonra Dashboard'u göster
             await NavigateToPage<DashboardPage>();
             SetActiveButton(DashboardButton);
+        }
+
+        /// <summary>
+        /// Initializes the transparent snow overlay window that covers the entire application.
+        /// The overlay is click-through, allowing user interaction with controls below.
+        /// Also switches the logo to winter version when snow effect is enabled.
+        /// </summary>
+        private void InitializeSnowOverlay()
+        {
+            try
+            {
+                var config = ConfigService.LoadConfig();
+
+                // Feature 1: Dynamic Logo Switching
+                UpdateLogoForSeason(config.SnowEffect);
+
+                if (!config.SnowEffect)
+                {
+                    System.Diagnostics.Debug.WriteLine("Snow effect is disabled in config.");
+                    return;
+                }
+
+                // Create and configure the overlay window
+                _snowOverlay = new SnowOverlayWindow();
+                _snowOverlay.Initialize(config);
+                _snowOverlay.BindToOwner(this);
+                _snowOverlay.Show();
+                _snowOverlay.Start();
+
+                System.Diagnostics.Debug.WriteLine("Snow overlay initialized and started successfully.");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to initialize snow overlay: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Switches the application logo based on snow effect configuration.
+        /// Uses winter logo when snow effect is enabled, normal logo otherwise.
+        /// </summary>
+        private void UpdateLogoForSeason(bool isWinterMode)
+        {
+            try
+            {
+                string logoPath = isWinterMode
+                    ? "pack://application:,,,/Resources/logo_winter.png"
+                    : "pack://application:,,,/Resources/logo_normal.png";
+
+                var bitmap = new BitmapImage(new Uri(logoPath, UriKind.Absolute));
+                AppLogo.Source = bitmap;
+
+                System.Diagnostics.Debug.WriteLine($"Logo switched to: {(isWinterMode ? "Winter" : "Normal")}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to switch logo: {ex.Message}");
+                // Keep the default logo on failure
+            }
+        }
+
+        /// <summary>
+        /// Disposes the snow overlay window.
+        /// </summary>
+        private void DisposeSnowOverlay()
+        {
+            if (_snowOverlay != null)
+            {
+                try
+                {
+                    _snowOverlay.Stop();
+                    _snowOverlay.Close();
+                    _snowOverlay = null;
+                    System.Diagnostics.Debug.WriteLine("Snow overlay disposed.");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error disposing snow overlay: {ex.Message}");
+                }
+            }
         }
 
         private void SetActiveButton(Button button)
@@ -345,6 +523,7 @@ namespace wam
             }
             if (_forceClose)
             {
+                try { DisposeSnowOverlay(); } catch { }
                 try { _trayIcon.Visible = false; _trayIcon.Dispose(); } catch { }
                 SaveWindowSettings();
                 return;
@@ -400,6 +579,7 @@ namespace wam
                     _minimizeOnClose = false;
                 }
                 SaveWindowSettings();
+                try { DisposeSnowOverlay(); } catch { }
                 try { _trayIcon.Visible = false; _trayIcon.Dispose(); } catch { }
             }
             else

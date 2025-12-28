@@ -38,6 +38,10 @@
     <sys:String x:Key="Settings_Cache">Cache</sys:String>
     <sys:String x:Key="Settings_ClearCache">Clear Dashboard cache</sys:String>
     <sys:String x:Key="Settings_OpenSettingsFolder">Open Settings folder</sys:String>
+    <sys:String x:Key="Settings_Updates">Updates</sys:String>
+    <sys:String x:Key="Settings_CurrentVersion">Current Version:</sys:String>
+    <sys:String x:Key="Settings_CheckForUpdates">Check for Updates</sys:String>
+    <sys:String x:Key="Settings_UpdatesInfo">An internet connection is required to check for updates.</sys:String>
 
     <!-- Common -->
     <sys:String x:Key="Common_Error">Error</sys:String>

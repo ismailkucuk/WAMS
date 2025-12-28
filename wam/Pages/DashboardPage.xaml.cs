@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,7 +15,6 @@ using System.Management;
 using Microsoft.Win32;
 using wam.Services;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using wam;
 using System.Net.NetworkInformation;
 using System.IO;
@@ -32,19 +32,40 @@ namespace wam.Pages
             try
             {
                 System.Diagnostics.Debug.WriteLine("Dashboard: Başlatılıyor...");
-                
+
                 InitializeComponent();
-                
+
                 // ViewModel'i hemen oluştur ama veri yükleme işlemlerini LoadDataAsync'e bırak
                 _viewModel = new DashboardViewModel();
                 DataContext = _viewModel;
-                
+
+                // Display application version
+                DisplayCurrentVersion();
+
                 System.Diagnostics.Debug.WriteLine("Dashboard: Başarıyla başlatıldı");
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Dashboard Constructor Error: {ex.Message}");
                 MessageBox.Show($"Dashboard yüklenirken hata: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Displays the current application version in the version label.
+        /// </summary>
+        private void DisplayCurrentVersion()
+        {
+            try
+            {
+                var version = Assembly.GetExecutingAssembly().GetName().Version;
+                TxtVersionLabel.Text = version != null
+                    ? $"v{version.Major}.{version.Minor}.{version.Build}"
+                    : "v1.0.0";
+            }
+            catch
+            {
+                TxtVersionLabel.Text = "v1.0.0";
             }
         }
 

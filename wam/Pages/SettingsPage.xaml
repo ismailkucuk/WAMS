@@ -190,6 +190,21 @@
 						</StackPanel>
 					</StackPanel>
 				</Border>
+
+				<!-- Updates Section -->
+				<Border Style="{StaticResource CleanCard}">
+					<StackPanel>
+						<TextBlock Text="{DynamicResource Settings_Updates}" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColorSecondary}"/>
+						<StackPanel Orientation="Horizontal" Margin="0,12,0,0" VerticalAlignment="Center">
+							<TextBlock Text="{DynamicResource Settings_CurrentVersion}" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="Segoe UI" FontSize="14" Foreground="{DynamicResource TextColorPrimary}"/>
+							<TextBlock x:Name="TxtCurrentVersion" VerticalAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource AccentColor}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+							<Button x:Name="BtnCheckForUpdates" Content="{DynamicResource Settings_CheckForUpdates}" Padding="14,8" Style="{StaticResource PrimaryButton}"/>
+						</StackPanel>
+						<TextBlock Text="{DynamicResource Settings_UpdatesInfo}" FontSize="11" Foreground="{DynamicResource TextColorSecondary}" Margin="0,8,0,0"/>
+					</StackPanel>
+				</Border>
 			</StackPanel>
 		</Grid>
 	</ScrollViewer>
