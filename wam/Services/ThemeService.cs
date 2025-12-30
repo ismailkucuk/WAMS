@@ -15,7 +15,7 @@ namespace wam.Services
 
         public event EventHandler<ThemeChangedEventArgs> ThemeChanged;
 
-        private ThemeMode _currentTheme = ThemeMode.Light;
+        private ThemeMode _currentTheme = ThemeMode.Dark;
 
         public ThemeMode CurrentTheme
         {
@@ -87,18 +87,18 @@ namespace wam.Services
                 {
                     var json = File.ReadAllText(path);
                     var settings = JsonSerializer.Deserialize<ThemeSettings>(json);
-                    CurrentTheme = settings?.Theme ?? ThemeMode.Light;
+                    CurrentTheme = settings?.Theme ?? ThemeMode.Dark;
                 }
                 else
                 {
-                    CurrentTheme = ThemeMode.Light;
+                    CurrentTheme = ThemeMode.Dark;
                 }
                 
                 ApplyTheme(CurrentTheme);
             }
             catch
             {
-                CurrentTheme = ThemeMode.Light;
+                CurrentTheme = ThemeMode.Dark;
                 ApplyTheme(CurrentTheme);
             }
         }
@@ -133,7 +133,7 @@ namespace wam.Services
 
         private class ThemeSettings
         {
-            public ThemeMode Theme { get; set; } = ThemeMode.Light;
+            public ThemeMode Theme { get; set; } = ThemeMode.Dark;
         }
     }
 
