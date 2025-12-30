@@ -24,22 +24,18 @@ namespace wam
         private bool _rememberChoice = false;
         private SnowOverlayWindow? _snowOverlay;
 
-        // AutoUpdater URL - change this to your actual update.xml URL
-        private const string UpdateUrl = "https://raw.githubusercontent.com/KULLANICI_ADIN/REPO_ADIN/main/update.xml";
+        private const string UpdateUrl = "https://raw.githubusercontent.com/ismailkucuk/WAMS/master/update.xml";
 
         public MainWindow()
         {
             InitializeComponent();
-            // Açılışta Dashboard'u otomatik olarak yükle
             Loaded += MainWindow_Loaded;
             ContentTitle.Text = LocalizationService.Instance.GetString("PageTitle_Dashboard", "Dashboard");
             InitializeTray();
             LoadWindowSettings();
 
-            // AutoUpdater configuration
             ConfigureAutoUpdater();
 
-            // Geliştirici deneyimi: VS altında çalışırken kapatınca gerçekten kapansın
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 _minimizeOnClose = false;

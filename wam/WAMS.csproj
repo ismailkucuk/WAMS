@@ -13,15 +13,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\wams.ico" />
-    <Resource Include="Resources\logo_normal.png" />
-    <Resource Include="Resources\logo_winter.png" />
+    <None Remove="local_config.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="local_config.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Content Include="local_config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\wams.ico" />
+    <Resource Include="Resources\logo_normal.png" />
+    <Resource Include="Resources\logo_winter.png" />
   </ItemGroup>
 
   <ItemGroup>
