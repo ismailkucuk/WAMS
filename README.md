@@ -654,6 +654,7 @@ Bu proje MIT Lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 **İsmail Küçük**
 
 - GitHub: [@ismailkucuk](https://github.com/ismailkucuk)
+- LinkedIn: [@İsmail Küçük](https://linkedin.com/in/ismail-küçük)
 
 ---
 

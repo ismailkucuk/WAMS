@@ -36,12 +36,16 @@ namespace wam
 
             ConfigureAutoUpdater();
 
+            // Subscribe to remote config changes
+            ConfigService.RemoteConfigLoaded += OnRemoteConfigLoaded;
+
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 _minimizeOnClose = false;
             }
             Closing += MainWindow_Closing;
             Application.Current.Exit += (_, __) => {
+                try { ConfigService.RemoteConfigLoaded -= OnRemoteConfigLoaded; } catch { }
                 try { DisposeSnowOverlay(); } catch { }
                 try { _trayIcon.Visible = false; _trayIcon.Dispose(); } catch { }
             };
@@ -129,8 +133,9 @@ namespace wam
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            // Initialize snow effect overlay based on config
-            InitializeSnowOverlay();
+            // Initialize snow effect overlay based on local config (fast startup)
+            // This also triggers background fetch of remote config
+            await InitializeSnowOverlayAsync();
 
             // Uygulama tamamen yüklendikten sonra Dashboard'u göster
             await NavigateToPage<DashboardPage>();
@@ -141,12 +146,14 @@ namespace wam
         /// Initializes the transparent snow overlay window that covers the entire application.
         /// The overlay is click-through, allowing user interaction with controls below.
         /// Also switches the logo to winter version when snow effect is enabled.
+        /// Uses async loading which fetches local config immediately, then fetches remote in background.
         /// </summary>
-        private void InitializeSnowOverlay()
+        private async Task InitializeSnowOverlayAsync()
         {
             try
             {
-                var config = ConfigService.LoadConfig();
+                // LoadConfigAsync returns local config immediately and starts background remote fetch
+                var config = await ConfigService.LoadConfigAsync();
 
                 // Feature 1: Dynamic Logo Switching
                 UpdateLogoForSeason(config.SnowEffect);
@@ -215,6 +222,56 @@ namespace wam
                     System.Diagnostics.Debug.WriteLine($"Error disposing snow overlay: {ex.Message}");
                 }
             }
+        }
+
+        /// <summary>
+        /// Handles remote config loaded event. Refreshes snow overlay if settings differ.
+        /// Must dispatch to UI thread since this event fires from background task.
+        /// </summary>
+        private void OnRemoteConfigLoaded(AppConfig remoteConfig)
+        {
+            // Dispatch to UI thread since this comes from background task
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine($"Remote config received: SnowEffect={remoteConfig.SnowEffect}");
+
+                    // Check if snow effect setting changed
+                    bool currentlyHasSnow = _snowOverlay != null;
+                    bool shouldHaveSnow = remoteConfig.SnowEffect;
+
+                    // Update logo based on remote config
+                    UpdateLogoForSeason(shouldHaveSnow);
+
+                    if (currentlyHasSnow && !shouldHaveSnow)
+                    {
+                        // Remote disabled snow - dispose overlay
+                        System.Diagnostics.Debug.WriteLine("Remote config disabled snow effect. Disposing overlay.");
+                        DisposeSnowOverlay();
+                    }
+                    else if (!currentlyHasSnow && shouldHaveSnow)
+                    {
+                        // Remote enabled snow - create overlay
+                        System.Diagnostics.Debug.WriteLine("Remote config enabled snow effect. Creating overlay.");
+                        _snowOverlay = new SnowOverlayWindow();
+                        _snowOverlay.Initialize(remoteConfig);
+                        _snowOverlay.BindToOwner(this);
+                        _snowOverlay.Show();
+                        _snowOverlay.Start();
+                    }
+                    else if (currentlyHasSnow && shouldHaveSnow)
+                    {
+                        // Both have snow - update parameters
+                        System.Diagnostics.Debug.WriteLine("Remote config has updated snow parameters. Reinitializing.");
+                        _snowOverlay.Initialize(remoteConfig);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error applying remote config: {ex.Message}");
+                }
+            }));
         }
 
         private void SetActiveButton(Button button)
